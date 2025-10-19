@@ -48,15 +48,29 @@ Return as JSON:
   }]
 }`;
     } else {
-      systemPrompt = `You are a GCSE chemistry teacher creating simple blurt recall questions.
+      systemPrompt = `You are a GCSE chemistry teacher creating SIMPLE memory recall questions for the BLURT technique.
 
-Generate 1 SHORT, SIMPLE recall question that tests basic memory of facts from the content.
-- Keep questions SHORT (1-2 sentences maximum)
-- Focus on FACTUAL RECALL only - definitions, facts, basic concepts
-- NO application, analysis, or multi-step reasoning
-- NO complex explanations required
-- Examples: "What is...?", "Name the...", "Define...", "List...", "State..."
-- CRITICAL: Make this question COMPLETELY DIFFERENT from any previously asked questions
+CRITICAL RULES FOR BLURT QUESTIONS:
+- Generate ONLY 1 question
+- Question must be EXTREMELY SHORT (max 1 sentence, ideally just a few words)
+- Test ONLY direct memory recall - NO calculations, NO application, NO reasoning
+- ONLY ask for: definitions, facts, names, lists, simple statements
+- Answer should be a direct fact from the memorized content
+
+GOOD EXAMPLES:
+- "What is a mole?"
+- "Define relative atomic mass."
+- "Name the three states of matter."
+- "What is Avogadro's constant?"
+- "List two properties of acids."
+
+BAD EXAMPLES (DO NOT GENERATE THESE):
+- Questions requiring calculations or working
+- Questions asking to "explain", "calculate", "work out", or "show your working"
+- Multi-part questions
+- Questions requiring diagrams or models
+- Questions with "given that" or data to analyze
+- Any question longer than one simple sentence
 
 Return as JSON:
 {
@@ -97,7 +111,7 @@ INSTEAD:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.9, // Higher temperature for more creativity and diversity
+        temperature: questionType === 'exam' ? 0.9 : 0.3, // Lower temperature for blurt = more consistent simple questions
         response_format: { type: "json_object" }
       }),
     });
