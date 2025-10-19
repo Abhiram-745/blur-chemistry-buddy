@@ -343,32 +343,69 @@ const BlurPractice = () => {
       // Get previously asked questions to avoid repetition
       const previousQuestions = generatedQuestions.map(q => q.question);
 
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${endpoint}`,
-        {
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${endpoint}`;
+      const payload = {
+        studyContent,
+        questionType,
+        numQuestions: 1,
+        previousQuestions,
+      };
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      } as const;
+
+      const doFetch = () =>
+        fetch(url, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({
-            studyContent,
-            questionType,
-            numQuestions: 1,
-            previousQuestions, // Send previous questions to avoid repetition
-          }),
-        }
-      );
+          headers,
+          body: JSON.stringify(payload),
+        });
+
+      let response = await doFetch();
 
       if (!response.ok) {
-        throw new Error("Failed to generate question");
+        let message = "";
+        try {
+          const j = await response.json();
+          message = j?.error || "";
+        } catch {}
+
+        // Surface rate limit/credits properly and attempt a single auto-retry on 429
+        if (response.status === 429) {
+          toast({
+            title: "Please wait a moment",
+            description: "AI rate limit hit. Retrying in 1.5s…",
+          });
+          await new Promise((r) => setTimeout(r, 1500));
+          response = await doFetch();
+        } else if (response.status === 402) {
+          toast({
+            title: "AI credits needed",
+            description: message || "Add credits to continue generating questions.",
+            variant: "destructive",
+          });
+          return;
+        } else {
+          throw new Error(message || "Failed to generate question");
+        }
       }
 
-      const result = await response.json();
-      if (result.questions && result.questions.length > 0) {
+      let result = await response.json();
+
+      // If no questions returned, try once more quickly
+      if (!result?.questions?.length) {
+        await new Promise((r) => setTimeout(r, 500));
+        const retry = await doFetch();
+        if (retry.ok) result = await retry.json();
+      }
+
+      if (result?.questions && result.questions.length > 0) {
         const newQuestion = result.questions[0];
         setCurrentGeneratedQuestion(newQuestion);
         setGeneratedQuestions([...generatedQuestions, newQuestion]);
+      } else {
+        throw new Error("No question returned");
       }
     } catch (error) {
       toast({
