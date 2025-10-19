@@ -407,24 +407,34 @@ const BlurPractice = () => {
       } else {
         // Client-side safe fallback to avoid error toast
         const stop = new Set(["the","a","an","and","or","but","if","then","than","that","this","these","those","is","are","was","were","be","been","being","to","of","in","on","for","as","at","by","with","from","it","its","their","there","which","who","whom","into","out","about","over","under","between","within","also","can","may","might","should","would"]);
-        const tokens = studyContent.toLowerCase().split(/[^a-z0-9-]+/g).filter(w => w && w.length > 2 && !stop.has(w));
-        const term = tokens[0] || "this topic";
+        const textAll = studyContent.toLowerCase();
+        const words = textAll.split(/[^a-z0-9-]+/g).filter(w => w && w.length > 2 && !stop.has(w));
+        const freq: Record<string, number> = {};
+        for (const w of words) freq[w] = (freq[w] || 0) + 1;
+        const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([w])=>w);
+        const top1 = sorted[0] || "key term";
+        const top2 = sorted[1];
         const qText = questionType === "exam"
-          ? `Explain the role of ${term} according to these notes.`
-          : `Define: ${term}`;
-        const fallback = { question: qText, marks: questionType === "exam" ? 2 : 1, expectedKeyPoints: [] };
+          ? (top2 ? `Explain how ${top1} and ${top2} relate in these notes.` : `Explain ${top1} using these notes.`)
+          : `Define: ${top1}`;
+        const fallback = { question: qText, marks: questionType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
         setCurrentGeneratedQuestion(fallback);
         setGeneratedQuestions([...generatedQuestions, fallback]);
       }
     } catch (error) {
-      // Final safety: generate a minimal fallback question instead of erroring
+      // Final safety: generate a minimal on-notes fallback instead of erroring
       const stop = new Set(["the","a","an","and","or","but","if","then","than","that","this","these","those","is","are","was","were","be","been","being","to","of","in","on","for","as","at","by","with","from","it","its","their","there","which","who","whom","into","out","about","over","under","between","within","also","can","may","might","should","would"]);
-      const tokens = studyContent.toLowerCase().split(/[^a-z0-9-]+/g).filter(w => w && w.length > 2 && !stop.has(w));
-      const term = tokens[0] || "this topic";
+      const textAll = studyContent.toLowerCase();
+      const words = textAll.split(/[^a-z0-9-]+/g).filter(w => w && w.length > 2 && !stop.has(w));
+      const freq: Record<string, number> = {};
+      for (const w of words) freq[w] = (freq[w] || 0) + 1;
+      const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([w])=>w);
+      const top1 = sorted[0] || "key term";
+      const top2 = sorted[1];
       const qText = questionType === "exam"
-        ? `Explain the role of ${term} according to these notes.`
-        : `Define: ${term}`;
-      const fallback = { question: qText, marks: questionType === "exam" ? 2 : 1, expectedKeyPoints: [] };
+        ? (top2 ? `Explain how ${top1} and ${top2} relate in these notes.` : `Explain ${top1} using these notes.`)
+        : `Define: ${top1}`;
+      const fallback = { question: qText, marks: questionType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
       setCurrentGeneratedQuestion(fallback);
       setGeneratedQuestions([...generatedQuestions, fallback]);
       console.warn("Generate question fallback used:", error);
