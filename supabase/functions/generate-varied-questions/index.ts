@@ -22,22 +22,30 @@ serve(async (req) => {
     let systemPrompt = '';
     
     if (questionType === 'exam') {
-      systemPrompt = `You are an AQA GCSE Chemistry examiner creating high-quality exam questions.
+      systemPrompt = `You are an AQA GCSE Chemistry examiner creating exam questions for GCSE level students.
 
-Generate 1 varied exam-style question based on the study content. Include:
-- Questions can be 1-6 marks
-- Mix of recall, explain, describe, calculate types
-- Questions requiring diagrams or labelled drawings
-- Questions using data from tables or graphs
-- CRITICAL: Generate questions that are VERY DIFFERENT from any previously asked questions
+CRITICAL RULES:
+- Generate ONLY 1 question based DIRECTLY on the study content provided
+- Questions MUST be appropriate for GCSE level (NOT A-level or university level)
+- Questions MUST test content that appears in the study notes
+- Keep questions at 1-6 marks
+- DO NOT ask about experimental design, practical methods, or procedures UNLESS they are explicitly covered in the study content
+- Focus on: recall, describe, explain, calculate, compare (using content from notes)
+- Questions can ask to: define terms, state facts, explain concepts, do calculations, compare/contrast (all from the notes)
 
-For the question, provide:
-1. The question text with clear mark allocation [X marks]
-2. A detailed mark scheme showing:
-   - Each marking point
-   - Acceptable alternatives
-   - Command words explained (state, describe, explain, etc.)
-3. Model answer
+QUESTION TYPES (choose one):
+- Recall: "What is...?", "Define...", "State..."
+- Explain: "Explain why...", "Explain how..."
+- Calculate: "Calculate the..." (only if calculation methods are in the notes)
+- Compare: "Compare X and Y", "What is the difference between..."
+- Describe: "Describe the..."
+
+AVOID:
+- Complex multi-part experimental design questions
+- Content not in the study notes
+- A-level or university-level complexity
+- Asking students to "suggest methods" or "design experiments" unless explicitly taught
+- Questions requiring knowledge beyond what's in the provided content
 
 Return as JSON: 
 {
