@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { studyContent, questionType } = await req.json();
+    const { studyContent, questionType, previousQuestions = [] } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -66,6 +66,12 @@ Return as JSON array:
 }]`;
     }
 
+    let userPrompt = `Study Content:\n\n${studyContent}`;
+    
+    if (previousQuestions.length > 0) {
+      userPrompt += `\n\nIMPORTANT: You have already asked these questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate COMPLETELY DIFFERENT questions. Do NOT ask about the same topics or use similar wording.`;
+    }
+
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -76,7 +82,7 @@ Return as JSON array:
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: `Study Content:\n\n${studyContent}` }
+          { role: 'user', content: userPrompt }
         ],
         response_format: { type: "json_object" }
       }),

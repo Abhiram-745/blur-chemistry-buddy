@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { studyContent, numQuestions = 1 } = await req.json();
+    const { studyContent, numQuestions = 1, previousQuestions = [] } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -36,10 +36,14 @@ Your task is to:
   ]
 }`;
 
-    const userPrompt = `Study Content:
+    let userPrompt = `Study Content:
 ${studyContent}
 
 Generate ${numQuestions} unique exam-style question(s) based on this content. Make sure each question tests different aspects of the material.`;
+
+    if (previousQuestions.length > 0) {
+      userPrompt += `\n\nIMPORTANT: Do NOT generate questions similar to these already-asked questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate completely different questions that test other aspects of the content.`;
+    }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

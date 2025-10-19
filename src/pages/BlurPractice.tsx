@@ -325,6 +325,9 @@ const BlurPractice = () => {
         ? "generate-varied-questions"
         : "generate-questions";
 
+      // Get previously asked questions to avoid repetition
+      const previousQuestions = generatedQuestions.map(q => q.question);
+
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${endpoint}`,
         {
@@ -337,6 +340,7 @@ const BlurPractice = () => {
             studyContent,
             questionType,
             numQuestions: 1,
+            previousQuestions, // Send previous questions to avoid repetition
           }),
         }
       );
@@ -449,7 +453,8 @@ const BlurPractice = () => {
           subsectionId,
           subsectionTitle: currentPairSubsections.map(s => s.title).join(', '),
           questionType
-        }
+        },
+        replace: true // Force page refresh
       });
     } catch (error) {
       toast({
@@ -481,12 +486,12 @@ const BlurPractice = () => {
   };
 
   const handleMoveToNextSubsection = async () => {
-    // Check if there are more pairs
+    // Check if there are more pairs within this subsection
     const nextPairIndex = currentPairIndex + 1;
     const nextPairStart = nextPairIndex * 2;
     
     if (nextPairStart < internalSubsections.length) {
-      // Move to next pair
+      // Move to next pair within same subsection
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
       setCurrentPairIndex(nextPairIndex);
       setCurrentPairSubsections(nextPair);
@@ -496,10 +501,26 @@ const BlurPractice = () => {
       setShowQuestionFeedback(false);
       setExpandedSections([0]);
       setCurrentGeneratedQuestion(null);
+      setGeneratedQuestions([]); // Reset questions for new pair
     } else {
-      // No more subsections, analyze knowledge gaps and show results
-      await analyzeKnowledgeGaps();
-      setShowFinalResults(true);
+      // No more pairs in this subsection, move to next subsection in topic
+      const topic = sectionsData.find((t) => t.id === topicId);
+      if (!topic) return;
+
+      const currentSubsectionIndex = topic.subsections.findIndex((s) => s.id === subsectionId);
+      const nextSubsection = topic.subsections[currentSubsectionIndex + 1];
+
+      if (nextSubsection) {
+        // Navigate to next subsection
+        navigate(`/blur-practice/${topicId}/${nextSubsection.id}`);
+      } else {
+        // No more subsections in topic, show completion message
+        toast({
+          title: "Topic Complete!",
+          description: "You've completed all subsections in this topic.",
+        });
+        navigate("/sections");
+      }
     }
   };
 
