@@ -124,7 +124,8 @@ const BlurPractice = () => {
   const [highlightedText, setHighlightedText] = useState<string>("");
   const [showMemorizationTimer, setShowMemorizationTimer] = useState(false);
   const [memorizationDuration, setMemorizationDuration] = useState(180); // 3 minutes default
-  const [showReadyToBlur, setShowReadyToBlur] = useState(true); // Show intro screen first
+  const [showTimerSection, setShowTimerSection] = useState(true);
+  const [timerStarted, setTimerStarted] = useState(false);
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -185,8 +186,9 @@ const BlurPractice = () => {
       window.history.replaceState({}, document.title);
     } else if (state?.generateQuestion) {
       // Skip intro and study content, go straight to question generation
-      setShowReadyToBlur(false);
+      setShowTimerSection(false);
       setShowStudyContent(false);
+      setTimerStarted(false);
       setQuestionType(state.generateQuestion);
       setIsGeneratingQuestion(true);
       generateNewQuestion().finally(() => setIsGeneratingQuestion(false));
@@ -501,8 +503,9 @@ const BlurPractice = () => {
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
       setCurrentPairIndex(nextPairIndex);
       setCurrentPairSubsections(nextPair);
-      setShowReadyToBlur(true); // Show ready screen for next pair
-      setShowStudyContent(true);
+      setShowTimerSection(true);
+      setShowStudyContent(false);
+      setTimerStarted(false);
       setCurrentQuestionIndex(0);
       setUserAnswer("");
       setShowQuestionFeedback(false);
@@ -607,8 +610,8 @@ const BlurPractice = () => {
   const progress = questionResults.length > 0 ? (questionResults.length / (questionResults.length + 1)) * 100 : 0;
   const totalPairs = Math.ceil(internalSubsections.length / 2);
 
-  // Ready to Blur intro screen
-  if (showReadyToBlur) {
+  // Time to Practice & Memorization Timer intro screen
+  if (showTimerSection) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -617,31 +620,86 @@ const BlurPractice = () => {
             Back to Topic
           </Button>
 
-          <Card className="border-l-4 border-l-primary shadow-lg">
-            <CardHeader className="space-y-4">
-              <div className="text-center">
-                <div className="text-6xl mb-4">✍️</div>
-                <CardTitle className="text-3xl mb-2">Ready to Blur?</CardTitle>
-                <p className="text-muted-foreground text-lg">
-                  {subsectionTitle}
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
-                <p className="text-center text-lg">
-                  AI will generate unique questions about what you just studied. Answer as many as you like before moving on!
-                </p>
-              </div>
-              <Button 
-                onClick={() => setShowReadyToBlur(false)} 
-                size="lg" 
-                className="w-full text-lg py-6"
-              >
-                Start Blurting Practice →
-              </Button>
-            </CardContent>
+          <Card className="mb-6 p-8">
+            <div className="mb-6">
+              <h2 className="text-3xl font-bold mb-4 flex items-center gap-3">
+                🎯 Time to Practice
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Choose your question type and start testing your knowledge!
+              </p>
+            </div>
+            <Button
+              size="lg"
+              onClick={() => {
+                setShowQuestionTypeSelector(true);
+              }}
+              disabled={timerStarted}
+              className="w-full"
+            >
+              Choose Question Type →
+            </Button>
           </Card>
+
+          {showQuestionTypeSelector && (
+            <Card className="mb-6 border-primary shadow-lg">
+              <CardHeader>
+                <CardTitle>Choose Question Type</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Select what type of questions you'd like to practice
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Select value={questionType} onValueChange={(value: "blurt" | "exam") => setQuestionType(value)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="blurt">
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium">Blurt Questions</span>
+                        <span className="text-xs text-muted-foreground">Quick recall questions to test memory</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="exam">
+                      <div className="flex flex-col items-start">
+                        <span className="font-medium">Exam Questions</span>
+                        <span className="text-xs text-muted-foreground">Varied AQA-style questions with mark schemes</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button onClick={handleQuestionTypeSelected} size="lg" className="w-full">
+                  Continue
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {showMemorizationTimer && (
+            <Card className="mb-8 p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+                  ⏱️ Memorization Timer
+                </h2>
+                <p className="text-muted-foreground text-lg mb-6">
+                  You have {Math.floor(memorizationDuration / 60)} minutes to study the content above. When you're ready, start the timer.
+                </p>
+              </div>
+              <Button
+                size="lg"
+                onClick={() => {
+                  setShowStudyContent(true);
+                  setTimerStarted(true);
+                  setShowTimerSection(false);
+                }}
+                disabled={timerStarted}
+                className="w-full"
+              >
+                ▶️ Start Memorizing
+              </Button>
+            </Card>
+          )}
         </div>
       </div>
     );
@@ -702,61 +760,65 @@ const BlurPractice = () => {
                 </Card>
               ))}
 
-              <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border-l-4 border-primary">
-                <h3 className="font-semibold text-lg mb-3">🎯 Time to Practice</h3>
-                <p className="text-sm mb-4">
-                  Choose your question type and start testing your knowledge!
-                </p>
-                <Button 
-                  onClick={handleStartPractice} 
-                  size="lg" 
-                  className="w-full"
-                  disabled={isGeneratingQuestion}
-                >
-                  {isGeneratingQuestion ? "Generating Question..." : "Choose Question Type →"}
-                </Button>
-              </div>
-
-              {showQuestionTypeSelector && (
-                <Card className="border-primary shadow-lg">
-                  <CardHeader>
-                    <CardTitle>Choose Question Type</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      Select what type of questions you'd like to practice
+              {timerStarted && (
+                <>
+                  <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border-l-4 border-primary">
+                    <h3 className="font-semibold text-lg mb-3">🎯 Time to Practice</h3>
+                    <p className="text-sm mb-4">
+                      Choose your question type and start testing your knowledge!
                     </p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <Select value={questionType} onValueChange={(value: "blurt" | "exam") => setQuestionType(value)}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="blurt">
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">Blurt Questions</span>
-                            <span className="text-xs text-muted-foreground">Quick recall questions to test memory</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="exam">
-                          <div className="flex flex-col items-start">
-                            <span className="font-medium">Exam Questions</span>
-                            <span className="text-xs text-muted-foreground">Varied AQA-style questions with mark schemes</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button onClick={handleQuestionTypeSelected} size="lg" className="w-full">
-                      Continue
+                    <Button 
+                      onClick={handleStartPractice} 
+                      size="lg" 
+                      className="w-full"
+                      disabled={isGeneratingQuestion}
+                    >
+                      {isGeneratingQuestion ? "Generating Question..." : "Choose Question Type →"}
                     </Button>
-                  </CardContent>
-                </Card>
-              )}
+                  </div>
 
-              {showMemorizationTimer && (
-                <MemorizationTimer 
-                  duration={memorizationDuration}
-                  onComplete={handleMemorizationComplete}
-                />
+                  {showQuestionTypeSelector && (
+                    <Card className="border-primary shadow-lg">
+                      <CardHeader>
+                        <CardTitle>Choose Question Type</CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          Select what type of questions you'd like to practice
+                        </p>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <Select value={questionType} onValueChange={(value: "blurt" | "exam") => setQuestionType(value)}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="blurt">
+                              <div className="flex flex-col items-start">
+                                <span className="font-medium">Blurt Questions</span>
+                                <span className="text-xs text-muted-foreground">Quick recall questions to test memory</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="exam">
+                              <div className="flex flex-col items-start">
+                                <span className="font-medium">Exam Questions</span>
+                                <span className="text-xs text-muted-foreground">Varied AQA-style questions with mark schemes</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button onClick={handleQuestionTypeSelected} size="lg" className="w-full">
+                          Continue
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {showMemorizationTimer && (
+                    <MemorizationTimer 
+                      duration={memorizationDuration}
+                      onComplete={handleMemorizationComplete}
+                    />
+                  )}
+                </>
               )}
             </CardContent>
           </Card>
