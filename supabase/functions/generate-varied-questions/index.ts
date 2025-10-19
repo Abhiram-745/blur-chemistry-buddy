@@ -22,73 +22,47 @@ serve(async (req) => {
     let systemPrompt = '';
     
     if (questionType === 'exam') {
-      systemPrompt = `You are an AQA GCSE Chemistry examiner writing questions STRICTLY aligned to the AQA GCSE Chemistry specification and the provided study notes.
+      systemPrompt = `You are a GCSE Chemistry question generator. Your ONLY job is to create questions from the study content provided.
 
-NON-NEGOTIABLE RULES:
-- Generate ONLY 1 question
-- Base it DIRECTLY and EXCLUSIVELY on the study content (use its exact terminology)
-- 1–4 marks preferred (max 6), concise stem
-- DO NOT invent scenarios, experiments, or data unless they appear in the notes
-- NO "Experiment 1/2", "critically evaluate", "justify", "suggest", or open investigations
-- Keep GCSE level; avoid A-level complexity
-- If calculation is asked, only use formulas/methods explicitly present in the notes
+ABSOLUTE REQUIREMENTS:
+1. Generate EXACTLY 1 question
+2. Question MUST use ONLY terms, concepts, and facts EXPLICITLY stated in the study content
+3. DO NOT invent experiments, scenarios, or contexts not in the study content
+4. DO NOT mention topics like "collision theory", "reaction rates", "marble chips", or ANY other topics unless they are EXPLICITLY in the study content provided
+5. Keep questions 1-4 marks, GCSE appropriate
+6. Use ONLY these question types: State, Define, Describe, Explain, Calculate (if formulas provided), Compare (if both items present)
 
-ALLOWED QUESTION TYPES (choose one):
-- State/Define/Name (recall)
-- Describe
-- Explain (one clear reason or mechanism)
-- Calculate (single-step, if method given in notes)
-- Compare (only if both items are in the notes)
+FORBIDDEN:
+- Any topic, term, or concept not explicitly in the study content
+- Experimental scenarios unless described in the notes
+- Complex multi-step questions
+- Application to contexts outside the study content
 
-OUTPUT FORMAT:
-Return as JSON:
+Return JSON:
 {
   "questions": [{
-    "question": "question text with [X marks]",
+    "question": "question text [X marks]",
     "marks": X,
     "expectedKeyPoints": ["point 1", "point 2"]
   }]
 }`;
     } else {
-      systemPrompt = `You are a GCSE chemistry teacher creating SIMPLE memory recall questions for the BLURT technique.
+      systemPrompt = `You are a GCSE Chemistry blurt question generator. Your ONLY job is to create simple recall questions from the study content provided.
 
-ABSOLUTE RULES - NO EXCEPTIONS:
-- Generate ONLY 1 question
-- Question MUST be 5-10 words maximum
-- ONLY test direct recall of facts, definitions, or terms from the study content
-- NO application, NO reasoning, NO analysis, NO comparison, NO evaluation
-- NO scenarios, NO experiments, NO problem-solving
-- NO "explain why", "justify", "evaluate", "compare experiments", "calculate"
-- The question must be answerable with a simple fact stated directly in the study notes
+ABSOLUTE REQUIREMENTS:
+1. Generate EXACTLY 1 question
+2. Question must be 5-10 words maximum
+3. Question MUST ask about a fact, term, or definition EXPLICITLY stated in the study content
+4. DO NOT mention ANY topics not in the study content (e.g., no "collision theory", "reaction rates", etc. unless in the notes)
+5. Question types ONLY: "What is...", "Define...", "State...", "Name..."
 
-YOU MUST ONLY ASK THESE TYPES:
-1. "What is [term]?" - for definitions
-2. "Define [term]" - for definitions  
-3. "State [fact]" - for simple facts
-4. "Name [things]" - for lists
-5. "What does [term] mean?" - for meanings
+FORBIDDEN:
+- Any topic not explicitly in the study content
+- Application or reasoning questions
+- Scenarios or experiments
+- Questions longer than 10 words
 
-GOOD EXAMPLES (USE THESE STYLES ONLY):
-- "What is a mole?"
-- "Define relative atomic mass."
-- "State Avogadro's constant."
-- "What does concentration mean?"
-- "Name two types of bonds."
-
-FORBIDDEN QUESTION TYPES (NEVER GENERATE):
-- Any question with experimental scenarios or data
-- Questions asking to compare, contrast, or evaluate anything
-- Questions with "Experiment 1", "Experiment 2", or any experimental setup
-- Questions asking to "justify", "critically evaluate", or "explain why"
-- Questions mentioning specific conditions (temperatures, concentrations, masses)
-- Multi-sentence questions or questions with multiple clauses
-- Application-based or problem-solving questions
-- Any question longer than 10 words
-
-EXAMPLE OF WHAT TO NEVER DO:
-"A student is investigating... Critically evaluate which experiment..." - NEVER GENERATE THIS TYPE
-
-Return as JSON:
+Return JSON:
 {
   "questions": [{
     "question": "question text",
@@ -97,14 +71,10 @@ Return as JSON:
 }`;
     }
 
-    let userPrompt = `Study Content:\n\n${studyContent}\n\nIMPORTANT: Generate a question ONLY about the content above. Do not introduce topics not mentioned in these notes.`;
+    let userPrompt = `HERE IS THE STUDY CONTENT - YOU MUST ONLY CREATE QUESTIONS FROM THIS CONTENT:\n\n${studyContent}\n\n---END OF STUDY CONTENT---\n\nCRITICAL: Generate a question using ONLY the information above. Do NOT use any topics, terms, or concepts not explicitly written in the study content above.`;
     
     if (previousQuestions.length > 0) {
-      if (questionType === 'blurt') {
-        userPrompt += `\n\nPrevious questions asked:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate a different blurt question about the SAME study content above. Pick a different fact or term from the SAME notes. Do not repeat the exact wording.`;
-      } else {
-        userPrompt += `\n\nPrevious questions asked:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate a different exam question about the SAME study content above. Stay within the SAME topic. Pick a different point or aspect from the SAME notes provided. Do not repeat the exact wording or concept.`;
-      }
+      userPrompt += `\n\nPrevious questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate a different question about a different point from the SAME study content above. Stay within the same topic.`;
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -119,7 +89,7 @@ Return as JSON:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: questionType === 'exam' ? 0.4 : 0.2, // Lower temperature for both; reduce creativity for exam
+        temperature: 0.3,
         response_format: { type: "json_object" }
       }),
     });
