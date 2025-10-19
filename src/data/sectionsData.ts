@@ -6812,6 +6812,756 @@ H—N—H</pre>
           "whole numbers", "stoichiometry", "calculation", "method"
         ],
         practice_items: []
+      },
+      {
+        id: "3-3-1-limiting-reactants",
+        title: "3.3.1 LIMITING REACTANTS",
+        type: "content",
+        study_group: 6,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – What Is a Limiting Reactant?</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>In a chemical reaction, the limiting reactant is the reactant that is completely used up first, which stops the reaction from continuing.</p>
+    <p>Once the limiting reactant is gone, the reaction cannot produce any more product, even if other reactants remain.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <ul>
+      <li>The amount of product formed is directly proportional to the amount of limiting reactant.</li>
+      <li>The excess reactant is left over and does not affect how much product is formed.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Identifying the Limiting Reactant</h3>
+  
+  <div class="key-facts-block">
+    <h4>🔢 Method</h4>
+    <ol>
+      <li>Write a balanced equation.</li>
+      <li>Calculate the moles of each reactant using n = m / M<sub>r</sub></li>
+      <li>Use the mole ratio from the equation to see which reactant would run out first.</li>
+      <li>The reactant that runs out first = limiting reactant.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Simple Mole Ratio</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+    
+    <p><strong>If you have:</strong></p>
+    <ul>
+      <li>4 mol H₂</li>
+      <li>2 mol O₂</li>
+    </ul>
+    
+    <p>Ratio needed = 2 : 1</p>
+    <p>Actual ratio = 4 : 2 → matches perfectly ✅ → no limiting reactant (both used completely).</p>
+    
+    <p><strong>Now suppose:</strong></p>
+    <ul>
+      <li>5 mol H₂</li>
+      <li>2 mol O₂</li>
+    </ul>
+    
+    <p>Ratio needed = 2 : 1 → 2 mol H₂ needs 1 mol O₂. For 5 mol H₂, you need 2.5 mol O₂, but only have 2 mol O₂.</p>
+    <p><strong>✅ O₂ is the limiting reactant because it runs out first.</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 2 – Using Masses</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">Mg + 2 HCl → MgCl₂ + H₂</p>
+    
+    <p><strong>Given:</strong> 6.0 g Mg, 10.0 g HCl</p>
+    
+    <p><strong>Step 1: Convert to moles</strong></p>
+    <p>n(Mg) = 6.0 ÷ 24 = 0.25 mol</p>
+    <p>n(HCl) = 10.0 ÷ 36.5 = 0.274 mol</p>
+    
+    <p><strong>Step 2: Ratio required = 1 : 2</strong></p>
+    <p>To react with 0.25 mol Mg, we need 0.50 mol HCl — but we only have 0.274 mol.</p>
+    
+    <p><strong>✅ HCl is the limiting reactant</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Calculating Product from the Limiting Reactant</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>Once you've found the limiting reactant, you can calculate the maximum mass of product that can be made.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🔢 Method Summary</h4>
+    <ol>
+      <li>Find moles of each reactant.</li>
+      <li>Identify limiting reactant using the mole ratio.</li>
+      <li>Use the limiting reactant to find moles of product using the equation ratio.</li>
+      <li>Convert moles → mass using m = n × M<sub>r</sub>.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example – Magnesium and Hydrochloric Acid</h4>
+    <p class="equation">Mg + 2 HCl → MgCl₂ + H₂</p>
+    
+    <p><strong>Given:</strong></p>
+    <ul>
+      <li>0.25 mol Mg</li>
+      <li>0.30 mol HCl</li>
+    </ul>
+    
+    <p><strong>Ratio = 1 : 2</strong></p>
+    <p>To react with 0.25 mol Mg → need 0.50 mol HCl → only have 0.30 mol → HCl is limiting.</p>
+    
+    <p><strong>Step 1: Ratio HCl : H₂ = 2 : 1</strong></p>
+    <p>So, 0.30 mol HCl produces:</p>
+    <p>0.30 ÷ 2 = 0.15 mol H₂</p>
+    
+    <p><strong>Step 2: Convert to mass</strong></p>
+    <p>m = n × M<sub>r</sub> = 0.15 × 2 = 0.30 g of H₂</p>
+    
+    <p><strong>✅ Maximum mass of hydrogen gas = 0.30 g</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Understanding Excess Reactants</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The excess reactant is the one still left after the limiting reactant is fully used.</p>
+    <p>It can be calculated by comparing moles used vs. moles available.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>Only the limiting reactant controls the yield of product.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Common Exam Questions</h3>
+  
+  <div class="exam-tip-block">
+    <h4>🧠 Exam Tips</h4>
+    <ul>
+      <li><strong>Q1 – Which reactant is limiting?</strong></li>
+      <li>✅ Always compare mole ratio in equation vs. actual ratio.</li>
+      <li><strong>Q2 – What mass of product forms?</strong></li>
+      <li>✅ Use the limiting reactant → find product moles → convert to mass.</li>
+      <li><strong>Q3 – How much excess reactant remains?</strong></li>
+      <li>✅ Calculate moles used, subtract from moles available.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Worked Example (Full Calculation)</h3>
+  
+  <div class="example-block">
+    <h4>🟢 Complete Example</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+    
+    <p><strong>Given:</strong></p>
+    <ul>
+      <li>8.0 g H₂ (M<sub>r</sub> = 2)</li>
+      <li>32.0 g O₂ (M<sub>r</sub> = 32)</li>
+    </ul>
+    
+    <p><strong>Step 1: Moles of each</strong></p>
+    <p>n(H₂) = 8 ÷ 2 = 4.0 mol</p>
+    <p>n(O₂) = 32 ÷ 32 = 1.0 mol</p>
+    
+    <p><strong>Step 2: Ratio required = 2 : 1</strong></p>
+    <p>Actual ratio = 4 : 1 → O₂ limiting.</p>
+    
+    <p><strong>Step 3: Moles of H₂O formed = 2 × 1 = 2 mol.</strong></p>
+    
+    <p><strong>Step 4: Mass of H₂O = 2 × 18 = 36 g.</strong></p>
+    
+    <p><strong>✅ Maximum yield = 36 g water</strong></p>
+    <p><strong>✅ Oxygen = limiting reactant</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Real-Life Connection</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Industrial Applications</h4>
+    <p>In industrial reactions:</p>
+    <ul>
+      <li>Limiting reactants are chosen carefully to avoid waste.</li>
+      <li>The cheaper reactant is often used in excess, so the more expensive reactant is fully reacted for maximum yield.</li>
+    </ul>
+    <p><strong>Example:</strong> In the Haber process (N₂ + 3H₂ → 2NH₃), nitrogen is usually in excess, so hydrogen becomes the limiting reactant.</p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "limiting reactant", "excess reactant", "mole ratio", "product yield", "calculation",
+          "mass", "used up", "runs out", "maximum yield", "stoichiometry"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-3-2-atom-economy",
+        title: "3.3.2 ATOM ECONOMY",
+        type: "content",
+        study_group: 7,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – What Is Atom Economy?</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The atom economy of a reaction is the measure of how efficiently atoms are used to make the desired product.</p>
+    <p>It compares the total mass of useful products to the total mass of all products.</p>
+    <p class="formula">Atom Economy = (M<sub>r</sub> of desired product × 100) / (Sum of M<sub>r</sub> of all products)</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <ul>
+      <li>High atom economy → fewer atoms wasted → more efficient reaction.</li>
+      <li>Low atom economy → many atoms form unwanted by-products → wasteful and expensive.</li>
+    </ul>
+    <p><strong>💡 Atom economy is always calculated from the balanced equation using formula masses (M<sub>r</sub> values), not from actual experimental data.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Why Atom Economy Is Important</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Importance</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Reason</th>
+          <th>Explanation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Economic</td>
+          <td>High atom economy = less waste, less cost.</td>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>Less waste → less pollution and disposal issues.</td>
+        </tr>
+        <tr>
+          <td>Sustainability</td>
+          <td>Conserves limited natural resources.</td>
+        </tr>
+        <tr>
+          <td>Efficiency</td>
+          <td>Maximises useful output, improves green chemistry.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 Reactions with 100% atom economy are ideal because all atoms from reactants form the desired product.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Calculating Atom Economy</h3>
+  
+  <div class="example-block">
+    <h4>💡 Example 1 – Simple Reaction</h4>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+    
+    <p><strong>Step 1: Identify desired product → H₂O</strong></p>
+    
+    <p><strong>Step 2: Calculate M<sub>r</sub> values</strong></p>
+    <ul>
+      <li>H₂ = 2</li>
+      <li>O₂ = 32</li>
+      <li>H₂O = 18</li>
+    </ul>
+    
+    <p><strong>Step 3:</strong></p>
+    <p>Total M<sub>r</sub> of desired products = 2 × 18 = 36</p>
+    <p>Total M<sub>r</sub> of all products = 36</p>
+    
+    <p>Atom Economy = 36 × 100 = 100%</p>
+    <p><strong>✅ 100% atom economy (no waste — all atoms form water).</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Reaction Producing a By-Product</h4>
+    <p class="equation">C₂H₄ + H₂O → C₂H₆O</p>
+    <p><strong>✅ Atom economy = 100% (one product only).</strong></p>
+    
+    <p>But now consider:</p>
+    <p class="equation">C₂H₄ + Cl₂ → C₂H₄Cl₂</p>
+    <p>Still 100%, since one product forms.</p>
+    
+    <p><strong>🧠 So atom economy is only <100% if unwanted products are formed.</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 3 – Reaction with Waste Product</h4>
+    <p class="equation">Na₂CO₃ + 2 HCl → 2 NaCl + H₂O + CO₂</p>
+    
+    <p><strong>Desired product: NaCl</strong></p>
+    
+    <p><strong>Total M<sub>r</sub> (products):</strong></p>
+    <table class="data-table">
+      <tbody>
+        <tr>
+          <td>2NaCl</td>
+          <td>2 × 58.5 = 117</td>
+        </tr>
+        <tr>
+          <td>H₂O</td>
+          <td>18</td>
+        </tr>
+        <tr>
+          <td>CO₂</td>
+          <td>44</td>
+        </tr>
+        <tr>
+          <td><strong>Total</strong></td>
+          <td><strong>179</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p>Atom Economy = 117 × 100 / 179 = 65.4%</p>
+    
+    <p><strong>✅ Atom economy = 65.4% → the other 34.6% of atoms become waste (H₂O and CO₂).</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Interpreting Atom Economy</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Atom Economy Guide</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Atom Economy</th>
+          <th>Description</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>100%</td>
+          <td>All atoms in reactants become product</td>
+          <td>Hydrogen + oxygen → water</td>
+        </tr>
+        <tr>
+          <td>High (70–99%)</td>
+          <td>Efficient, little waste</td>
+          <td>Industrial synthesis, addition reactions</td>
+        </tr>
+        <tr>
+          <td>Low (<70%)</td>
+          <td>Inefficient, lots of by-products</td>
+          <td>Substitution or neutralisation reactions</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 Addition reactions tend to have 100% atom economy; substitution and neutralisation reactions do not.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Improving Atom Economy</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Strategies</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Strategy</th>
+          <th>Explanation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Use reactions with fewer by-products</td>
+          <td>e.g. addition reactions instead of substitution.</td>
+        </tr>
+        <tr>
+          <td>Find uses for waste products</td>
+          <td>Sell or reuse waste to improve overall efficiency.</td>
+        </tr>
+        <tr>
+          <td>Design better catalysts</td>
+          <td>Helps direct the reaction to produce desired products only.</td>
+        </tr>
+        <tr>
+          <td>Change reaction conditions</td>
+          <td>Adjust temperature or pressure to improve product yield.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Difference Between Atom Economy and Percentage Yield</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Comparison</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Concept</th>
+          <th>Definition</th>
+          <th>Depends On</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Atom Economy</td>
+          <td>How efficiently atoms are used</td>
+          <td>Balanced equation</td>
+          <td>Adds up M<sub>r</sub> values</td>
+        </tr>
+        <tr>
+          <td>Percentage Yield</td>
+          <td>How much product you actually get</td>
+          <td>Experimental results</td>
+          <td>Depends on losses and side reactions</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Example:</strong> A reaction could have 100% atom economy but 50% yield if half the product was lost during extraction.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Exam-Style Example</h3>
+  
+  <div class="example-block">
+    <h4>🟢 Question</h4>
+    <p><strong>Ethanol (C₂H₆O) can be made by two methods:</strong></p>
+    
+    <p><strong>1. Fermentation:</strong></p>
+    <p class="equation">C₆H₁₂O₆ → 2 C₂H₆O + 2 CO₂</p>
+    
+    <p><strong>2. Hydration of ethene:</strong></p>
+    <p class="equation">C₂H₄ + H₂O → C₂H₆O</p>
+    
+    <p><strong>Which has the higher atom economy?</strong></p>
+    
+    <p><strong>Step 1: Fermentation:</strong></p>
+    <p>M<sub>r</sub> (desired) = 2 × 46 = 92</p>
+    <p>Total M<sub>r</sub> (products) = 92 + (2 × 44) = 180</p>
+    <p>Atom economy = 92 × 100 / 180 = 51.1%</p>
+    
+    <p><strong>Step 2: Hydration:</strong></p>
+    <p>Atom economy = 46 × 100 / 46 = 100%</p>
+    
+    <p><strong>✅ Answer: Hydration of ethene → 100% atom economy → more efficient and sustainable.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 8 – Environmental Importance</h3>
+  
+  <div class="key-facts-block">
+    <h4>🌍 Green Chemistry</h4>
+    <p>High atom economy reactions are vital for green chemistry because they:</p>
+    <ul>
+      <li>Reduce waste production</li>
+      <li>Lower costs of raw materials and waste disposal</li>
+      <li>Reduce energy consumption</li>
+      <li>Use fewer non-renewable resources</li>
+    </ul>
+    <p><strong>🧠 Modern chemical industries aim for both high yield and high atom economy.</strong></p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "atom economy", "efficiency", "waste", "by-products", "desired product",
+          "Mr", "percentage", "green chemistry", "sustainable", "calculation"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-3-3-concentration-solutions",
+        title: "3.3.3 CONCENTRATION OF SOLUTIONS",
+        type: "content",
+        study_group: 8,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – What Is Concentration?</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The concentration of a solution tells you how much solute (solid, liquid, or gas) is dissolved in a given volume of solvent.</p>
+    <p><strong>🧠 In simpler words:</strong> How much stuff is in a given amount of liquid.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Units of Concentration</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Formula</th>
+          <th>Units</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mass concentration</td>
+          <td>c = mass of solute (g) / volume of solution (dm³)</td>
+          <td>g/dm³</td>
+          <td>10 g NaCl in 1 dm³ → 10 g/dm³</td>
+        </tr>
+        <tr>
+          <td>Molar concentration</td>
+          <td>c = moles of solute (mol) / volume of solution (dm³)</td>
+          <td>mol/dm³</td>
+          <td>0.5 mol HCl in 1 dm³ → 0.5 mol/dm³</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Conversion Between Units</h4>
+    <p>To convert between the two:</p>
+    <p class="formula">c (mol/dm³) = c (g/dm³) / M<sub>r</sub> of solute</p>
+    <p class="formula">c (g/dm³) = c (mol/dm³) × M<sub>r</sub> of solute</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Calculating Mass or Moles in Solutions</h3>
+  
+  <div class="key-facts-block">
+    <h4>🔢 Formulae Summary</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>To Find</th>
+          <th>Formula</th>
+          <th>Units</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mass (g)</td>
+          <td>m = c × V</td>
+          <td>g, dm³</td>
+        </tr>
+        <tr>
+          <td>Moles (mol)</td>
+          <td>n = c × V</td>
+          <td>mol, dm³</td>
+        </tr>
+        <tr>
+          <td>Concentration (mol/dm³)</td>
+          <td>c = n / V</td>
+          <td>mol, dm³</td>
+        </tr>
+        <tr>
+          <td>Concentration (g/dm³)</td>
+          <td>c = m / V</td>
+          <td>g, dm³</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 Always convert volume into dm³ before using these equations (1 dm³ = 1000 cm³ = 1 L).</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Worked Examples</h3>
+  
+  <div class="example-block">
+    <h4>💎 Example 1 – Find Concentration (g/dm³)</h4>
+    <p><strong>A solution contains 5.0 g of sodium chloride dissolved in 0.25 dm³ of water. Find its concentration in g/dm³.</strong></p>
+    
+    <p>c = m / V = 5.0 / 0.25 = 20 g/dm³</p>
+    
+    <p><strong>✅ Answer: 20 g/dm³</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>💎 Example 2 – Convert to mol/dm³</h4>
+    <p><strong>NaCl has an M<sub>r</sub> = 58.5.</strong></p>
+    <p>c (mol/dm³) = 20 / 58.5 = 0.34 mol/dm³</p>
+    
+    <p><strong>✅ Answer: 0.34 mol/dm³</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 3 – Find Moles in a Solution</h4>
+    <p><strong>A 250 cm³ (0.25 dm³) solution of sulfuric acid (H₂SO₄) has a concentration of 0.2 mol/dm³. Find the number of moles of acid present.</strong></p>
+    
+    <p>n = c × V = 0.2 × 0.25 = 0.05 mol</p>
+    
+    <p><strong>✅ Answer: 0.05 mol H₂SO₄</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 4 – Find Mass in Solution</h4>
+    <p><strong>A 0.1 mol/dm³ solution of potassium hydroxide (KOH) has a volume of 0.5 dm³. Find the mass of KOH in the solution (M<sub>r</sub> = 56).</strong></p>
+    
+    <p>n = c × V = 0.1 × 0.5 = 0.05</p>
+    <p>m = n × M<sub>r</sub> = 0.05 × 56 = 2.8 g</p>
+    
+    <p><strong>✅ Answer: 2.8 g of KOH</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Interpreting Graphs and Tables</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Points</h4>
+    <p>You may see questions showing volume and concentration data. Remember:</p>
+    <ul>
+      <li>Concentration is directly proportional to the amount of solute.</li>
+      <li>Doubling concentration doubles the number of moles per dm³.</li>
+    </ul>
+  </div>
+
+  <div class="exam-tip-block">
+    <h4>🧠 Exam Tip</h4>
+    <p>If the same solute is dissolved in a smaller volume, the concentration increases.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example</h4>
+    <p><strong>10 g NaCl in:</strong></p>
+    <ul>
+      <li>1 dm³ → 10 g/dm³</li>
+      <li>0.5 dm³ → 20 g/dm³</li>
+    </ul>
+    <p><strong>✅ Halving the volume doubles the concentration.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Conversion Between cm³ and dm³</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Volume Conversion</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>dm³</th>
+          <th>cm³</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1 dm³</td>
+          <td>1000 cm³</td>
+        </tr>
+        <tr>
+          <td>0.25 dm³</td>
+          <td>250 cm³</td>
+        </tr>
+        <tr>
+          <td>0.025 dm³</td>
+          <td>25 cm³</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 AQA often gives you cm³. Always convert before using concentration formulas.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Practical Relevance</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Applications</h4>
+    <p>Concentration is measured in:</p>
+    <ul>
+      <li>Titrations (to find unknown concentrations).</li>
+      <li>Medicine (drug strength in mol/dm³).</li>
+      <li>Environmental testing (pollutants in water).</li>
+      <li>Food chemistry (salt or acid levels in products).</li>
+    </ul>
+    <p><strong>🧠 Concentration links to reaction rates and product yield.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Common Exam Mistakes</h3>
+  
+  <div class="warning-block">
+    <h4>⚡ Common Mistakes</h4>
+    <ul>
+      <li>❌ Forgetting to convert cm³ → dm³ (divide by 1000).</li>
+      <li>❌ Mixing up g/dm³ and mol/dm³.</li>
+      <li>❌ Using M<sub>r</sub> instead of A<sub>r</sub> or vice versa.</li>
+      <li>❌ Forgetting to show units in the final answer.</li>
+    </ul>
+    <p><strong>✅ Always state final answer with correct unit (mol/dm³ or g/dm³).</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 8 – Summary Table</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Quick Reference</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Concept</th>
+          <th>Formula</th>
+          <th>Units</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Concentration (mass)</td>
+          <td>c = m / V</td>
+          <td>g/dm³</td>
+        </tr>
+        <tr>
+          <td>Concentration (moles)</td>
+          <td>c = n / V</td>
+          <td>mol/dm³</td>
+        </tr>
+        <tr>
+          <td>Moles from concentration</td>
+          <td>n = c × V</td>
+          <td>mol</td>
+        </tr>
+        <tr>
+          <td>Mass from concentration</td>
+          <td>m = c × V</td>
+          <td>g</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "concentration", "solution", "solute", "solvent", "mol/dm³", "g/dm³",
+          "moles", "mass", "volume", "dm³", "cm³", "conversion", "calculation"
+        ],
+        practice_items: []
       }
     ]
   },
