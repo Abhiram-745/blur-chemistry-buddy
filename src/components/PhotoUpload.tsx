@@ -106,13 +106,14 @@ export const PhotoUpload = ({ studyContent, questions, currentQuestion, topicId,
 
     setIsAnalyzing(true);
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-photo-answer', {
-        body: {
-          imageBase64: previewUrl,
-          studyContent,
-          questions
-        }
-      });
+    const { data, error } = await supabase.functions.invoke('analyze-photo-answer', {
+      body: {
+        imageBase64: previewUrl,
+        studyContent,
+        questions,
+        maxMarks: marks
+      }
+    });
 
       if (error) throw error;
 

@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageBase64, studyContent, questions } = await req.json();
+    const { imageBase64, studyContent, questions, maxMarks } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -32,22 +32,27 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are a supportive GCSE teacher analyzing a student's handwritten answers to blurting questions. 
-            
+            content: `You are a supportive GCSE chemistry teacher analyzing a student's handwritten answers to practice questions. 
+
 Your task:
 1. First, transcribe EXACTLY what the student wrote (word for word, including any mistakes or unclear writing)
 2. Compare their answer against the study content and questions provided
-3. Identify key ideas they covered and key ideas they missed
-4. Provide specific, constructive feedback
+3. Calculate a numeric score based on:
+   - Accuracy of concepts mentioned
+   - Completeness of the answer
+   - Understanding demonstrated
+4. Award marks fairly - give credit for correct concepts even if worded differently
+5. Identify key ideas they covered and key ideas they missed
+6. Provide specific, constructive feedback
 
-Be encouraging but honest. Point out specific concepts they understood well and areas needing improvement.`
+Be encouraging but honest. Award appropriate marks based on the quality and correctness of the answer.`
           },
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: `Study Content:\n${studyContent}\n\nQuestions Asked:\n${questions.join('\n')}\n\nPlease analyze the student's handwritten answers in the image.`
+                text: `Study Content:\n${studyContent}\n\nQuestions Asked:\n${questions.join('\n')}\n\nMaximum Marks Available: ${maxMarks}\n\nPlease analyze the student's handwritten answers in the image and award a score out of ${maxMarks} marks.`
               },
               {
                 type: 'image_url',
@@ -71,6 +76,10 @@ Be encouraging but honest. Point out specific concepts they understood well and 
                     type: "string",
                     description: "The exact text transcribed from the student's handwritten answer"
                   },
+                  score: {
+                    type: "number",
+                    description: "Numeric score awarded (0 to max marks) based on correctness and completeness"
+                  },
                   keyIdeasCovered: {
                     type: "array",
                     items: { type: "string" },
@@ -86,7 +95,7 @@ Be encouraging but honest. Point out specific concepts they understood well and 
                     description: "Detailed feedback on the student's answer"
                   }
                 },
-                required: ["extractedText", "keyIdeasCovered", "keyIdeasMissed", "feedbackText"],
+                required: ["extractedText", "score", "keyIdeasCovered", "keyIdeasMissed", "feedbackText"],
                 additionalProperties: false
               }
             }
@@ -110,6 +119,13 @@ Be encouraging but honest. Point out specific concepts they understood well and 
     }
 
     const result = JSON.parse(toolCall.function.arguments);
+
+    console.log('Analysis complete:', {
+      score: result.score,
+      maxMarks,
+      keyIdeasCovered: result.keyIdeasCovered?.length,
+      keyIdeasMissed: result.keyIdeasMissed?.length
+    });
 
     return new Response(
       JSON.stringify(result),
