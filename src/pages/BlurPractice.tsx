@@ -187,8 +187,13 @@ const BlurPractice = () => {
     if (state?.moveToNext) {
       console.log("Move to next requested, setting pending", { 
         internalLen: internalSubsections.length, 
-        pairLen: currentPairSubsections.length 
+        pairLen: currentPairSubsections.length,
+        stateCurrentPairIndex: state.currentPairIndex
       });
+      // Restore the current pair index from navigation state
+      if (typeof state.currentPairIndex === 'number') {
+        setCurrentPairIndex(state.currentPairIndex);
+      }
       // Preserve question type if provided
       if (state.keepType) {
         setQuestionType(state.keepType);
@@ -606,6 +611,7 @@ const BlurPractice = () => {
           subsectionId,
           subsectionTitle: currentPairSubsections.map(s => s.title).join(', '),
           questionType,
+          currentPairIndex, // Pass current pair index
           previousQuestionResults: questionResults // Preserve question history
         },
         replace: true // Force page refresh

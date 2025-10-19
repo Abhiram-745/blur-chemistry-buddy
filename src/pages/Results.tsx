@@ -19,6 +19,7 @@ interface FeedbackState {
   subsectionTitle: string;
   questionType: "blurt" | "exam";
   photoImage?: string;
+  currentPairIndex?: number; // Track current pair
   previousQuestionResults?: any[]; // Preserve question history
 }
 
@@ -32,7 +33,7 @@ const Results = () => {
     return null;
   }
 
-  const { question, answer, keyIdeasCovered, keyIdeasMissed, score, maxMarks, topicId, subsectionId, subsectionTitle, questionType, photoImage, feedbackText, previousQuestionResults } = feedbackData;
+  const { question, answer, keyIdeasCovered, keyIdeasMissed, score, maxMarks, topicId, subsectionId, subsectionTitle, questionType, photoImage, feedbackText, currentPairIndex, previousQuestionResults } = feedbackData;
   const percentage = Math.round((score / maxMarks) * 100);
 
   // Save practice session to database
@@ -190,7 +191,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { moveToNext: true, keepType: questionType } 
+              state: { moveToNext: true, keepType: questionType, currentPairIndex } 
             })}
           >
             <BookOpen className="mr-2 h-5 w-5" />
