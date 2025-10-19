@@ -22,37 +22,31 @@ serve(async (req) => {
     let systemPrompt = '';
     
     if (questionType === 'exam') {
-      systemPrompt = `You are an AQA GCSE Chemistry examiner creating exam questions for GCSE level students.
+      systemPrompt = `You are an AQA GCSE Chemistry examiner writing questions STRICTLY aligned to the AQA GCSE Chemistry specification and the provided study notes.
 
-CRITICAL RULES:
-- Generate ONLY 1 question based DIRECTLY on the study content provided
-- Questions MUST be appropriate for GCSE level (NOT A-level or university level)
-- Questions MUST test content that appears in the study notes
-- Keep questions at 1-6 marks
-- DO NOT ask about experimental design, practical methods, or procedures UNLESS they are explicitly covered in the study content
-- Focus on: recall, describe, explain, calculate, compare (using content from notes)
-- Questions can ask to: define terms, state facts, explain concepts, do calculations, compare/contrast (all from the notes)
+NON-NEGOTIABLE RULES:
+- Generate ONLY 1 question
+- Base it DIRECTLY and EXCLUSIVELY on the study content (use its exact terminology)
+- 1–4 marks preferred (max 6), concise stem
+- DO NOT invent scenarios, experiments, or data unless they appear in the notes
+- NO "Experiment 1/2", "critically evaluate", "justify", "suggest", or open investigations
+- Keep GCSE level; avoid A-level complexity
+- If calculation is asked, only use formulas/methods explicitly present in the notes
 
-QUESTION TYPES (choose one):
-- Recall: "What is...?", "Define...", "State..."
-- Explain: "Explain why...", "Explain how..."
-- Calculate: "Calculate the..." (only if calculation methods are in the notes)
-- Compare: "Compare X and Y", "What is the difference between..."
-- Describe: "Describe the..."
+ALLOWED QUESTION TYPES (choose one):
+- State/Define/Name (recall)
+- Describe
+- Explain (one clear reason or mechanism)
+- Calculate (single-step, if method given in notes)
+- Compare (only if both items are in the notes)
 
-AVOID:
-- Complex multi-part experimental design questions
-- Content not in the study notes
-- A-level or university-level complexity
-- Asking students to "suggest methods" or "design experiments" unless explicitly taught
-- Questions requiring knowledge beyond what's in the provided content
-
-Return as JSON: 
+OUTPUT FORMAT:
+Return as JSON:
 {
   "questions": [{
     "question": "question text with [X marks]",
     "marks": X,
-    "expectedKeyPoints": ["point 1", "point 2", ...]
+    "expectedKeyPoints": ["point 1", "point 2"]
   }]
 }`;
     } else {
@@ -106,19 +100,11 @@ Return as JSON:
     let userPrompt = `Study Content:\n\n${studyContent}`;
     
     if (previousQuestions.length > 0) {
-      userPrompt += `\n\nCRITICAL: You have ALREADY asked these questions:
-${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}
-
-DO NOT:
-- Ask about the same topics or concepts
-- Use similar wording or question structure
-- Test the same knowledge areas
-
-INSTEAD:
-- Focus on completely different aspects of the content
-- Use different command words and question styles
-- Test different levels (if previous was recall, now do explanation/application)
-- Use different question formats (if previous was short answer, now try multi-part)`;
+      if (questionType === 'blurt') {
+        userPrompt += `\n\nYou have ALREADY asked these blurt questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nDo NOT repeat the same fact or wording.\nPick a different short fact/term directly from the study content.\nKeep it a single 5–10 word recall question with no scenarios or calculations.`;
+      } else {
+        userPrompt += `\n\nYou have ALREADY asked these exam questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nConstraints:\n- Do NOT repeat the same subtopic or wording\n- Select a different point from the same study content\n- Stay within allowed GCSE types; 1–4 marks; no invented scenarios or multi-part unless the notes explicitly present them`;
+      }
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -133,7 +119,7 @@ INSTEAD:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: questionType === 'exam' ? 0.9 : 0.3, // Lower temperature for blurt = more consistent simple questions
+        temperature: questionType === 'exam' ? 0.4 : 0.2, // Lower temperature for both; reduce creativity for exam
         response_format: { type: "json_object" }
       }),
     });
