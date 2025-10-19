@@ -5656,8 +5656,507 @@ H—N—H</pre>
   {
     id: "quantitative-chemistry",
     title: "Quantitative chemistry",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "3-1-1-conservation-mass",
+        title: "3.1.1 CONSERVATION OF MASS AND BALANCED CHEMICAL EQUATIONS",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – Law of Conservation of Mass</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The law of conservation of mass states that no atoms are lost or made during a chemical reaction — they are simply rearranged.</p>
+    <p>This means the total mass of reactants = total mass of products.</p>
+    <p class="formula"><strong>Mass of reactants = Mass of products</strong></p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <ul>
+      <li>Atoms cannot be created or destroyed, so the total number of each type of atom must be the same on both sides of the equation.</li>
+    </ul>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example</h4>
+    <p><strong>Magnesium + Oxygen → Magnesium oxide</strong></p>
+    <p class="equation">2 Mg + O₂ → 2 MgO</p>
+    
+    <p><strong>Mass check:</strong></p>
+    <ul>
+      <li>2 × 24 (Mg) = 48 g</li>
+      <li>1 × 32 (O₂) = 32 g</li>
+    </ul>
+    <p>Total = 80 g reactants → 80 g product ✅</p>
+    <p><strong>Mass is conserved because the same number of each atom exists before and after the reaction.</strong></p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Why Conservation of Mass Is True</h4>
+    <ul>
+      <li>Atoms are indivisible in chemical reactions.</li>
+      <li>All atoms in the reactants become part of the products.</li>
+      <li>The apparent change in mass sometimes occurs when gases are involved (explained next section).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Balanced Chemical Equations</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 What a Balanced Equation Shows</h4>
+    <p>The number of atoms of each element on the left (reactants) and right (products) must be equal.</p>
+    <p>Balanced equations represent the ratio in which substances react — not necessarily actual masses.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Steps to Balance an Equation</h4>
+    <ol>
+      <li>Write down the symbols for each element.</li>
+      <li>Count the number of atoms on both sides.</li>
+      <li>Add coefficients (big numbers) to balance atoms.</li>
+      <li>Never change small numbers in formulas — that changes the substance!</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 1 – Simple</h4>
+    <p class="equation">H₂ + O₂ → H₂O</p>
+    <p><strong>Not balanced:</strong></p>
+    <table class="data-table">
+      <tbody>
+        <tr>
+          <td>Left:</td>
+          <td>2H, 2O</td>
+        </tr>
+        <tr>
+          <td>Right:</td>
+          <td>2H, 1O</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p><strong>✅ Balanced:</strong></p>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 2 – Metal Reaction</h4>
+    <p class="equation">Fe + O₂ → Fe₂O₃</p>
+    <p><strong>Not balanced:</strong> Fe = 1 vs 2, O = 2 vs 3</p>
+    
+    <p><strong>✅ Balanced:</strong></p>
+    <p class="equation">4 Fe + 3 O₂ → 2 Fe₂O₃</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Points</h4>
+    <ul>
+      <li>Big numbers in front multiply everything in the formula.</li>
+      <li>Small numbers after an element only multiply that element.</li>
+      <li>Check each element carefully before moving to the next.</li>
+    </ul>
+  </div>
+
+  <div class="exam-tip-block">
+    <h4>🧠 Why Balancing Is Important</h4>
+    <p>Balanced equations show the correct ratio of reactants and products.</p>
+    <p>They are used to calculate reacting masses, moles, and yields later in the topic.</p>
+    <p><strong>AQA exam tip:</strong> You will always lose marks if you fail to balance equations before doing any quantitative calculation!</p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "conservation of mass", "law", "atoms", "rearranged", "reactants", "products",
+          "balanced equation", "coefficients", "ratio", "chemical reaction", "mass conserved"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-1-2-relative-formula-mass",
+        title: "3.1.2 RELATIVE FORMULA MASS (Mr)",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – Definition of Relative Formula Mass</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The relative formula mass (M<sub>r</sub>) of a substance is the sum of all the relative atomic masses (A<sub>r</sub>) of the atoms shown in its formula.</p>
+    <p><strong>In simple terms:</strong> Add up all the atomic masses of the atoms in one molecule or formula unit.</p>
+    <p class="formula">M<sub>r</sub> = ∑ A<sub>r</sub> (all atoms in formula)</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Sodium Chloride (NaCl)</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>A<sub>r</sub></th>
+          <th>Number of Atoms</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Na</td>
+          <td>23</td>
+          <td>1</td>
+          <td>23</td>
+        </tr>
+        <tr>
+          <td>Cl</td>
+          <td>35.5</td>
+          <td>1</td>
+          <td>35.5</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>M<sub>r</sub> = 23 + 35.5 = 58.5</p>
+    <p><strong>✅ Relative formula mass of NaCl = 58.5</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Carbon Dioxide (CO₂)</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>A<sub>r</sub></th>
+          <th>Number of Atoms</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C</td>
+          <td>12</td>
+          <td>1</td>
+          <td>12</td>
+        </tr>
+        <tr>
+          <td>O</td>
+          <td>16</td>
+          <td>2</td>
+          <td>32</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>M<sub>r</sub> = 12 + 32 = 44</p>
+    <p><strong>✅ M<sub>r</sub> of CO₂ = 44</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 3 – Glucose (C₆H₁₂O₆)</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Atomic Mass (A<sub>r</sub>)</th>
+          <th>Number of Atoms</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C</td>
+          <td>12</td>
+          <td>6</td>
+          <td>72</td>
+        </tr>
+        <tr>
+          <td>H</td>
+          <td>1</td>
+          <td>12</td>
+          <td>12</td>
+        </tr>
+        <tr>
+          <td>O</td>
+          <td>16</td>
+          <td>6</td>
+          <td>96</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>M<sub>r</sub> = 72 + 12 + 96 = 180</p>
+    <p><strong>✅ M<sub>r</sub> of glucose = 180</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – How to Calculate Mr Step-by-Step</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Method</h4>
+    <ol>
+      <li>Write the formula of the compound.</li>
+      <li>Identify the number of each atom.</li>
+      <li>Multiply each element's A<sub>r</sub> by the number of atoms.</li>
+      <li>Add all totals together.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example – Calcium Carbonate (CaCO₃)</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Atomic Mass (A<sub>r</sub>)</th>
+          <th>Number of Atoms</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Ca</td>
+          <td>40</td>
+          <td>1</td>
+          <td>40</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td>12</td>
+          <td>1</td>
+          <td>12</td>
+        </tr>
+        <tr>
+          <td>O</td>
+          <td>16</td>
+          <td>3</td>
+          <td>48</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>M<sub>r</sub> = 40 + 12 + 48 = 100</p>
+    <p><strong>✅ M<sub>r</sub> of CaCO₃ = 100</strong></p>
+  </div>
+
+  <div class="warning-block">
+    <h4>⚡ Common Mistakes to Avoid</h4>
+    <ul>
+      <li>🔸 Forgetting to multiply by the number of atoms in brackets, e.g. (OH)₂ → 2 × (O + H).</li>
+      <li>🔸 Using incorrect A<sub>r</sub> values — always use those from the periodic table.</li>
+      <li>🔸 Confusing A<sub>r</sub> (atomic) with M<sub>r</sub> (formula).</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Relative Atomic Mass (Ar) Recap</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>The relative atomic mass (A<sub>r</sub>) of an element is the average mass of its atoms compared with 1/12th the mass of a carbon-12 atom.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🧠 Example</h4>
+    <ul>
+      <li>A<sub>r</sub> of carbon = 12</li>
+      <li>A<sub>r</sub> of hydrogen = 1</li>
+      <li>A<sub>r</sub> of chlorine = 35.5 (average of isotopes Cl-35 and Cl-37)</li>
+    </ul>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Relation Between Ar and Mr</h4>
+    <ul>
+      <li>A<sub>r</sub> = relative atomic mass of one atom.</li>
+      <li>M<sub>r</sub> = total of all A<sub>r</sub> values in the formula.</li>
+    </ul>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "relative formula mass", "Mr", "relative atomic mass", "Ar", "sum", "atoms",
+          "formula", "periodic table", "calculate", "compound"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-1-3-mass-changes-gas",
+        title: "3.1.3 MASS CHANGES WHEN A REACTANT OR PRODUCT IS A GAS",
+        type: "content",
+        study_group: 2,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – Why Mass Sometimes Appears to Change</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>In some reactions, the total mass seems to change, but this is only because a gas has either:</p>
+    <ul>
+      <li>Entered the reaction from the air, or</li>
+      <li>Escaped into the surroundings.</li>
+    </ul>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>If a gas cannot be contained, its mass isn't measured — so the reaction appears to gain or lose mass, even though atoms are still conserved.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Apparent Increase in Mass</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">2 Mg + O₂ → 2 MgO</p>
+    
+    <p><strong>Explanation:</strong></p>
+    <ul>
+      <li>Magnesium reacts with oxygen gas from the air.</li>
+      <li>Oxygen is added to the solid metal.</li>
+      <li>Since the oxygen gas wasn't initially weighed, the product (magnesium oxide) seems heavier.</li>
+      <li>Mass appears to increase, but atoms are still conserved.</li>
+    </ul>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Apparent Decrease in Mass</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">CaCO₃(s) → CaO(s) + CO₂(g)</p>
+    
+    <p><strong>Explanation:</strong></p>
+    <ul>
+      <li>Heating calcium carbonate produces calcium oxide and carbon dioxide gas.</li>
+      <li>The CO₂ escapes into the air, so it isn't weighed in the final product.</li>
+      <li>The mass of the solid left behind seems smaller.</li>
+      <li>Mass appears to decrease because gas escapes.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Explaining Mass Change in Terms of Conservation of Mass</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <p>The law of conservation of mass still applies — even when gases are involved. The apparent mass change happens only because we're not including the mass of the gas that has entered or left the reaction system.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example Summary Table</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Reaction</th>
+          <th>Gas Involved</th>
+          <th>Apparent Mass Change</th>
+          <th>Explanation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Magnesium + oxygen → magnesium oxide</td>
+          <td>O₂ added</td>
+          <td>Increase</td>
+          <td>Oxygen from air combines with solid metal</td>
+        </tr>
+        <tr>
+          <td>Calcium carbonate → calcium oxide + carbon dioxide</td>
+          <td>CO₂ released</td>
+          <td>Decrease</td>
+          <td>CO₂ gas escapes to surroundings</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Closed vs Open Systems</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>System Type</th>
+          <th>Description</th>
+          <th>Effect on Mass</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Closed system</td>
+          <td>No substances can enter or leave</td>
+          <td>Mass is conserved exactly</td>
+        </tr>
+        <tr>
+          <td>Open system</td>
+          <td>Gases can enter or escape</td>
+          <td>Apparent mass change</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Closed systems always show perfect conservation of mass because no particles are lost or gained.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Experimental Examples</h3>
+  
+  <div class="example-block">
+    <h4>🟢 1. Combustion of Magnesium</h4>
+    <ul>
+      <li>Place magnesium ribbon in a crucible, heat it in air.</li>
+      <li>It reacts with oxygen to form magnesium oxide.</li>
+      <li>Mass increases because oxygen joins from the air.</li>
+    </ul>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 2. Thermal Decomposition of Copper Carbonate</h4>
+    <p class="equation">CuCO₃(s) → CuO(s) + CO₂(g)</p>
+    <ul>
+      <li>When heated, green copper carbonate decomposes to black copper oxide and CO₂ gas.</li>
+      <li>Gas escapes → mass decreases.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Linking to Conservation of Mass Calculations</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>Sometimes exam questions ask you to calculate missing masses when gases are involved.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example Question</h4>
+    <p>A student heats 25.0 g of calcium carbonate. After heating, only 14.0 g of solid calcium oxide remains.</p>
+    <p><strong>Calculate the mass of CO₂ released.</strong></p>
+    
+    <p><strong>Step 1:</strong></p>
+    <p class="equation">CaCO₃ → CaO + CO₂</p>
+    
+    <p><strong>Step 2:</strong></p>
+    <ul>
+      <li>Total mass before = 25.0 g (CaCO₃)</li>
+      <li>Mass of solid after = 14.0 g (CaO)</li>
+      <li>25.0 - 14.0 = 11.0 g CO₂ released</li>
+    </ul>
+    
+    <p><strong>✅ Answer:</strong> 11.0 g of CO₂ gas escaped.</p>
+  </div>
+
+  <div class="exam-tip-block">
+    <h4>🧠 Exam phrase</h4>
+    <p>"Mass appears to decrease because a gas (CO₂) escapes into the atmosphere."</p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "mass change", "gas", "conservation of mass", "increase", "decrease", "oxygen",
+          "carbon dioxide", "closed system", "open system", "escape", "apparent"
+        ],
+        practice_items: []
+      }
+    ]
   },
   {
     id: "chemical-changes",
