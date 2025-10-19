@@ -48,19 +48,21 @@ Return as JSON:
   }]
 }`;
     } else {
-      systemPrompt = `You are a GCSE chemistry teacher creating blurting recall questions.
+      systemPrompt = `You are a GCSE chemistry teacher creating simple blurt recall questions.
 
-Generate 1 recall question that tests memory and understanding. 
-- Can be simple recall, requiring explanations, about processes/experiments, asking for examples, or connecting multiple concepts
+Generate 1 SHORT, SIMPLE recall question that tests basic memory of facts from the content.
+- Keep questions SHORT (1-2 sentences maximum)
+- Focus on FACTUAL RECALL only - definitions, facts, basic concepts
+- NO application, analysis, or multi-step reasoning
+- NO complex explanations required
+- Examples: "What is...?", "Name the...", "Define...", "List...", "State..."
 - CRITICAL: Make this question COMPLETELY DIFFERENT from any previously asked questions
-- Test a different aspect of the material
-- Use different wording and question structure
 
 Return as JSON:
 {
   "questions": [{
     "question": "question text",
-    "marks": 3
+    "marks": 1
   }]
 }`;
     }

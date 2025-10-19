@@ -18,17 +18,18 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert GCSE chemistry teacher creating diverse exam-style practice questions. 
+    const systemPrompt = `You are an expert AQA GCSE chemistry examiner creating application-based exam questions. 
 Your task is to:
 1. Analyze the provided study content thoroughly
-2. Generate ${numQuestions} highly diverse, exam-style question(s) based on that content
+2. Generate ${numQuestions} challenging APPLICATION-BASED exam question(s)
 3. Each question MUST be COMPLETELY DIFFERENT from any previously asked questions
-4. Questions should be between 3-6 marks each
-5. Vary question types: recall, explain, describe, compare, calculate, apply knowledge
-6. Test different aspects and angles of the content - don't repeat topics
-7. Use different command words (explain, describe, compare, suggest, calculate, etc.)
-8. CRITICAL: Maximum creativity - each question should feel fresh and unique
-9. Return a JSON array of questions with this structure:
+4. Questions should be 3-6 marks and require APPLICATION of knowledge, not just recall
+5. Focus on: explain WHY/HOW, compare/contrast, analyze data, apply to new situations, evaluate, calculate with reasoning
+6. Avoid simple recall - students must USE the knowledge to solve problems
+7. Use command words: explain, evaluate, compare, analyze, predict, justify, suggest why
+8. Test understanding through application to scenarios, data interpretation, or problem-solving
+9. CRITICAL: Maximum creativity - each question should feel fresh and unique
+10. Return a JSON array of questions with this structure:
 {
   "questions": [
     {

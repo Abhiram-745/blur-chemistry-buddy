@@ -191,6 +191,10 @@ const BlurPractice = () => {
       setShowStudyContent(false);
       setTimerStarted(false);
       setQuestionType(state.generateQuestion);
+      // Restore previous question results if coming back from results page
+      if (state.previousQuestionResults) {
+        setQuestionResults(state.previousQuestionResults);
+      }
       setIsGeneratingQuestion(true);
       generateNewQuestion().finally(() => setIsGeneratingQuestion(false));
       window.history.replaceState({}, document.title);
@@ -463,7 +467,8 @@ const BlurPractice = () => {
           topicId,
           subsectionId,
           subsectionTitle: currentPairSubsections.map(s => s.title).join(', '),
-          questionType
+          questionType,
+          previousQuestionResults: questionResults // Preserve question history
         },
         replace: true // Force page refresh
       });

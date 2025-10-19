@@ -19,6 +19,7 @@ interface FeedbackState {
   subsectionTitle: string;
   questionType: "blurt" | "exam";
   photoImage?: string;
+  previousQuestionResults?: any[]; // Preserve question history
 }
 
 const Results = () => {
@@ -31,7 +32,7 @@ const Results = () => {
     return null;
   }
 
-  const { question, answer, keyIdeasCovered, keyIdeasMissed, score, maxMarks, topicId, subsectionId, subsectionTitle, questionType, photoImage, feedbackText } = feedbackData;
+  const { question, answer, keyIdeasCovered, keyIdeasMissed, score, maxMarks, topicId, subsectionId, subsectionTitle, questionType, photoImage, feedbackText, previousQuestionResults } = feedbackData;
   const percentage = Math.round((score / maxMarks) * 100);
 
   // Save practice session to database
@@ -200,7 +201,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { generateQuestion: "blurt" } 
+              state: { generateQuestion: "blurt", previousQuestionResults } 
             })}
           >
             <PenLine className="mr-2 h-5 w-5" />
@@ -211,7 +212,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { generateQuestion: "exam" } 
+              state: { generateQuestion: "exam", previousQuestionResults } 
             })}
           >
             <FileQuestion className="mr-2 h-5 w-5" />
