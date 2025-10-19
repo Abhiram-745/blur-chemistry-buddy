@@ -196,7 +196,7 @@ const BlurPractice = () => {
         setQuestionResults(state.previousQuestionResults);
       }
       setIsGeneratingQuestion(true);
-      generateNewQuestion().finally(() => setIsGeneratingQuestion(false));
+      generateNewQuestion(state.generateQuestion).finally(() => setIsGeneratingQuestion(false));
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -325,8 +325,9 @@ const BlurPractice = () => {
     }
   };
 
-  const generateNewQuestion = async () => {
+  const generateNewQuestion = async (typeOverride?: "blurt" | "exam") => {
     setIsGeneratingQuestion(true);
+    const qType = typeOverride ?? questionType;
     const studyContent = currentPairSubsections
       .map(sub => {
         const parser = new DOMParser();
@@ -336,9 +337,11 @@ const BlurPractice = () => {
       .join("\n\n");
     try {
 
-      const endpoint = questionType === "exam" 
+      const endpoint = qType === "exam" 
         ? "generate-varied-questions"
         : "generate-questions";
+      
+      console.log("Generating question:", { qType, endpoint });
 
       // Get previously asked questions to avoid repetition
       const previousQuestions = generatedQuestions.map(q => q.question);
@@ -346,7 +349,7 @@ const BlurPractice = () => {
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${endpoint}`;
       const payload = {
         studyContent,
-        questionType,
+        questionType: qType,
         numQuestions: 1,
         previousQuestions,
       };
@@ -414,10 +417,10 @@ const BlurPractice = () => {
         const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([w])=>w);
         const top1 = sorted[0] || "key term";
         const top2 = sorted[1];
-        const qText = questionType === "exam"
+        const qText = qType === "exam"
           ? (top2 ? `Explain how ${top1} and ${top2} relate in these notes.` : `Explain ${top1} using these notes.`)
           : `Define: ${top1}`;
-        const fallback = { question: qText, marks: questionType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
+        const fallback = { question: qText, marks: qType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
         setCurrentGeneratedQuestion(fallback);
         setGeneratedQuestions([...generatedQuestions, fallback]);
       }
@@ -431,10 +434,10 @@ const BlurPractice = () => {
       const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).map(([w])=>w);
       const top1 = sorted[0] || "key term";
       const top2 = sorted[1];
-      const qText = questionType === "exam"
+      const qText = qType === "exam"
         ? (top2 ? `Explain how ${top1} and ${top2} relate in these notes.` : `Explain ${top1} using these notes.`)
         : `Define: ${top1}`;
-      const fallback = { question: qText, marks: questionType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
+      const fallback = { question: qText, marks: qType === "exam" ? 3 : 1, expectedKeyPoints: top2 ? [top1, top2] : [top1] };
       setCurrentGeneratedQuestion(fallback);
       setGeneratedQuestions([...generatedQuestions, fallback]);
       console.warn("Generate question fallback used:", error);
@@ -556,7 +559,7 @@ const BlurPractice = () => {
     setShowStudyContent(false); // Don't show study content again
     setIsGeneratingQuestion(true);
     try {
-      await generateNewQuestion();
+      await generateNewQuestion(newQuestionType);
     } finally {
       setIsGeneratingQuestion(false);
     }
@@ -993,7 +996,9 @@ const BlurPractice = () => {
                 <Badge variant="default" className="bg-primary">{currentGeneratedQuestion.marks} marks</Badge>
               </div>
               <div className="mt-4">
-                <h3 className="text-sm font-bold text-primary mb-3 uppercase tracking-wide">Exam Question</h3>
+                <h3 className="text-sm font-bold text-primary mb-3 uppercase tracking-wide">
+                  {questionType === "exam" ? "Exam Question" : "Blurt Question"}
+                </h3>
                 <div className="text-lg leading-relaxed space-y-2">
                   {currentGeneratedQuestion.question.split(/(?=\([a-z]\))/).map((part, idx) => {
                     const match = part.match(/^\(([a-z])\)\s*(.*)/);
