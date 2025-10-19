@@ -297,11 +297,6 @@ const BlurPractice = () => {
 
   const handleQuestionTypeSelected = async () => {
     setShowQuestionTypeSelector(false);
-    setShowMemorizationTimer(true);
-  };
-
-  const handleMemorizationComplete = async () => {
-    setShowMemorizationTimer(false);
     setIsGeneratingQuestion(true);
     try {
       await generateNewQuestion();
@@ -315,6 +310,11 @@ const BlurPractice = () => {
     } finally {
       setIsGeneratingQuestion(false);
     }
+  };
+
+  const handleMemorizationComplete = async () => {
+    setTimerStarted(false); // Hide the timer
+    setShowQuestionTypeSelector(true);
   };
 
   const generateNewQuestion = async () => {
@@ -683,7 +683,7 @@ const BlurPractice = () => {
                   ⏱️ Memorization Timer
                 </h2>
                 <p className="text-muted-foreground text-lg mb-6">
-                  You have {Math.floor(memorizationDuration / 60)} minutes to study the content above. When you're ready, start the timer.
+                  You have {Math.floor(memorizationDuration / 60)} minutes to study the content. When you're ready, start the timer.
                 </p>
               </div>
               <Button
@@ -762,21 +762,11 @@ const BlurPractice = () => {
 
               {timerStarted && (
                 <>
-                  <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border-l-4 border-primary">
-                    <h3 className="font-semibold text-lg mb-3">🎯 Time to Practice</h3>
-                    <p className="text-sm mb-4">
-                      Choose your question type and start testing your knowledge!
-                    </p>
-                    <Button 
-                      onClick={handleStartPractice} 
-                      size="lg" 
-                      className="w-full"
-                      disabled={isGeneratingQuestion}
-                    >
-                      {isGeneratingQuestion ? "Generating Question..." : "Choose Question Type →"}
-                    </Button>
-                  </div>
-
+                  <MemorizationTimer 
+                    duration={memorizationDuration}
+                    onComplete={handleMemorizationComplete}
+                  />
+                  
                   {showQuestionTypeSelector && (
                     <Card className="border-primary shadow-lg">
                       <CardHeader>
@@ -810,13 +800,6 @@ const BlurPractice = () => {
                         </Button>
                       </CardContent>
                     </Card>
-                  )}
-
-                  {showMemorizationTimer && (
-                    <MemorizationTimer 
-                      duration={memorizationDuration}
-                      onComplete={handleMemorizationComplete}
-                    />
                   )}
                 </>
               )}
