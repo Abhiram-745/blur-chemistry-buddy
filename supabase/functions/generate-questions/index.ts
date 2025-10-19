@@ -74,15 +74,27 @@ serve(async (req) => {
     const fallback = makeBlurtFallback({ studyContent, numQuestions, previousQuestions });
 
     const kws = extractKeywords(studyContent, 24);
-    const system = `GCSE chemistry question writer. STRICT TOPIC LOCK. Use ONLY the provided notes. Include at least TWO of these keywords in each question: ${kws.join(", ")} . No invented contexts. Output JSON.`;
-    const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} BLURT question(s). Rules: 1) 5-12 words each. 2) Simple recall (term/definition/fact). 3) MUST include at least TWO of the listed keywords. 4) Do NOT repeat previous questions: \n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}\n\nReturn: { "questions": [ { "question": string, "marks": 1, "expectedKeyPoints": string[] } ] }`;
+    // Shuffle keywords to vary focus each time
+    const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
+    const system = `GCSE chemistry question writer. STRICT TOPIC LOCK. Use ONLY the provided notes. Include at least TWO of these keywords in each question: ${shuffledKws.join(", ")} . No invented contexts. Output JSON.`;
+    const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} BLURT question(s). Rules: 
+1) 5-12 words each
+2) Simple recall (term/definition/fact)
+3) MUST include at least TWO of the listed keywords
+4) VARY each question - focus on DIFFERENT terms/concepts each time
+5) Try different question styles: "Define...", "What is...", "State...", "Identify..."
+
+Do NOT repeat previous questions: 
+${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
+
+Return: { "questions": [ { "question": string, "marks": 1, "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
       data = await callAIWithTimeout({
         model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        temperature: 0.2,
+        temperature: 0.65,
         response_format: { type: "json_object" },
       });
     } catch (e) {

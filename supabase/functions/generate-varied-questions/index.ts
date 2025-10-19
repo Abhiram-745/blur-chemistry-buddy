@@ -70,15 +70,25 @@ serve(async (req) => {
     const fallback = makeExamFallback({ studyContent, numQuestions, previousQuestions });
 
     const kws = extractKeywords(studyContent, 24);
-    const system = `GCSE chemistry examiner. STRICT TOPIC LOCK. Stay fully within the provided notes. Include at least TWO of these keywords in each question: ${kws.join(", ")}. No invented experiments. Output JSON.`;
-    const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} EXAM question(s) about ONLY the content above. 1–6 marks each. Prefer application/interpretation of the SAME topic without adding outside context. Do NOT repeat previous questions: \n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}\n\nReturn: { "questions": [ { "question": string, "marks": number, "expectedKeyPoints": string[] } ] }`;
+    // Shuffle keywords to vary focus each time
+    const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
+    const system = `GCSE chemistry examiner. STRICT TOPIC LOCK. Stay fully within the provided notes. Include at least TWO of these keywords in each question: ${shuffledKws.join(", ")}. No invented experiments. Output JSON.`;
+    const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} EXAM question(s) about ONLY the content above. VARY each question:
+- Focus on DIFFERENT aspects/concepts each time
+- Use different marks (vary between 1-5 marks based on complexity)
+- Try different question styles (explain, compare, describe, calculate if numbers present)
+
+Do NOT repeat previous questions: 
+${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
+
+Return: { "questions": [ { "question": string, "marks": number, "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
       data = await callAIWithTimeout({
         model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        temperature: 0.25,
+        temperature: 0.7,
         response_format: { type: "json_object" },
       });
     } catch (e) {
