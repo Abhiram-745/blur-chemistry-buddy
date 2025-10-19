@@ -637,7 +637,7 @@ const BlurPractice = () => {
               <CardHeader>
                 <CardTitle>Question Type</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Select the type of question to practice
+                  Select the type of question you want to practice after the blurt. Blurt Question is recommended, and after that exam questions.
                 </p>
               </CardHeader>
               <CardContent className="space-y-4">
