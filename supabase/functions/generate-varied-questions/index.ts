@@ -68,7 +68,19 @@ Return as JSON:
     let userPrompt = `Study Content:\n\n${studyContent}`;
     
     if (previousQuestions.length > 0) {
-      userPrompt += `\n\nIMPORTANT: You have already asked these questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate COMPLETELY DIFFERENT questions. Do NOT ask about the same topics or use similar wording.`;
+      userPrompt += `\n\nCRITICAL: You have ALREADY asked these questions:
+${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}
+
+DO NOT:
+- Ask about the same topics or concepts
+- Use similar wording or question structure
+- Test the same knowledge areas
+
+INSTEAD:
+- Focus on completely different aspects of the content
+- Use different command words and question styles
+- Test different levels (if previous was recall, now do explanation/application)
+- Use different question formats (if previous was short answer, now try multi-part)`;
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {

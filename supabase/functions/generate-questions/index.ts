@@ -18,15 +18,17 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert GCSE chemistry teacher creating exam-style practice questions. 
+    const systemPrompt = `You are an expert GCSE chemistry teacher creating diverse exam-style practice questions. 
 Your task is to:
-1. Analyze the provided study content
-2. Generate ${numQuestions} diverse, exam-style question(s) based on that content
-3. Each question MUST be significantly different from any previously asked questions
+1. Analyze the provided study content thoroughly
+2. Generate ${numQuestions} highly diverse, exam-style question(s) based on that content
+3. Each question MUST be COMPLETELY DIFFERENT from any previously asked questions
 4. Questions should be between 3-6 marks each
-5. Make questions challenging but fair - they should require explanation, not just recall
-6. AVOID repetition - test different concepts, use different question styles
-7. Return a JSON array of questions with this structure:
+5. Vary question types: recall, explain, describe, compare, calculate, apply knowledge
+6. Test different aspects and angles of the content - don't repeat topics
+7. Use different command words (explain, describe, compare, suggest, calculate, etc.)
+8. CRITICAL: Maximum creativity - each question should feel fresh and unique
+9. Return a JSON array of questions with this structure:
 {
   "questions": [
     {
@@ -43,7 +45,18 @@ ${studyContent}
 Generate ${numQuestions} unique exam-style question(s) based on this content. Make sure each question tests different aspects of the material.`;
 
     if (previousQuestions.length > 0) {
-      userPrompt += `\n\nIMPORTANT: Do NOT generate questions similar to these already-asked questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate completely different questions that test other aspects of the content.`;
+      userPrompt += `\n\nCRITICAL: You have ALREADY asked these questions:
+${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}
+
+DO NOT:
+- Ask about the same topics or concepts
+- Use similar wording or question structure
+- Test the same knowledge areas
+
+INSTEAD:
+- Focus on completely different aspects of the content
+- Use different command words and question styles
+- Test different levels of understanding (if previous was recall, now do application, etc.)`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -58,6 +71,7 @@ Generate ${numQuestions} unique exam-style question(s) based on this content. Ma
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
+        temperature: 0.9,
         response_format: { type: "json_object" }
       }),
     });
