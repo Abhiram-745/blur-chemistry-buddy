@@ -127,6 +127,7 @@ const BlurPractice = () => {
   const [showTimerSection, setShowTimerSection] = useState(true);
   const [timerStarted, setTimerStarted] = useState(false);
   const [selectedQuestionType, setSelectedQuestionType] = useState<"blurt" | "exam" | null>(null);
+  const [pendingGenerateType, setPendingGenerateType] = useState<"blurt" | "exam" | null>(null);
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -196,10 +197,21 @@ const BlurPractice = () => {
         setQuestionResults(state.previousQuestionResults);
       }
       setIsGeneratingQuestion(true);
-      generateNewQuestion(state.generateQuestion).finally(() => setIsGeneratingQuestion(false));
+      setPendingGenerateType(state.generateQuestion);
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Wait for content to be ready before generating question
+  useEffect(() => {
+    if (pendingGenerateType && currentPairSubsections.length > 0) {
+      generateNewQuestion(pendingGenerateType)
+        .finally(() => {
+          setIsGeneratingQuestion(false);
+          setPendingGenerateType(null);
+        });
+    }
+  }, [pendingGenerateType, currentPairSubsections]);
 
   // Text selection handler for AI chatbot
   useEffect(() => {
@@ -325,23 +337,64 @@ const BlurPractice = () => {
     }
   };
 
-  const generateNewQuestion = async (typeOverride?: "blurt" | "exam") => {
-    setIsGeneratingQuestion(true);
-    const qType = typeOverride ?? questionType;
-    const studyContent = currentPairSubsections
+  // Build study content from multiple fallback sources
+  const buildStudyContent = (): string => {
+    // 1) Try currentPairSubsections first
+    const fromPair = currentPairSubsections
       .map(sub => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(sub.html, 'text/html');
         return doc.body.textContent || '';
       })
-      .join("\n\n");
+      .join('\n\n')
+      .trim();
+    if (fromPair) return fromPair;
+
+    // 2) Fallback to internalSubsections using currentPairIndex
+    if (internalSubsections.length) {
+      const start = currentPairIndex * 2;
+      const fallbackPair = internalSubsections.slice(start, start + 2);
+      const fromInternal = fallbackPair
+        .map(sub => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(sub.html, 'text/html');
+          return doc.body.textContent || '';
+        })
+        .join('\n\n')
+        .trim();
+      if (fromInternal) return fromInternal;
+    }
+
+    // 3) Final fallback: parse from the static sectionsData source
+    const topic = sectionsData.find(t => t.id === topicId);
+    const target = topic?.subsections.find(s => s.id === subsectionId);
+    const html = target?.content_html ?? '';
+    if (html) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const nodes = Array.from(doc.querySelectorAll('div.subsection')).slice(0, 2);
+      const text = nodes.map(n => n.textContent || '').join('\n\n').trim();
+      if (text) return text;
+    }
+    return "";
+  };
+
+  const generateNewQuestion = async (typeOverride?: "blurt" | "exam") => {
+    setIsGeneratingQuestion(true);
+    const qType = typeOverride ?? questionType;
+    const studyContent = buildStudyContent();
     try {
 
       const endpoint = qType === "exam" 
         ? "generate-varied-questions"
         : "generate-questions";
       
-      console.log("Generating question:", { qType, endpoint });
+      console.log("Generating question:", {
+        qType,
+        endpoint,
+        pairCount: currentPairSubsections.length,
+        studyChars: studyContent.length
+      });
 
       // Get previously asked questions to avoid repetition
       const previousQuestions = generatedQuestions.map(q => q.question);
