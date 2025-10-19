@@ -79,12 +79,8 @@ async function callAI({ systemPrompt, userPrompt }: { systemPrompt: string; user
     }
     const t = await response.text();
     console.error("AI gateway error:", response.status, t);
-    return {
-      errorResponse: new Response(JSON.stringify({ error: "AI gateway error" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }),
-    } as const;
+    // Throw to let the caller generate a graceful on-topic fallback (200)
+    throw new Error(`AI gateway error ${response.status}`);
   }
 
   const data = await response.json();
