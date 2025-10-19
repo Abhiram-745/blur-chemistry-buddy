@@ -124,6 +124,7 @@ const BlurPractice = () => {
   const [highlightedText, setHighlightedText] = useState<string>("");
   const [showMemorizationTimer, setShowMemorizationTimer] = useState(false);
   const [memorizationDuration, setMemorizationDuration] = useState(180); // 3 minutes default
+  const [showReadyToBlur, setShowReadyToBlur] = useState(true); // Show intro screen first
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -183,8 +184,12 @@ const BlurPractice = () => {
       handleMoveToNextSubsection();
       window.history.replaceState({}, document.title);
     } else if (state?.generateQuestion) {
+      // Skip intro and study content, go straight to question generation
+      setShowReadyToBlur(false);
+      setShowStudyContent(false);
       setQuestionType(state.generateQuestion);
-      handleAnswerAnother(state.generateQuestion);
+      setIsGeneratingQuestion(true);
+      generateNewQuestion().finally(() => setIsGeneratingQuestion(false));
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -477,6 +482,7 @@ const BlurPractice = () => {
     setFeedbackText("");
     setTimeElapsed(0);
     setPhotoFeedback(null);
+    setShowStudyContent(false); // Don't show study content again
     setIsGeneratingQuestion(true);
     try {
       await generateNewQuestion();
@@ -495,6 +501,7 @@ const BlurPractice = () => {
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
       setCurrentPairIndex(nextPairIndex);
       setCurrentPairSubsections(nextPair);
+      setShowReadyToBlur(true); // Show ready screen for next pair
       setShowStudyContent(true);
       setCurrentQuestionIndex(0);
       setUserAnswer("");
@@ -600,6 +607,46 @@ const BlurPractice = () => {
   const progress = questionResults.length > 0 ? (questionResults.length / (questionResults.length + 1)) * 100 : 0;
   const totalPairs = Math.ceil(internalSubsections.length / 2);
 
+  // Ready to Blur intro screen
+  if (showReadyToBlur) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          <Button variant="ghost" onClick={() => navigate(`/topic/${topicId}`)} className="mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Topic
+          </Button>
+
+          <Card className="border-l-4 border-l-primary shadow-lg">
+            <CardHeader className="space-y-4">
+              <div className="text-center">
+                <div className="text-6xl mb-4">✍️</div>
+                <CardTitle className="text-3xl mb-2">Ready to Blur?</CardTitle>
+                <p className="text-muted-foreground text-lg">
+                  {subsectionTitle}
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg">
+                <p className="text-center text-lg">
+                  AI will generate unique questions about what you just studied. Answer as many as you like before moving on!
+                </p>
+              </div>
+              <Button 
+                onClick={() => setShowReadyToBlur(false)} 
+                size="lg" 
+                className="w-full text-lg py-6"
+              >
+                Start Blurting Practice →
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   // Study content screen
   if (showStudyContent) {
     return (
@@ -656,10 +703,9 @@ const BlurPractice = () => {
               ))}
 
               <div className="p-6 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg border-l-4 border-primary">
-                <h3 className="font-semibold text-lg mb-3">✍️ Ready to Blur?</h3>
+                <h3 className="font-semibold text-lg mb-3">🎯 Time to Practice</h3>
                 <p className="text-sm mb-4">
-                  AI will generate unique questions about what you just studied. 
-                  Answer as many as you like before moving on!
+                  Choose your question type and start testing your knowledge!
                 </p>
                 <Button 
                   onClick={handleStartPractice} 
@@ -667,7 +713,7 @@ const BlurPractice = () => {
                   className="w-full"
                   disabled={isGeneratingQuestion}
                 >
-                  {isGeneratingQuestion ? "Generating Question..." : "Start Blurting Practice →"}
+                  {isGeneratingQuestion ? "Generating Question..." : "Choose Question Type →"}
                 </Button>
               </div>
 

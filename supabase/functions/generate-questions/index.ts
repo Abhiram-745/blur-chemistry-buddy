@@ -22,10 +22,11 @@ serve(async (req) => {
 Your task is to:
 1. Analyze the provided study content
 2. Generate ${numQuestions} diverse, exam-style question(s) based on that content
-3. Each question should test different aspects and require detailed understanding
+3. Each question MUST be significantly different from any previously asked questions
 4. Questions should be between 3-6 marks each
 5. Make questions challenging but fair - they should require explanation, not just recall
-6. Return a JSON array of questions with this structure:
+6. AVOID repetition - test different concepts, use different question styles
+7. Return a JSON array of questions with this structure:
 {
   "questions": [
     {
@@ -52,11 +53,12 @@ Generate ${numQuestions} unique exam-style question(s) based on this content. Ma
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-lite",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
+        response_format: { type: "json_object" }
       }),
     });
 

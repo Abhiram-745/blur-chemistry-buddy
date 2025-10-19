@@ -24,15 +24,14 @@ serve(async (req) => {
     if (questionType === 'exam') {
       systemPrompt = `You are an AQA GCSE Chemistry examiner creating high-quality exam questions.
 
-Generate 3 varied exam-style questions based on the study content. Include:
-- 1 marker questions (recall/definition)
-- 2 marker questions (explain/describe)
-- 4-6 marker questions (extended response)
-- Calculation questions with data
+Generate 1 varied exam-style question based on the study content. Include:
+- Questions can be 1-6 marks
+- Mix of recall, explain, describe, calculate types
 - Questions requiring diagrams or labelled drawings
 - Questions using data from tables or graphs
+- CRITICAL: Generate questions that are VERY DIFFERENT from any previously asked questions
 
-For EACH question, provide:
+For the question, provide:
 1. The question text with clear mark allocation [X marks]
 2. A detailed mark scheme showing:
    - Each marking point
@@ -40,30 +39,30 @@ For EACH question, provide:
    - Command words explained (state, describe, explain, etc.)
 3. Model answer
 
-Return as JSON array: 
-[{
-  "question": "question text with [X marks]",
-  "marks": X,
-  "markScheme": ["point 1", "point 2", ...],
-  "modelAnswer": "example answer"
-}]`;
+Return as JSON: 
+{
+  "questions": [{
+    "question": "question text with [X marks]",
+    "marks": X,
+    "expectedKeyPoints": ["point 1", "point 2", ...]
+  }]
+}`;
     } else {
       systemPrompt = `You are a GCSE chemistry teacher creating blurting recall questions.
 
-Generate 5 diverse recall questions that test memory and understanding. Include:
-- Simple recall questions
-- Questions requiring explanations
-- Questions about processes or experiments
-- Questions asking for examples
-- Questions connecting multiple concepts
+Generate 1 recall question that tests memory and understanding. 
+- Can be simple recall, requiring explanations, about processes/experiments, asking for examples, or connecting multiple concepts
+- CRITICAL: Make this question COMPLETELY DIFFERENT from any previously asked questions
+- Test a different aspect of the material
+- Use different wording and question structure
 
-IMPORTANT: Make questions SIGNIFICANTLY DIFFERENT from each other. Avoid repetition.
-
-Return as JSON array:
-[{
-  "question": "question text",
-  "type": "recall|explain|process|example|connection"
-}]`;
+Return as JSON:
+{
+  "questions": [{
+    "question": "question text",
+    "marks": 3
+  }]
+}`;
     }
 
     let userPrompt = `Study Content:\n\n${studyContent}`;
@@ -84,6 +83,7 @@ Return as JSON array:
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
+        temperature: 0.9, // Higher temperature for more creativity and diversity
         response_format: { type: "json_object" }
       }),
     });
