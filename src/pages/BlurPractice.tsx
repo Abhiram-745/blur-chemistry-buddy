@@ -128,6 +128,7 @@ const BlurPractice = () => {
   const [timerStarted, setTimerStarted] = useState(false);
   const [selectedQuestionType, setSelectedQuestionType] = useState<"blurt" | "exam" | null>(null);
   const [pendingGenerateType, setPendingGenerateType] = useState<"blurt" | "exam" | null>(null);
+  const [pendingMoveToNext, setPendingMoveToNext] = useState(false);
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -184,7 +185,15 @@ const BlurPractice = () => {
   useEffect(() => {
     const state = location.state as any;
     if (state?.moveToNext) {
-      handleMoveToNextSubsection();
+      console.log("Move to next requested, setting pending", { 
+        internalLen: internalSubsections.length, 
+        pairLen: currentPairSubsections.length 
+      });
+      // Preserve question type if provided
+      if (state.keepType) {
+        setQuestionType(state.keepType);
+      }
+      setPendingMoveToNext(true);
       window.history.replaceState({}, document.title);
     } else if (state?.generateQuestion) {
       // Skip intro and study content, go straight to question generation
@@ -201,6 +210,19 @@ const BlurPractice = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Execute pending move to next when data is ready
+  useEffect(() => {
+    if (pendingMoveToNext && internalSubsections.length > 0 && currentPairSubsections.length > 0) {
+      console.log("Executing pending moveToNext", { 
+        currentPairIndex, 
+        internalLen: internalSubsections.length,
+        pairLen: currentPairSubsections.length
+      });
+      handleMoveToNextSubsection();
+      setPendingMoveToNext(false);
+    }
+  }, [pendingMoveToNext, internalSubsections, currentPairSubsections]);
 
   // Wait for content to be ready before generating question
   useEffect(() => {
@@ -626,6 +648,14 @@ const BlurPractice = () => {
     if (nextPairStart < internalSubsections.length) {
       // Move to next pair within same subsection
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
+      
+      console.log("Moving to next pair", {
+        nextPairIndex,
+        nextPairStart,
+        pairTitles: nextPair.map(s => s.title),
+        totalPairs: Math.ceil(internalSubsections.length / 2)
+      });
+      
       setCurrentPairIndex(nextPairIndex);
       setCurrentPairSubsections(nextPair);
       
@@ -640,10 +670,12 @@ const BlurPractice = () => {
       const seconds = Math.ceil((wordCount / 50) * 10);
       setMemorizationDuration(Math.max(30, seconds));
       
-      // Reset all state for new pair
-      setShowTimerSection(true);
-      setShowStudyContent(false);
-      setTimerStarted(false);
+      // Reset all state for new pair - but go straight to notes
+      setShowTimerSection(false);
+      setShowStudyContent(true);
+      setShowMemorizationTimer(true);
+      setTimerStarted(true);
+      setShowQuestionTypeSelector(false);
       setCurrentQuestionIndex(0);
       setUserAnswer("");
       setShowQuestionFeedback(false);
@@ -653,9 +685,7 @@ const BlurPractice = () => {
       setGeneratedQuestions([]);
       setQuestionResults([]);
       setTimeElapsed(0);
-      setShowMemorizationTimer(false);
       setSelectedQuestionType(null);
-      setShowQuestionTypeSelector(true);
       
       toast({
         title: "Moving to Next Pair",

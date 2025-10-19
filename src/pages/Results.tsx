@@ -190,7 +190,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { moveToNext: true } 
+              state: { moveToNext: true, keepType: questionType } 
             })}
           >
             <BookOpen className="mr-2 h-5 w-5" />
