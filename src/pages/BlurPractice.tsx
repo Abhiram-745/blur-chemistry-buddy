@@ -298,6 +298,9 @@ const BlurPractice = () => {
 
   const handleQuestionTypeSelected = async () => {
     setShowQuestionTypeSelector(false);
+    setShowTimerSection(false);
+    setShowStudyContent(true);
+    setTimerStarted(true);
     setShowMemorizationTimer(true);
   };
 
@@ -645,8 +648,7 @@ const BlurPractice = () => {
                   <Button
                     onClick={() => {
                       setQuestionType('blurt');
-                      setShowQuestionTypeSelector(false);
-                      setShowMemorizationTimer(true);
+                      handleQuestionTypeSelected();
                     }}
                     size="lg"
                     className="w-full h-auto py-6 flex flex-col gap-2"
@@ -657,8 +659,7 @@ const BlurPractice = () => {
                   <Button
                     onClick={() => {
                       setQuestionType('exam');
-                      setShowQuestionTypeSelector(false);
-                      setShowMemorizationTimer(true);
+                      handleQuestionTypeSelected();
                     }}
                     size="lg"
                     variant="outline"
@@ -672,30 +673,6 @@ const BlurPractice = () => {
             </Card>
           )}
 
-          {showMemorizationTimer && (
-            <Card className="mb-8 p-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
-                  ⏱️ Memorization Timer
-                </h2>
-                <p className="text-muted-foreground text-lg mb-6">
-                  You have {Math.floor(memorizationDuration / 60)} minutes to study the content. When you're ready, start the timer.
-                </p>
-              </div>
-              <Button
-                size="lg"
-                onClick={() => {
-                  setShowStudyContent(true);
-                  setTimerStarted(true);
-                  setShowTimerSection(false);
-                }}
-                disabled={timerStarted}
-                className="w-full"
-              >
-                ▶️ Start Memorizing
-              </Button>
-            </Card>
-          )}
         </div>
       </div>
     );
@@ -755,49 +732,6 @@ const BlurPractice = () => {
                   </Collapsible>
                 </Card>
               ))}
-
-              {showQuestionTypeSelector && (
-                <Card className="border-primary shadow-lg mt-6">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5" />
-                      Choose Your Question Type
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      Select what type of questions you'd like to practice
-                    </p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid gap-4">
-                      <Button
-                        onClick={() => {
-                          setQuestionType('blurt');
-                          setShowQuestionTypeSelector(false);
-                          setShowMemorizationTimer(true);
-                        }}
-                        size="lg"
-                        className="w-full h-auto py-6 flex flex-col gap-2"
-                      >
-                        <span className="text-lg font-semibold">Blurt Question</span>
-                        <span className="text-xs opacity-80">Write everything you remember</span>
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          setQuestionType('exam');
-                          setShowQuestionTypeSelector(false);
-                          setShowMemorizationTimer(true);
-                        }}
-                        size="lg"
-                        variant="outline"
-                        className="w-full h-auto py-6 flex flex-col gap-2"
-                      >
-                        <span className="text-lg font-semibold">Exam Question</span>
-                        <span className="text-xs opacity-80">Answer a specific exam-style question</span>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
 
               {showMemorizationTimer && (
                 <MemorizationTimer 
