@@ -132,13 +132,14 @@ const BlurPractice = () => {
   const [targetPairIndex, setTargetPairIndex] = useState<number | null>(null);
   const [pairReady, setPairReady] = useState(false);
 
-  // Persist current pair index for robustness across navigations
+  // Persist current pair index for robustness across navigations (only after pair is initialized)
   useEffect(() => {
     if (!topicId || !subsectionId) return;
+    if (internalSubsections.length === 0 || currentPairSubsections.length === 0) return;
     try {
       sessionStorage.setItem(`bp:${topicId}:${subsectionId}:pairIndex`, String(currentPairIndex));
     } catch {}
-  }, [currentPairIndex, topicId, subsectionId]);
+  }, [currentPairIndex, topicId, subsectionId, internalSubsections.length, currentPairSubsections.length]);
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -154,14 +155,24 @@ const BlurPractice = () => {
     const parsed = parseInternalSubsections(targetSubsection.content_html);
     setInternalSubsections(parsed);
 
-    // Set first pair (first 2 internal subsections)
-    const firstPair = parsed.slice(0, 2);
-    setCurrentPairSubsections(firstPair);
+    // Restore last viewed pair from sessionStorage (default to first pair)
+    const totalPairsLocal = Math.ceil(parsed.length / 2);
+    let restoredIndex = 0;
+    try {
+      const saved = sessionStorage.getItem(`bp:${topicId}:${subsectionId}:pairIndex`);
+      const n = saved !== null ? parseInt(saved, 10) : NaN;
+      if (!isNaN(n) && n >= 0 && n < totalPairsLocal) restoredIndex = n;
+    } catch {}
+
+    const startIdx = restoredIndex * 2;
+    const initialPair = parsed.slice(startIdx, startIdx + 2);
+    setCurrentPairIndex(restoredIndex);
+    setCurrentPairSubsections(initialPair);
     setExpandedSections([0]); // Auto-expand first
 
-    // Calculate memorization time based on word count
+    // Calculate memorization time based on word count for the restored pair
     // Extract text from HTML and count words
-    const textContent = firstPair.map(sub => {
+    const textContent = initialPair.map(sub => {
       const parser = new DOMParser();
       const doc = parser.parseFromString(sub.html, 'text/html');
       return doc.body.textContent || '';
