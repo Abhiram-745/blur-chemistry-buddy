@@ -6155,6 +6155,663 @@ H—N—H</pre>
           "carbon dioxide", "closed system", "open system", "escape", "apparent"
         ],
         practice_items: []
+      },
+      {
+        id: "3-2-1-moles",
+        title: "3.2.1 MOLES",
+        type: "content",
+        study_group: 3,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – What Is a Mole?</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>A mole is a way of counting particles (atoms, ions, or molecules) — just like a "dozen" means 12, a mole means 6.022 × 10²³ particles.</p>
+    <p>This number is called the <strong>Avogadro constant (L)</strong>.</p>
+    <p class="formula">L = 6.022 × 10²³ particles per mole</p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Examples</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Substance</th>
+          <th>1 mole contains...</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Carbon atoms</td>
+          <td>6.022 × 10²³ carbon atoms</td>
+        </tr>
+        <tr>
+          <td>Water molecules</td>
+          <td>6.022 × 10²³ water molecules</td>
+        </tr>
+        <tr>
+          <td>Sodium ions</td>
+          <td>6.022 × 10²³ Na⁺ ions</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <p>A mole is a fixed number of particles, not a fixed mass. The mass of one mole depends on what the substance is.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Relationship Between Mass, Moles, and Mr</h3>
+  
+  <div class="definition-block">
+    <h4>🔢 Formula</h4>
+    <p class="formula">Moles = Mass (g) / M<sub>r</sub></p>
+    <p class="formula">Mass (g) = Moles × M<sub>r</sub></p>
+    <p class="formula">M<sub>r</sub> = Mass (g) / Moles</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Finding Moles</h4>
+    <p><strong>Calculate the number of moles in 32 g of oxygen gas (O₂).</strong></p>
+    <p>M<sub>r</sub> (O₂) = 16 × 2 = 32</p>
+    <p>Moles = 32 / 32 = 1.0 mol</p>
+    <p><strong>✅ Answer: 1.0 mol of O₂</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Finding Mass</h4>
+    <p><strong>Calculate the mass of 0.25 mol of carbon dioxide (CO₂).</strong></p>
+    <p>M<sub>r</sub> (CO₂) = 12 + (16 × 2) = 44</p>
+    <p>Mass = 0.25 × 44 = 11 g</p>
+    <p><strong>✅ Answer: 11 g of CO₂</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 3 – Finding Mr</h4>
+    <p><strong>A student has 0.5 mol of a compound weighing 29 g. Find its M<sub>r</sub>.</strong></p>
+    <p>M<sub>r</sub> = 29 / 0.5 = 58</p>
+    <p><strong>✅ Answer: M<sub>r</sub> = 58</strong></p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Units Reminder</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Quantity</th>
+          <th>Symbol</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mass</td>
+          <td>m</td>
+          <td>g</td>
+        </tr>
+        <tr>
+          <td>Moles</td>
+          <td>n</td>
+          <td>mol</td>
+        </tr>
+        <tr>
+          <td>Relative formula mass</td>
+          <td>M<sub>r</sub></td>
+          <td>(no units)</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>Always make sure mass is in grams, not kilograms.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – The Mole and the Periodic Table</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>The relative atomic mass (A<sub>r</sub>) of an element (from the periodic table) tells you the mass of one mole of that element in grams.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Examples</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Element</th>
+          <th>Mass of 1 mol (g)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>H</td><td>1</td></tr>
+        <tr><td>C</td><td>12</td></tr>
+        <tr><td>O</td><td>16</td></tr>
+        <tr><td>Na</td><td>23</td></tr>
+        <tr><td>Mg</td><td>24</td></tr>
+      </tbody>
+    </table>
+    <p><strong>Note:</strong> 1 mole of oxygen atoms = 16 g, but 1 mole of oxygen molecules (O₂) = 32 g.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Converting Between Particles and Moles</h3>
+  
+  <div class="definition-block">
+    <h4>🔢 Key Formula</h4>
+    <p class="formula">Number of particles = Moles × (6.022 × 10²³)</p>
+    <p class="formula">Moles = Number of particles / 6.022 × 10²³</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Finding Number of Atoms</h4>
+    <p><strong>How many atoms are in 0.25 mol of carbon atoms?</strong></p>
+    <p>Particles = 0.25 × 6.022 × 10²³ = 1.5055 × 10²³</p>
+    <p><strong>✅ Answer: 1.5 × 10²³ atoms of carbon</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Finding Moles from Atoms</h4>
+    <p><strong>A sample contains 1.204 × 10²⁴ molecules of oxygen gas. How many moles is this?</strong></p>
+    <p>Moles = 1.204 × 10²⁴ / 6.022 × 10²³ = 2.0 mol</p>
+    <p><strong>✅ Answer: 2.0 mol O₂ molecules</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Moles and Formula Units (Ionic Compounds)</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Important Note</h4>
+    <p>When you have an ionic compound, a mole counts formula units, not individual atoms.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Mole Calculations in Practice</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Summary Table</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Type of Question</th>
+          <th>Formula</th>
+          <th>Example</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Find moles from mass</td>
+          <td>n = m / M<sub>r</sub></td>
+          <td>36 g of H₂O → 36 / 18 = 2 mol</td>
+        </tr>
+        <tr>
+          <td>Find mass from moles</td>
+          <td>m = n × M<sub>r</sub></td>
+          <td>0.25 mol CO₂ → 0.25 × 44 = 11 g</td>
+        </tr>
+        <tr>
+          <td>Find number of particles</td>
+          <td>N = n × 6.022 × 10²³</td>
+          <td>2 mol atoms → 1.204 × 10²⁴ atoms</td>
+        </tr>
+        <tr>
+          <td>Find moles from particles</td>
+          <td>n = N / 6.022 × 10²³</td>
+          <td>3.01 × 10²³ = 0.5 mol</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Why Moles Are Useful</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Applications</h4>
+    <p>Moles are used to:</p>
+    <ul>
+      <li>Compare quantities of substances in reactions.</li>
+      <li>Balance chemical equations quantitatively.</li>
+      <li>Calculate reacting masses, concentrations, gas volumes, and yields.</li>
+    </ul>
+    <p><strong>The mole links microscopic chemistry (atoms) to macroscopic chemistry (grams).</strong></p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "mole", "Avogadro constant", "particles", "atoms", "molecules", "ions",
+          "mass", "Mr", "formula", "calculation", "6.022 × 10²³"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-2-2-amounts-in-equations",
+        title: "3.2.2 AMOUNTS OF SUBSTANCES IN EQUATIONS",
+        type: "content",
+        study_group: 4,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – Understanding Moles in Balanced Equations</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Key Idea</h4>
+    <p>A balanced chemical equation shows the ratio of moles of reactants and products.</p>
+    <p>The big numbers in a balanced equation tell you how many moles of each substance react or are produced.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1</h4>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Substance</th>
+          <th>Coefficient</th>
+          <th>Moles in Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hydrogen</td>
+          <td>2</td>
+          <td>2 mol</td>
+        </tr>
+        <tr>
+          <td>Oxygen</td>
+          <td>1</td>
+          <td>1 mol</td>
+        </tr>
+        <tr>
+          <td>Water</td>
+          <td>2</td>
+          <td>2 mol</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 This means 2 moles of hydrogen react with 1 mole of oxygen to form 2 moles of water.</strong></p>
+    <p><strong>✅ Mole ratio = 2 : 1 : 2</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2</h4>
+    <p class="equation">Mg + 2 HCl → MgCl₂ + H₂</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Substance</th>
+          <th>Coefficient</th>
+          <th>Moles in Ratio</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Mg</td>
+          <td>1</td>
+          <td>1 mol</td>
+        </tr>
+        <tr>
+          <td>HCl</td>
+          <td>2</td>
+          <td>2 mol</td>
+        </tr>
+        <tr>
+          <td>MgCl₂</td>
+          <td>1</td>
+          <td>1 mol</td>
+        </tr>
+        <tr>
+          <td>H₂</td>
+          <td>1</td>
+          <td>1 mol</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 Meaning: 1 mol of Mg reacts with 2 mol of HCl to produce 1 mol of MgCl₂ and 1 mol of H₂.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Using Mole Ratios to Calculate Amounts</h3>
+  
+  <div class="key-facts-block">
+    <h4>🔢 Step-by-Step Method</h4>
+    <ol>
+      <li>Write the balanced equation.</li>
+      <li>Identify the substance you know and the one you're finding.</li>
+      <li>Find the number of moles you have (using n = m / M<sub>r</sub>).</li>
+      <li>Use the ratio from the equation to find the unknown moles.</li>
+      <li>Convert back to mass (if needed) using m = n × M<sub>r</sub>.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Mass–Mass Calculation</h4>
+    <p><strong>Question: What mass of magnesium oxide is formed when 6.0 g of magnesium reacts with oxygen?</strong></p>
+    <p class="equation">2 Mg + O₂ → 2 MgO</p>
+    
+    <p><strong>Step 1: Find moles of Mg.</strong></p>
+    <p>n = 6.0 ÷ 24 = 0.25 mol</p>
+    
+    <p><strong>Step 2: Ratio Mg : MgO = 2 : 2 (1 : 1).</strong></p>
+    <p>So, moles of MgO = 0.25 mol.</p>
+    
+    <p><strong>Step 3: Find mass of MgO.</strong></p>
+    <p>m = n × M<sub>r</sub> = 0.25 × 40 = 10.0 g</p>
+    
+    <p><strong>✅ Answer: 10.0 g of magnesium oxide formed.</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Reacting Mass Calculation</h4>
+    <p><strong>Question: What mass of hydrogen is produced when 4.0 g of sodium reacts with water?</strong></p>
+    <p class="equation">2 Na + 2 H₂O → 2 NaOH + H₂</p>
+    
+    <p><strong>Step 1: Moles of Na = 4 ÷ 23 = 0.174 mol.</strong></p>
+    
+    <p><strong>Step 2: Ratio Na : H₂ = 2 : 1</strong></p>
+    <p>→ Moles of H₂ = 0.174 ÷ 2 = 0.087 mol.</p>
+    
+    <p><strong>Step 3: Mass of H₂ = 0.087 × 2 = 0.174 g</strong></p>
+    
+    <p><strong>✅ Answer: 0.17 g of hydrogen gas produced.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Using Moles to Predict Products</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Concept</h4>
+    <p>Balanced equations can be used to predict how much of a product forms from known reactant masses — or vice versa.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example – Iron and Oxygen</h4>
+    <p><strong>Reaction:</strong></p>
+    <p class="equation">4 Fe + 3 O₂ → 2 Fe₂O₃</p>
+    
+    <p><strong>Given:</strong> 16.8 g Fe (M<sub>r</sub> = 56).</p>
+    <p><strong>Find:</strong> Mass of Fe₂O₃ produced (M<sub>r</sub> = 160).</p>
+    
+    <p><strong>Step 1:</strong></p>
+    <p>n(Fe) = 16.8 ÷ 56 = 0.3 mol</p>
+    
+    <p><strong>Step 2: Ratio Fe : Fe₂O₃ = 4 : 2 → 2 : 1</strong></p>
+    <p>n(Fe₂O₃) = 0.3 ÷ 2 = 0.15 mol</p>
+    
+    <p><strong>Step 3:</strong></p>
+    <p>m = n × M<sub>r</sub> = 0.15 × 160 = 24 g</p>
+    
+    <p><strong>✅ Answer: 24 g of Fe₂O₃ formed.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Interpreting Equations Using Mole Ratios</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Common Reactions</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Equation</th>
+          <th>Ratio of Reactants : Products</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2 H₂ + O₂ → 2 H₂O</td>
+          <td>2 : 1 : 2</td>
+          <td>Two moles of hydrogen react with one mole of oxygen.</td>
+        </tr>
+        <tr>
+          <td>N₂ + 3 H₂ → 2 NH₃</td>
+          <td>1 : 3 : 2</td>
+          <td>One mole nitrogen reacts with three moles hydrogen to form two moles ammonia.</td>
+        </tr>
+        <tr>
+          <td>4 Fe + 3 O₂ → 2 Fe₂O₃</td>
+          <td>4 : 3 : 2</td>
+          <td>Four moles of Fe react with three moles O₂.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="exam-tip-block">
+    <h4>🧠 Exam Tip</h4>
+    <p>Always simplify mole ratios to the smallest whole numbers.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Limiting Reactants (Intro)</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>When one reactant is used up first, the reaction stops — that reactant is called the <strong>limiting reactant</strong>.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>The other reactant is in excess (some is left over). Only the limiting reactant determines the amount of product made.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example</h4>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+    <p>If you have 5 mol H₂ and 2 mol O₂, the limiting reactant is O₂, because you need 2.5 mol O₂ for 5 mol H₂ — but you only have 2.</p>
+    <p><strong>✅ So O₂ limits the reaction → less water forms.</strong></p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "mole ratio", "balanced equation", "coefficients", "reactants", "products",
+          "calculation", "mass", "limiting reactant", "excess", "stoichiometry"
+        ],
+        practice_items: []
+      },
+      {
+        id: "3-2-3-balance-with-moles",
+        title: "3.2.3 USING MOLES TO BALANCE EQUATIONS",
+        type: "content",
+        study_group: 5,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – Why Moles Are Used to Balance Equations</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Key Idea</h4>
+    <p>Balanced chemical equations show the ratio of moles of reactants and products. If we know how many moles of each substance react or form, we can use those numbers to write a balanced equation.</p>
+    <p><strong>In other words:</strong> The smallest whole-number ratio of moles becomes the coefficients in the balanced equation.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Step-by-Step Method</h3>
+  
+  <div class="key-facts-block">
+    <h4>🔢 Method to Balance Using Moles</h4>
+    <ol>
+      <li>Find the number of moles of each substance (from experiment or given data).</li>
+      <li>Write the ratio of moles of each substance.</li>
+      <li>Divide by the smallest number of moles to simplify the ratio.</li>
+      <li>Multiply up to whole numbers if necessary.</li>
+      <li>Write the balanced equation using these numbers as coefficients.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 1 – Magnesium and Oxygen</h4>
+    <p><strong>Experimental data:</strong></p>
+    <p>0.5 mol Mg reacts with 0.25 mol O₂</p>
+    <p><strong>Product:</strong> MgO</p>
+    
+    <p><strong>Step 1: Write the mole ratio → Mg : O₂ = 0.5 : 0.25</strong></p>
+    
+    <p><strong>Step 2: Divide both by 0.25 → 2 : 1</strong></p>
+    
+    <p><strong>✅ Ratio = 2 : 1 → Equation:</strong></p>
+    <p class="equation">2 Mg + O₂ → 2 MgO</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 2 – Hydrogen and Oxygen</h4>
+    <p><strong>Moles found experimentally:</strong></p>
+    <p>2.0 mol H₂ reacts with 1.0 mol O₂</p>
+    <p><strong>Product:</strong> H₂O</p>
+    
+    <p><strong>Step 1: H₂ : O₂ : H₂O = 2 : 1 : 2</strong></p>
+    
+    <p><strong>✅ Balanced equation:</strong></p>
+    <p class="equation">2 H₂ + O₂ → 2 H₂O</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example 3 – Magnesium and Hydrochloric Acid</h4>
+    <p><strong>Data from experiment:</strong></p>
+    <p>0.1 mol Mg reacts with 0.2 mol HCl, forming 0.1 mol MgCl₂ and 0.1 mol H₂.</p>
+    
+    <p><strong>Step 1: Write the mole ratio</strong></p>
+    <p>Mg : HCl : MgCl₂ : H₂ = 0.1 : 0.2 : 0.1 : 0.1</p>
+    
+    <p><strong>Step 2: Divide by 0.1 → 1 : 2 : 1 : 1</strong></p>
+    
+    <p><strong>✅ Balanced equation:</strong></p>
+    <p class="equation">Mg + 2 HCl → MgCl₂ + H₂</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Using Moles to Check Balanced Equations</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Point</h4>
+    <p>You can check if a given equation is balanced by comparing moles of each element on both sides.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example</h4>
+    <p class="equation">N₂ + 3 H₂ → 2 NH₃</p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Substance</th>
+          <th>Moles</th>
+          <th>Atoms of N</th>
+          <th>Atoms of H</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>N₂</td>
+          <td>1</td>
+          <td>2</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>H₂</td>
+          <td>3</td>
+          <td>—</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>NH₃</td>
+          <td>2</td>
+          <td>2</td>
+          <td>6</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>✅ Same number of N and H atoms → equation balanced.</strong></p>
+  </div>
+
+  <div class="exam-tip-block">
+    <h4>🧠 Important Note</h4>
+    <p>Always compare total atoms of each element — not total moles of substances.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Calculating Unknown Masses Using Balanced Ratios</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Concept</h4>
+    <p>Once an equation is balanced, it can be used to calculate unknown masses of reactants or products.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example</h4>
+    <p><strong>Ammonia is made from nitrogen and hydrogen:</strong></p>
+    <p class="equation">N₂ + 3 H₂ → 2 NH₃</p>
+    
+    <p><strong>Given:</strong> 4 mol H₂</p>
+    <p><strong>Find:</strong> moles of NH₃ formed</p>
+    
+    <p><strong>Ratio H₂ : NH₃ = 3 : 2</strong></p>
+    <p>n(NH₃) = 4 × (2/3) = 2.67 mol</p>
+    
+    <p><strong>✅ Answer: 2.67 mol NH₃ formed.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Practice Problem</h3>
+  
+  <div class="example-block">
+    <h4>🟢 Practice Question</h4>
+    <p><strong>A student found that 0.4 mol of calcium reacted completely with 0.8 mol of chlorine gas. Write a balanced equation for this reaction.</strong></p>
+    
+    <p><strong>Step 1: Ca : Cl₂ = 0.4 : 0.8</strong></p>
+    
+    <p><strong>Divide both by 0.4 → 1 : 2</strong></p>
+    
+    <p><strong>✅ Balanced equation:</strong></p>
+    <p class="equation">Ca + Cl₂ → CaCl₂</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Exam Technique</h3>
+  
+  <div class="exam-tip-block">
+    <h4>🧠 Exam Tips</h4>
+    <ul>
+      <li>🔹 Always state your mole ratio clearly — AQA often awards one mark for this.</li>
+      <li>🔹 Show your working, even if your final ratio is obvious.</li>
+      <li>🔹 Never write decimals as coefficients — multiply up to whole numbers (e.g., 1.5 : 1 → 3 : 2).</li>
+      <li>🔹 Units for mole data are often hidden in tables — check carefully.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Common Errors</h3>
+  
+  <div class="warning-block">
+    <h4>⚡ Common Mistakes</h4>
+    <ul>
+      <li>❌ Forgetting to simplify ratios (e.g., 4 : 2 : 2 should be 2 : 1 : 1).</li>
+      <li>❌ Using masses instead of moles to balance.</li>
+      <li>❌ Forgetting diatomic molecules (O₂, H₂, Cl₂, N₂).</li>
+    </ul>
+    <p><strong>🧠 Always convert given masses → moles first using n = m / M<sub>r</sub>, then balance.</strong></p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "balance equation", "mole ratio", "coefficients", "experimental data", "simplify",
+          "whole numbers", "stoichiometry", "calculation", "method"
+        ],
+        practice_items: []
       }
     ]
   },
