@@ -97,13 +97,13 @@ Return as JSON:
 }`;
     }
 
-    let userPrompt = `Study Content:\n\n${studyContent}`;
+    let userPrompt = `Study Content:\n\n${studyContent}\n\nIMPORTANT: Generate a question ONLY about the content above. Do not introduce topics not mentioned in these notes.`;
     
     if (previousQuestions.length > 0) {
       if (questionType === 'blurt') {
-        userPrompt += `\n\nYou have ALREADY asked these blurt questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nDo NOT repeat the same fact or wording.\nPick a different short fact/term directly from the study content.\nKeep it a single 5–10 word recall question with no scenarios or calculations.`;
+        userPrompt += `\n\nPrevious questions asked:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate a different blurt question about the SAME study content above. Pick a different fact or term from the SAME notes. Do not repeat the exact wording.`;
       } else {
-        userPrompt += `\n\nYou have ALREADY asked these exam questions:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nConstraints:\n- Do NOT repeat the same subtopic or wording\n- Select a different point from the same study content\n- Stay within allowed GCSE types; 1–4 marks; no invented scenarios or multi-part unless the notes explicitly present them`;
+        userPrompt += `\n\nPrevious questions asked:\n${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join('\n')}\n\nGenerate a different exam question about the SAME study content above. Stay within the SAME topic. Pick a different point or aspect from the SAME notes provided. Do not repeat the exact wording or concept.`;
       }
     }
 
