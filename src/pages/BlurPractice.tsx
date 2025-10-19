@@ -132,6 +132,14 @@ const BlurPractice = () => {
   const [targetPairIndex, setTargetPairIndex] = useState<number | null>(null);
   const [pairReady, setPairReady] = useState(false);
 
+  // Persist current pair index for robustness across navigations
+  useEffect(() => {
+    if (!topicId || !subsectionId) return;
+    try {
+      sessionStorage.setItem(`bp:${topicId}:${subsectionId}:pairIndex`, String(currentPairIndex));
+    } catch {}
+  }, [currentPairIndex, topicId, subsectionId]);
+
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
     if (!topic) return;
