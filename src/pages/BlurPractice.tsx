@@ -129,6 +129,8 @@ const BlurPractice = () => {
   const [selectedQuestionType, setSelectedQuestionType] = useState<"blurt" | "exam" | null>(null);
   const [pendingGenerateType, setPendingGenerateType] = useState<"blurt" | "exam" | null>(null);
   const [pendingMoveToNext, setPendingMoveToNext] = useState(false);
+  const [targetPairIndex, setTargetPairIndex] = useState<number | null>(null);
+  const [pairReady, setPairReady] = useState(false);
 
   useEffect(() => {
     const topic = sectionsData.find((t) => t.id === topicId);
@@ -206,16 +208,20 @@ const BlurPractice = () => {
       // Clear the state to prevent re-triggering
       window.history.replaceState({}, document.title);
     } else if (state?.generateQuestion) {
+      console.log("Generate question requested from Results", {
+        generateQuestion: state.generateQuestion,
+        stateCurrentPairIndex: state.currentPairIndex,
+        currentPairIndexBefore: currentPairIndex
+      });
       // Skip intro and study content, go straight to question generation
       setShowTimerSection(false);
       setShowStudyContent(false);
       setTimerStarted(false);
       setQuestionType(state.generateQuestion);
-      // Restore current pair index if provided
-      if (typeof state.currentPairIndex === 'number') {
-        console.log("Restoring currentPairIndex for question generation:", state.currentPairIndex);
-        setCurrentPairIndex(state.currentPairIndex);
-      }
+      // Set target pair index from navigation state
+      const restoredPairIndex = typeof state.currentPairIndex === 'number' ? state.currentPairIndex : currentPairIndex;
+      console.log("Setting targetPairIndex to:", restoredPairIndex);
+      setTargetPairIndex(restoredPairIndex);
       // Restore previous question results if coming back from results page
       if (state.previousQuestionResults) {
         setQuestionResults(state.previousQuestionResults);
@@ -225,6 +231,33 @@ const BlurPractice = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Materialize pair from targetPairIndex
+  useEffect(() => {
+    if (internalSubsections.length === 0 || targetPairIndex === null) {
+      return;
+    }
+    
+    console.log("Materializing pair from targetPairIndex", {
+      targetPairIndex,
+      internalSubsectionsCount: internalSubsections.length
+    });
+    
+    const start = targetPairIndex * 2;
+    const nextPair = internalSubsections.slice(start, start + 2);
+    
+    console.log("Setting currentPairIndex and currentPairSubsections", {
+      currentPairIndex: targetPairIndex,
+      pairTitles: nextPair.map(s => s.title)
+    });
+    
+    setCurrentPairIndex(targetPairIndex);
+    setCurrentPairSubsections(nextPair);
+    setPairReady(true);
+    
+    // Clear target after materializing
+    setTargetPairIndex(null);
+  }, [internalSubsections, targetPairIndex]);
 
   // Execute pending move to next when data is ready AND currentPairIndex is restored
   useEffect(() => {
@@ -239,16 +272,22 @@ const BlurPractice = () => {
     }
   }, [pendingMoveToNext, internalSubsections, currentPairSubsections, currentPairIndex]);
 
-  // Wait for content to be ready before generating question
+  // Wait for content to be ready and pairReady before generating question
   useEffect(() => {
-    if (pendingGenerateType && currentPairSubsections.length > 0) {
+    if (pendingGenerateType && pairReady && currentPairSubsections.length > 0) {
+      console.log("Ready to generate question", {
+        pendingGenerateType,
+        currentPairIndex,
+        pairTitles: currentPairSubsections.map(s => s.title)
+      });
       generateNewQuestion(pendingGenerateType)
         .finally(() => {
           setIsGeneratingQuestion(false);
           setPendingGenerateType(null);
+          setPairReady(false);
         });
     }
-  }, [pendingGenerateType, currentPairSubsections]);
+  }, [pendingGenerateType, pairReady, currentPairIndex, currentPairSubsections]);
 
   // Text selection handler for AI chatbot
   useEffect(() => {
@@ -406,11 +445,12 @@ const BlurPractice = () => {
     const studyContent = buildStudyContent();
     
     const cumulative = getCumulativeSubsections();
-    console.log("generateNewQuestion", {
+    console.log("generateNewQuestion CALLED", {
       qType,
       endpoint: qType === "exam" ? "generate-varied-questions" : "generate-questions",
       currentPairIndex,
       cumulativeCount: cumulative.length,
+      cumulativeTitles: cumulative.map(s => s.title),
       studyChars: studyContent.length,
       previousQuestionsCount: generatedQuestions.length
     });
@@ -1161,12 +1201,12 @@ const BlurPractice = () => {
 
                   {showPhotoUpload && currentGeneratedQuestion && (
                     <PhotoUpload
-                      studyContent={currentPairSubsections.map(s => s.html).join('\n\n')}
+                      studyContent={buildStudyContent()}
                       questions={generatedQuestions.map(q => q.question)}
                       currentQuestion={currentGeneratedQuestion.question}
                       topicId={topicId || ''}
                       subsectionId={subsectionId || ''}
-                      subsectionTitle={currentPairSubsections.map(s => s.title).join(', ')}
+                      subsectionTitle={getCumulativeSubsections().map(s => s.title).join(', ')}
                       questionType={questionType}
                       marks={currentGeneratedQuestion.marks}
                     />
