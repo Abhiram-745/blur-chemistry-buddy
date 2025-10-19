@@ -284,6 +284,12 @@ const BlurPractice = () => {
     );
   };
 
+  // Get cumulative subsections up to current pair
+  const getCumulativeSubsections = () => {
+    const end = Math.min(internalSubsections.length, (currentPairIndex + 1) * 2);
+    return internalSubsections.slice(0, end);
+  };
+
   const generateFeedback = (found: string[], missed: string[], answerLower: string, prompt: PracticeItem): string => {
     const totalTopics = prompt.feedback_guidance?.topic_coverage?.length || 0;
     let feedbackParts: string[] = [];
@@ -369,64 +375,46 @@ const BlurPractice = () => {
     }
   };
 
-  // Build study content from multiple fallback sources
+  // Build study content from cumulative pairs up to current pair
   const buildStudyContent = (): string => {
-    // 1) Try currentPairSubsections first
-    const fromPair = currentPairSubsections
-      .map(sub => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(sub.html, 'text/html');
-        return doc.body.textContent || '';
-      })
-      .join('\n\n')
-      .trim();
-    if (fromPair) return fromPair;
-
-    // 2) Fallback to internalSubsections using currentPairIndex
-    if (internalSubsections.length) {
-      const start = currentPairIndex * 2;
-      const fallbackPair = internalSubsections.slice(start, start + 2);
-      const fromInternal = fallbackPair
-        .map(sub => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(sub.html, 'text/html');
-          return doc.body.textContent || '';
-        })
-        .join('\n\n')
-        .trim();
-      if (fromInternal) return fromInternal;
-    }
-
-    // 3) Final fallback: parse from the static sectionsData source
-    const topic = sectionsData.find(t => t.id === topicId);
-    const target = topic?.subsections.find(s => s.id === subsectionId);
-    const html = target?.content_html ?? '';
-    if (html) {
+    // Build cumulative content from all pairs up to current pair
+    const cumulative = getCumulativeSubsections();
+    const contentText = cumulative.map(sub => {
       const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      const nodes = Array.from(doc.querySelectorAll('div.subsection')).slice(0, 2);
-      const text = nodes.map(n => n.textContent || '').join('\n\n').trim();
-      if (text) return text;
-    }
-    return "";
+      const doc = parser.parseFromString(sub.html, 'text/html');
+      return doc.body.textContent || '';
+    }).join('\n\n').trim();
+    
+    console.log("buildStudyContent - cumulative", {
+      currentPairIndex,
+      cumulativeCount: cumulative.length,
+      studyChars: contentText.length,
+      titles: cumulative.map(s => s.title)
+    });
+    
+    return contentText;
   };
 
   const generateNewQuestion = async (typeOverride?: "blurt" | "exam") => {
     setIsGeneratingQuestion(true);
     const qType = typeOverride ?? questionType;
     const studyContent = buildStudyContent();
+    
+    const cumulative = getCumulativeSubsections();
+    console.log("generateNewQuestion", {
+      qType,
+      endpoint: qType === "exam" ? "generate-varied-questions" : "generate-questions",
+      currentPairIndex,
+      cumulativeCount: cumulative.length,
+      studyChars: studyContent.length,
+      previousQuestionsCount: generatedQuestions.length
+    });
+    
     try {
 
       const endpoint = qType === "exam" 
         ? "generate-varied-questions"
         : "generate-questions";
-      
-      console.log("Generating question:", {
-        qType,
-        endpoint,
-        pairCount: currentPairSubsections.length,
-        studyChars: studyContent.length
-      });
 
       // Get previously asked questions to avoid repetition
       const previousQuestions = generatedQuestions.map(q => q.question);
@@ -549,14 +537,14 @@ const BlurPractice = () => {
     });
 
     try {
-      // Get the content from the current internal subsections for context
-      const expectedContent = currentPairSubsections
-        .map(sub => {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(sub.html, 'text/html');
-          return doc.body.textContent || '';
-        })
-        .join("\n\n");
+      // Build expected content from cumulative pairs (same as question generation)
+      const expectedContent = buildStudyContent();
+      
+      console.log("handleSubmit - marking against cumulative content", {
+        currentPairIndex,
+        expectedChars: expectedContent.length,
+        marks: currentGeneratedQuestion.marks
+      });
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/mark-answer`,
@@ -660,12 +648,15 @@ const BlurPractice = () => {
     if (nextPairStart < internalSubsections.length) {
       // Move to next pair within same subsection
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
+      const nextCumulative = internalSubsections.slice(0, nextPairStart + 2);
       
       console.log("Moving to next pair", {
         currentPairIndexBefore: currentPairIndex,
         nextPairIndex,
         nextPairStart,
         pairTitles: nextPair.map(s => s.title),
+        cumulativeNextCount: nextCumulative.length,
+        titlesIncluded: nextCumulative.map(s => s.title),
         totalPairs: Math.ceil(internalSubsections.length / 2)
       });
       
@@ -683,7 +674,7 @@ const BlurPractice = () => {
       const seconds = Math.ceil((wordCount / 50) * 10);
       setMemorizationDuration(Math.max(30, seconds));
       
-      // Reset all state for new pair - but go straight to notes
+      // Reset UI state for new pair (but keep generatedQuestions for cumulative tracking)
       setShowTimerSection(false);
       setShowStudyContent(true);
       setShowMemorizationTimer(true);
@@ -695,7 +686,6 @@ const BlurPractice = () => {
       setShowFinalResults(false);
       setExpandedSections([0]);
       setCurrentGeneratedQuestion(null);
-      setGeneratedQuestions([]);
       setQuestionResults([]);
       setTimeElapsed(0);
       setSelectedQuestionType(null);

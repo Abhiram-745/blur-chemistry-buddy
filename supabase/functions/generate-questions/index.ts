@@ -31,7 +31,9 @@ function makeBlurtFallback({ studyContent, numQuestions, previousQuestions }: { 
   for (const kw of kws) {
     const q = `Define: ${kw}`;
     if (!prevSet.has(q)) {
-      questions.push({ question: q, marks: 1, expectedKeyPoints: [kw] });
+      // Vary marks 1-4 for fallback
+      const fallbackMarks = 1 + Math.floor(Math.random() * 4);
+      questions.push({ question: q, marks: fallbackMarks, expectedKeyPoints: [kw] });
     }
     if (questions.length >= numQuestions) break;
   }
@@ -83,11 +85,12 @@ serve(async (req) => {
 3) MUST include at least TWO of the listed keywords
 4) VARY each question - focus on DIFFERENT terms/concepts each time
 5) Try different question styles: "Define...", "What is...", "State...", "Identify..."
+6) Assign marks 1-4 based on complexity (1 for simple definitions, 2-4 for more complex recall)
 
 Do NOT repeat previous questions: 
 ${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
 
-Return: { "questions": [ { "question": string, "marks": 1, "expectedKeyPoints": string[] } ] }`;
+Return: { "questions": [ { "question": string, "marks": number (1-4), "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
@@ -122,7 +125,9 @@ Return: { "questions": [ { "question": string, "marks": 1, "expectedKeyPoints": 
       const lower = text.toLowerCase();
       let overlap = 0; for (const k of kws) { if (lower.includes(k)) overlap++; }
       if (overlap < 2) continue;
-      out.push({ question: text, marks: 1, expectedKeyPoints: Array.isArray(q?.expectedKeyPoints) ? q.expectedKeyPoints : [] });
+      // Clamp marks to 1-4
+      const marks = Math.min(4, Math.max(1, Number(q?.marks ?? 1)));
+      out.push({ question: text, marks, expectedKeyPoints: Array.isArray(q?.expectedKeyPoints) ? q.expectedKeyPoints : [] });
       if (out.length >= numQuestions) break;
     }
 

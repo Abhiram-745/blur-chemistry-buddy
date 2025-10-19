@@ -75,13 +75,13 @@ serve(async (req) => {
     const system = `GCSE chemistry examiner. STRICT TOPIC LOCK. Stay fully within the provided notes. Include at least TWO of these keywords in each question: ${shuffledKws.join(", ")}. No invented experiments. Output JSON.`;
     const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} EXAM question(s) about ONLY the content above. VARY each question:
 - Focus on DIFFERENT aspects/concepts each time
-- Use different marks (vary between 1-5 marks based on complexity)
+- Use different marks (vary between 1-6 marks based on complexity)
 - Try different question styles (explain, compare, describe, calculate if numbers present)
 
 Do NOT repeat previous questions: 
 ${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
 
-Return: { "questions": [ { "question": string, "marks": number, "expectedKeyPoints": string[] } ] }`;
+Return: { "questions": [ { "question": string, "marks": number (1-6), "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
