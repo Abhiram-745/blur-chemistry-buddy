@@ -628,15 +628,39 @@ const BlurPractice = () => {
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
       setCurrentPairIndex(nextPairIndex);
       setCurrentPairSubsections(nextPair);
+      
+      // Recalculate memorization time for the new pair
+      const textContent = nextPair.map(sub => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(sub.html, 'text/html');
+        return doc.body.textContent || '';
+      }).join(' ');
+      
+      const wordCount = textContent.trim().split(/\s+/).length;
+      const seconds = Math.ceil((wordCount / 50) * 10);
+      setMemorizationDuration(Math.max(30, seconds));
+      
+      // Reset all state for new pair
       setShowTimerSection(true);
       setShowStudyContent(false);
       setTimerStarted(false);
       setCurrentQuestionIndex(0);
       setUserAnswer("");
       setShowQuestionFeedback(false);
+      setShowFinalResults(false);
       setExpandedSections([0]);
       setCurrentGeneratedQuestion(null);
-      setGeneratedQuestions([]); // Reset questions for new pair
+      setGeneratedQuestions([]);
+      setQuestionResults([]);
+      setTimeElapsed(0);
+      setShowMemorizationTimer(false);
+      setSelectedQuestionType(null);
+      setShowQuestionTypeSelector(true);
+      
+      toast({
+        title: "Moving to Next Pair",
+        description: `Now showing pair ${nextPairIndex + 1} of ${Math.ceil(internalSubsections.length / 2)}`
+      });
     } else {
       // No more pairs in this subsection, move to next subsection in topic
       const topic = sectionsData.find((t) => t.id === topicId);
