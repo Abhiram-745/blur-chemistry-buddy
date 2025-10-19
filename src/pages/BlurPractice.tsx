@@ -211,6 +211,11 @@ const BlurPractice = () => {
       setShowStudyContent(false);
       setTimerStarted(false);
       setQuestionType(state.generateQuestion);
+      // Restore current pair index if provided
+      if (typeof state.currentPairIndex === 'number') {
+        console.log("Restoring currentPairIndex for question generation:", state.currentPairIndex);
+        setCurrentPairIndex(state.currentPairIndex);
+      }
       // Restore previous question results if coming back from results page
       if (state.previousQuestionResults) {
         setQuestionResults(state.previousQuestionResults);

@@ -207,7 +207,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { generateQuestion: "blurt", previousQuestionResults } 
+              state: { generateQuestion: "blurt", previousQuestionResults, currentPairIndex } 
             })}
           >
             <PenLine className="mr-2 h-5 w-5" />
@@ -218,7 +218,7 @@ const Results = () => {
             size="lg"
             className="w-full"
             onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { generateQuestion: "exam", previousQuestionResults } 
+              state: { generateQuestion: "exam", previousQuestionResults, currentPairIndex } 
             })}
           >
             <FileQuestion className="mr-2 h-5 w-5" />
