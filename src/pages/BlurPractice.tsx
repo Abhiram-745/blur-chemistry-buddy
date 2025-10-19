@@ -188,17 +188,22 @@ const BlurPractice = () => {
       console.log("Move to next requested, setting pending", { 
         internalLen: internalSubsections.length, 
         pairLen: currentPairSubsections.length,
-        stateCurrentPairIndex: state.currentPairIndex
+        stateCurrentPairIndex: state.currentPairIndex,
+        currentPairIndexBefore: currentPairIndex
       });
-      // Restore the current pair index from navigation state
+      // Restore the current pair index from navigation state FIRST
       if (typeof state.currentPairIndex === 'number') {
+        console.log("Restoring currentPairIndex from state:", state.currentPairIndex);
         setCurrentPairIndex(state.currentPairIndex);
+      } else {
+        console.warn("No currentPairIndex in navigation state, staying at:", currentPairIndex);
       }
       // Preserve question type if provided
       if (state.keepType) {
         setQuestionType(state.keepType);
       }
       setPendingMoveToNext(true);
+      // Clear the state to prevent re-triggering
       window.history.replaceState({}, document.title);
     } else if (state?.generateQuestion) {
       // Skip intro and study content, go straight to question generation
@@ -216,7 +221,7 @@ const BlurPractice = () => {
     }
   }, [location.state]);
 
-  // Execute pending move to next when data is ready
+  // Execute pending move to next when data is ready AND currentPairIndex is restored
   useEffect(() => {
     if (pendingMoveToNext && internalSubsections.length > 0 && currentPairSubsections.length > 0) {
       console.log("Executing pending moveToNext", { 
@@ -227,7 +232,7 @@ const BlurPractice = () => {
       handleMoveToNextSubsection();
       setPendingMoveToNext(false);
     }
-  }, [pendingMoveToNext, internalSubsections, currentPairSubsections]);
+  }, [pendingMoveToNext, internalSubsections, currentPairSubsections, currentPairIndex]);
 
   // Wait for content to be ready before generating question
   useEffect(() => {
@@ -598,6 +603,7 @@ const BlurPractice = () => {
       }
 
       // Navigate to Results page with feedback data
+      console.log("Navigating to Results with currentPairIndex:", currentPairIndex);
       navigate("/results", {
         state: {
           question: currentGeneratedQuestion.question,
@@ -656,6 +662,7 @@ const BlurPractice = () => {
       const nextPair = internalSubsections.slice(nextPairStart, nextPairStart + 2);
       
       console.log("Moving to next pair", {
+        currentPairIndexBefore: currentPairIndex,
         nextPairIndex,
         nextPairStart,
         pairTitles: nextPair.map(s => s.title),

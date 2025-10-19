@@ -36,6 +36,8 @@ const Results = () => {
   const { question, answer, keyIdeasCovered, keyIdeasMissed, score, maxMarks, topicId, subsectionId, subsectionTitle, questionType, photoImage, feedbackText, currentPairIndex, previousQuestionResults } = feedbackData;
   const percentage = Math.round((score / maxMarks) * 100);
 
+  console.log("Results page - received currentPairIndex:", currentPairIndex);
+
   // Save practice session to database
   useEffect(() => {
     const savePracticeSession = async () => {
@@ -190,9 +192,12 @@ const Results = () => {
             variant="outline"
             size="lg"
             className="w-full"
-            onClick={() => navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
-              state: { moveToNext: true, keepType: questionType, currentPairIndex } 
-            })}
+            onClick={() => {
+              console.log("Move to Next clicked - passing currentPairIndex:", currentPairIndex);
+              navigate(`/blur-practice/${topicId}/${subsectionId}`, { 
+                state: { moveToNext: true, keepType: questionType, currentPairIndex } 
+              });
+            }}
           >
             <BookOpen className="mr-2 h-5 w-5" />
             Move to Next
