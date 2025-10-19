@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,6 +22,39 @@ export const PhotoUpload = ({ studyContent, questions, currentQuestion, topicId,
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.indexOf('image') !== -1) {
+          const file = item.getAsFile();
+          if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+              toast.error("File too large. Maximum size is 10MB.");
+              return;
+            }
+            
+            setSelectedFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setPreviewUrl(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+            toast.success("Image pasted successfully!");
+          }
+          event.preventDefault();
+          break;
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, []);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -96,7 +129,7 @@ export const PhotoUpload = ({ studyContent, questions, currentQuestion, topicId,
         {!previewUrl ? (
           <label className="flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-muted/50 rounded-lg transition-colors">
             <Upload className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-sm text-muted-foreground mb-2">Click to upload or drag and drop</p>
+            <p className="text-sm text-muted-foreground mb-2">Click to upload, drag and drop, or paste (Ctrl+V)</p>
             <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
             <input
               type="file"
