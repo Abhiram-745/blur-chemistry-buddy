@@ -7022,7 +7022,7 @@ H—N—H</pre>
         study_group: 7,
         content_html: `
 <div class="subsection">
-  <h3 class="subsection-heading">Subsection 1 – What Is Atom Economy?</h3>
+  <h3 class="subsection-heading">🧩 Subsection 1 – What Is Atom Economy?</h3>
   
   <div class="definition-block">
     <h4>🔵 Definition</h4>
@@ -7033,10 +7033,8 @@ H—N—H</pre>
 
   <div class="key-facts-block">
     <h4>🧠 Key Idea</h4>
-    <ul>
-      <li>High atom economy → fewer atoms wasted → more efficient reaction.</li>
-      <li>Low atom economy → many atoms form unwanted by-products → wasteful and expensive.</li>
-    </ul>
+    <p>High atom economy → fewer atoms wasted → more efficient reaction.</p>
+    <p>Low atom economy → many atoms form unwanted by-products → wasteful and expensive.</p>
     <p><strong>💡 Atom economy is always calculated from the balanced equation using formula masses (M<sub>r</sub> values), not from actual experimental data.</strong></p>
   </div>
 </div>
@@ -7045,7 +7043,7 @@ H—N—H</pre>
   <h3 class="subsection-heading">Subsection 2 – Why Atom Economy Is Important</h3>
   
   <div class="key-facts-block">
-    <h4>🧠 Importance</h4>
+    <h4>🧠 Why It Matters</h4>
     <table class="data-table">
       <thead>
         <tr>
@@ -7096,7 +7094,7 @@ H—N—H</pre>
     <p>Total M<sub>r</sub> of desired products = 2 × 18 = 36</p>
     <p>Total M<sub>r</sub> of all products = 36</p>
     
-    <p>Atom Economy = 36 × 100 = 100%</p>
+    <p>Atom Economy = 36 × 100 / 36 = 100%</p>
     <p><strong>✅ 100% atom economy (no waste — all atoms form water).</strong></p>
   </div>
 
@@ -7109,7 +7107,7 @@ H—N—H</pre>
     <p class="equation">C₂H₄ + Cl₂ → C₂H₄Cl₂</p>
     <p>Still 100%, since one product forms.</p>
     
-    <p><strong>🧠 So atom economy is only <100% if unwanted products are formed.</strong></p>
+    <p><strong>🧠 So atom economy is only &lt;100% if unwanted products are formed.</strong></p>
   </div>
 
   <div class="example-block">
@@ -7123,19 +7121,31 @@ H—N—H</pre>
       <tbody>
         <tr>
           <td>2NaCl</td>
-          <td>2 × 58.5 = 117</td>
+          <td>=</td>
+          <td>2 × 58.5</td>
+          <td>=</td>
+          <td>117</td>
         </tr>
         <tr>
           <td>H₂O</td>
+          <td>=</td>
           <td>18</td>
+          <td></td>
+          <td></td>
         </tr>
         <tr>
           <td>CO₂</td>
+          <td>=</td>
           <td>44</td>
+          <td></td>
+          <td></td>
         </tr>
         <tr>
           <td><strong>Total</strong></td>
+          <td>=</td>
           <td><strong>179</strong></td>
+          <td></td>
+          <td></td>
         </tr>
       </tbody>
     </table>
@@ -7171,7 +7181,7 @@ H—N—H</pre>
           <td>Industrial synthesis, addition reactions</td>
         </tr>
         <tr>
-          <td>Low (<70%)</td>
+          <td>Low (&lt;70%)</td>
           <td>Inefficient, lots of by-products</td>
           <td>Substitution or neutralisation reactions</td>
         </tr>
@@ -7244,7 +7254,11 @@ H—N—H</pre>
         </tr>
       </tbody>
     </table>
-    <p><strong>Example:</strong> A reaction could have 100% atom economy but 50% yield if half the product was lost during extraction.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example:</h4>
+    <p>A reaction could have 100% atom economy but 50% yield if half the product was lost during extraction.</p>
   </div>
 </div>
 
@@ -7263,12 +7277,13 @@ H—N—H</pre>
     
     <p><strong>Which has the higher atom economy?</strong></p>
     
-    <p><strong>Step 1: Fermentation:</strong></p>
+    <p><strong>Step 1:</strong></p>
+    <p><strong>Fermentation:</strong></p>
     <p>M<sub>r</sub> (desired) = 2 × 46 = 92</p>
     <p>Total M<sub>r</sub> (products) = 92 + (2 × 44) = 180</p>
     <p>Atom economy = 92 × 100 / 180 = 51.1%</p>
     
-    <p><strong>Step 2: Hydration:</strong></p>
+    <p><strong>Hydration:</strong></p>
     <p>Atom economy = 46 × 100 / 46 = 100%</p>
     
     <p><strong>✅ Answer: Hydration of ethene → 100% atom economy → more efficient and sustainable.</strong></p>
@@ -7309,7 +7324,8 @@ H—N—H</pre>
   <div class="definition-block">
     <h4>🔵 Definition</h4>
     <p>The concentration of a solution tells you how much solute (solid, liquid, or gas) is dissolved in a given volume of solvent.</p>
-    <p><strong>🧠 In simpler words:</strong> How much stuff is in a given amount of liquid.</p>
+    <p><strong>🧠 In simpler words:</strong></p>
+    <p>How much stuff is in a given amount of liquid.</p>
   </div>
 
   <div class="key-facts-block">
@@ -7389,11 +7405,11 @@ H—N—H</pre>
 </div>
 
 <div class="subsection">
-  <h3 class="subsection-heading">Subsection 3 – Worked Examples</h3>
+  <h3 class="subsection-heading">💡 Subsection 3 – Worked Examples</h3>
   
   <div class="example-block">
     <h4>💎 Example 1 – Find Concentration (g/dm³)</h4>
-    <p><strong>A solution contains 5.0 g of sodium chloride dissolved in 0.25 dm³ of water. Find its concentration in g/dm³.</strong></p>
+    <p>A solution contains 5.0 g of sodium chloride dissolved in 0.25 dm³ of water. Find its concentration in g/dm³.</p>
     
     <p>c = m / V = 5.0 / 0.25 = 20 g/dm³</p>
     
@@ -7402,7 +7418,7 @@ H—N—H</pre>
 
   <div class="example-block">
     <h4>💎 Example 2 – Convert to mol/dm³</h4>
-    <p><strong>NaCl has an M<sub>r</sub> = 58.5.</strong></p>
+    <p>NaCl has an M<sub>r</sub> = 58.5.</p>
     <p>c (mol/dm³) = 20 / 58.5 = 0.34 mol/dm³</p>
     
     <p><strong>✅ Answer: 0.34 mol/dm³</strong></p>
@@ -7410,7 +7426,7 @@ H—N—H</pre>
 
   <div class="example-block">
     <h4>🟢 Example 3 – Find Moles in a Solution</h4>
-    <p><strong>A 250 cm³ (0.25 dm³) solution of sulfuric acid (H₂SO₄) has a concentration of 0.2 mol/dm³. Find the number of moles of acid present.</strong></p>
+    <p>A 250 cm³ (0.25 dm³) solution of sulfuric acid (H₂SO₄) has a concentration of 0.2 mol/dm³. Find the number of moles of acid present.</p>
     
     <p>n = c × V = 0.2 × 0.25 = 0.05 mol</p>
     
@@ -7419,9 +7435,9 @@ H—N—H</pre>
 
   <div class="example-block">
     <h4>🟢 Example 4 – Find Mass in Solution</h4>
-    <p><strong>A 0.1 mol/dm³ solution of potassium hydroxide (KOH) has a volume of 0.5 dm³. Find the mass of KOH in the solution (M<sub>r</sub> = 56).</strong></p>
+    <p>A 0.1 mol/dm³ solution of potassium hydroxide (KOH) has a volume of 0.5 dm³. Find the mass of KOH in the solution (M<sub>r</sub> = 56).</p>
     
-    <p>n = c × V = 0.1 × 0.5 = 0.05</p>
+    <p>n = c × V = 0.1 × 0.5 = 0.05 mol</p>
     <p>m = n × M<sub>r</sub> = 0.05 × 56 = 2.8 g</p>
     
     <p><strong>✅ Answer: 2.8 g of KOH</strong></p>
@@ -7441,13 +7457,13 @@ H—N—H</pre>
   </div>
 
   <div class="exam-tip-block">
-    <h4>🧠 Exam Tip</h4>
+    <h4>🧠 Exam Tip:</h4>
     <p>If the same solute is dissolved in a smaller volume, the concentration increases.</p>
   </div>
 
   <div class="example-block">
     <h4>🟢 Example</h4>
-    <p><strong>10 g NaCl in:</strong></p>
+    <p>10 g NaCl in:</p>
     <ul>
       <li>1 dm³ → 10 g/dm³</li>
       <li>0.5 dm³ → 20 g/dm³</li>
@@ -7464,8 +7480,8 @@ H—N—H</pre>
     <table class="data-table">
       <thead>
         <tr>
-          <th>dm³</th>
-          <th>cm³</th>
+          <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -7474,12 +7490,12 @@ H—N—H</pre>
           <td>1000 cm³</td>
         </tr>
         <tr>
-          <td>0.25 dm³</td>
           <td>250 cm³</td>
+          <td>0.25 dm³</td>
         </tr>
         <tr>
-          <td>0.025 dm³</td>
           <td>25 cm³</td>
+          <td>0.025 dm³</td>
         </tr>
       </tbody>
     </table>
@@ -7541,16 +7557,6 @@ H—N—H</pre>
           <td>Concentration (moles)</td>
           <td>c = n / V</td>
           <td>mol/dm³</td>
-        </tr>
-        <tr>
-          <td>Moles from concentration</td>
-          <td>n = c × V</td>
-          <td>mol</td>
-        </tr>
-        <tr>
-          <td>Mass from concentration</td>
-          <td>m = c × V</td>
-          <td>g</td>
         </tr>
       </tbody>
     </table>
