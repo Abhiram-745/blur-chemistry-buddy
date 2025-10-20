@@ -12,7 +12,7 @@ import SectionContent from "@/components/SectionContent";
 import { AIChatbot } from "@/components/AIChatbot";
 import { PhotoUpload } from "@/components/PhotoUpload";
 import { MemorizationTimer } from "@/components/MemorizationTimer";
-import PracticeExamQuestions from "@/components/PracticeExamQuestions";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -994,22 +994,6 @@ const BlurPractice = () => {
             </CardContent>
           </Card>
 
-          <PracticeExamQuestions 
-            sectionContent={currentPairSubsections.map(sub => {
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(sub.html, 'text/html');
-              return doc.body.textContent || '';
-            }).join('\n\n')}
-            sectionTitle={subsectionTitle}
-            subsections={currentPairSubsections.map(sub => {
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(sub.html, 'text/html');
-              return {
-                title: sub.title,
-                content: doc.body.textContent || ''
-              };
-            })}
-          />
 
           {showMemorizationTimer && (
             <Card className="mt-6">
