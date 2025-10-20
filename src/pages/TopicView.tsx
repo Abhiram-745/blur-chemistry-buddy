@@ -8,6 +8,7 @@ import { sectionsData, TopicSection, Subsection } from "@/data/sectionsData";
 import SectionContent from "@/components/SectionContent";
 import ColorLegend from "@/components/ColorLegend";
 import PeriodicTableTimeline from "@/components/PeriodicTableTimeline";
+import PracticeExamQuestions from "@/components/PracticeExamQuestions";
 import {
   Collapsible,
   CollapsibleContent,
@@ -206,6 +207,18 @@ const TopicView = () => {
               </Card>
             ))}
           </div>
+        </div>
+
+        {/* Practice Exam Questions Section */}
+        <div className="mt-12">
+          <PracticeExamQuestions 
+            sectionContent={topic.subsections.map(sub => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(sub.content_html, 'text/html');
+              return doc.body.textContent || '';
+            }).join('\n\n')}
+            sectionTitle={topic.title}
+          />
         </div>
       </div>
     </div>
