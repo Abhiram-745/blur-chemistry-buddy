@@ -41,20 +41,20 @@ function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { s
   return { questions };
 }
 
-async function callPerplexityWithTimeout(payload: any, timeoutMs = 20000) {
-  const key = Deno.env.get("PERPLEXITY_API_KEY");
-  if (!key) throw new Error("PERPLEXITY_API_KEY is not configured");
+async function callLovableAIWithTimeout(payload: any, timeoutMs = 20000) {
+  const key = Deno.env.get("LOVABLE_API_KEY");
+  if (!key) throw new Error("LOVABLE_API_KEY is not configured");
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const resp = await fetch("https://api.perplexity.ai/chat/completions", {
+    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify(payload),
       signal: controller.signal,
     });
     const text = await resp.text();
-    if (!resp.ok) throw new Error(`Perplexity error ${resp.status}: ${text}`);
+    if (!resp.ok) throw new Error(`Lovable AI error ${resp.status}: ${text}`);
     return JSON.parse(text);
   } finally { clearTimeout(id); }
 }
@@ -117,15 +117,13 @@ Return ONLY this JSON structure:
 
     let data: any | null = null;
     try {
-      console.log("[generate-varied-questions] Calling Perplexity AI...");
-      data = await callPerplexityWithTimeout({
-        model: "llama-3.1-sonar-large-128k-online",
+      console.log("[generate-varied-questions] Calling Lovable AI...");
+      data = await callLovableAIWithTimeout({
+        model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        max_tokens: 2000,
-        temperature: 0.2,
       });
     } catch (e) {
-      console.warn("[generate-varied-questions] Perplexity call failed, using fallback:", e);
+      console.warn("[generate-varied-questions] Lovable AI call failed, using fallback:", e);
       return new Response(JSON.stringify(fallback), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
