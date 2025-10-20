@@ -33,32 +33,223 @@ export const physicsData: TopicSection[] = [
   {
     id: "energy",
     title: "Energy",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-1-1-energy-stores-systems",
+        title: "4.1.1 Energy Stores and Systems",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Energy Stores</h3>
+  <ul>
+    <li>Thermal, Kinetic, Gravitational potential, Elastic potential</li>
+    <li>Chemical, Magnetic, Electrostatic, Nuclear</li>
+  </ul>
+</div>
+<div class="subsection">
+  <h3 class="subsection-heading">Systems and Changes</h3>
+  <p>Energy is transferred by heating, waves, electrical work, or mechanical work.</p>
+</div>
+        `,
+        canonical_keywords: ["energy stores","thermal","kinetic","gpe","elastic","chemical","magnetic","electrostatic","nuclear","systems","energy transfer"],
+        practice_items: [
+          { id:"p1", prompt_template:"List four energy stores and give one example for any store.", marks:3, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["thermal","kinetic","gravitational potential","elastic","chemical","magnetic","electrostatic","nuclear","example"]},
+          { id:"p2", prompt_template:"Name two pathways by which energy can be transferred and describe a simple example.", marks:3, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["heating","mechanical work","electrical work","waves","transfer"]}
+        ]
+      },
+      {
+        id: "4-1-2-work-and-energy-calculations",
+        title: "4.1.2 Changes in Energy and Work Done",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Equations</h3>
+  <ul>
+    <li>Work done: W = F s</li>
+    <li>Kinetic: E_k = 1/2 m v^2</li>
+    <li>Gravitational: E_p = m g h</li>
+  </ul>
+</div>
+        `,
+        canonical_keywords:["work done","W=Fs","kinetic energy","1/2 m v^2","gravitational potential","mgh","energy change"],
+        practice_items:[
+          { id:"p3", prompt_template:"A 10 N force moves a box 3 m. Calculate the work done.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["W=Fs","30 J"]},
+          { id:"p4", prompt_template:"A 0.5 kg ball moves at 6 m/s. Calculate its kinetic energy.", marks:3, type:"short-answer", difficulty:"medium", randomise:true, expected_keywords:["Ek=1/2mv^2","9 J","0.5*36=18*0.5=9"]}
+        ]
+      }
+    ]
   },
   {
     id: "electricity",
     title: "Electricity",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-2-1-current-vpd-resistance",
+        title: "4.2.1 Current, Potential Difference and Resistance",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Ideas</h3>
+  <ul>
+    <li>Current (I) is the rate of flow of charge. Unit: ampere (A)</li>
+    <li>Potential difference (V) is energy transferred per unit charge. Unit: volt (V)</li>
+    <li>Resistance (R) opposes current. Ohm's law: V = I R</li>
+  </ul>
+</div>
+        `,
+        canonical_keywords:["current","charge","potential difference","voltage","resistance","Ohm's law","V=IR"],
+        practice_items:[
+          { id:"p1", prompt_template:"Define current and potential difference, including their units.", marks:3, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["current","rate of flow of charge","ampere","potential difference","energy per charge","volt"]},
+          { id:"p2", prompt_template:"A component has resistance 20 Ω and current 0.4 A. Calculate the potential difference across it.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["V=IR","8 V"]}
+        ]
+      },
+      {
+        id: "4-2-2-series-parallel",
+        title: "4.2.2 Series and Parallel Circuits",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Rules</h3>
+  <ul>
+    <li>Series: current same everywhere; potential differences add; total R = R1 + R2 …</li>
+    <li>Parallel: potential difference same across branches; currents add; 1/R_total = 1/R1 + 1/R2 …</li>
+  </ul>
+</div>
+        `,
+        canonical_keywords:["series","parallel","current","potential difference","resistance","circuit rules"],
+        practice_items:[
+          { id:"p3", prompt_template:"In a series circuit, how do current and potential difference behave?", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["current same","potential differences add"]},
+          { id:"p4", prompt_template:"Two 6 Ω resistors in parallel give what total resistance?", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["3 Ω","parallel formula"]}
+        ]
+      }
+    ]
   },
   {
     id: "particle-model",
     title: "Particle Model of Matter",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-3-1-density",
+        title: "4.3.1 Density of Materials",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Density</h3>
+  <p>Density ρ = m / V. Typical units kg/m³. Measure mass with a balance and volume by geometry or displacement.</p>
+</div>
+        `,
+        canonical_keywords:["density","rho","mass","volume","kg/m^3","displacement"],
+        practice_items:[
+          { id:"p1", prompt_template:"A block has mass 0.8 kg and volume 4×10^-4 m³. Calculate its density.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["ρ=m/V","2000 kg/m^3"]}
+        ]
+      },
+      {
+        id: "4-3-2-changes-of-state-internal-energy",
+        title: "4.3.2 Changes of State and Internal Energy",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Internal Energy</h3>
+  <p>Internal energy is the sum of the kinetic and potential energies of particles. Heating changes temperature or state.</p>
+  <p>Specific latent heat L: energy to change state of 1 kg without temperature change.</p>
+</div>
+        `,
+        canonical_keywords:["internal energy","specific latent heat","change of state","temperature","particle model"],
+        practice_items:[
+          { id:"p2", prompt_template:"Explain what is meant by specific latent heat.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["energy","1 kg","change of state","no temperature change"]}
+        ]
+      }
+    ]
   },
   {
     id: "atomic-structure",
     title: "Atomic Structure",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-4-1-atom-and-isotopes",
+        title: "4.4.1 Atoms and Isotopes",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Structure</h3>
+  <p>Atoms have a nucleus of protons and neutrons with electrons in shells. Isotopes are atoms of the same element with different numbers of neutrons.</p>
+</div>
+        `,
+        canonical_keywords:["proton","neutron","electron","nucleus","isotopes"],
+        practice_items:[
+          { id:"p1", prompt_template:"Define an isotope and give one example.", marks:3, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["same element","different neutrons","example"]}
+        ]
+      },
+      {
+        id: "4-4-2-radioactivity-half-life",
+        title: "4.4.2 Radioactive Decay and Half-life",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Ideas</h3>
+  <p>Alpha, beta and gamma radiation; random and spontaneous decay; half-life is the time for activity to halve.</p>
+</div>
+        `,
+        canonical_keywords:["alpha","beta","gamma","radioactive","decay","half-life","activity"],
+        practice_items:[
+          { id:"p2", prompt_template:"Explain what is meant by the half-life of a radioactive isotope.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["time","activity halves","nuclei","decay"]}
+        ]
+      }
+    ]
   },
   {
     id: "forces",
     title: "Forces",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-5-1-scalars-vectors",
+        title: "4.5.1 Scalars, Vectors and Types of Forces",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Ideas</h3>
+  <p>Scalars have magnitude only; vectors have magnitude and direction. Contact and non-contact forces (e.g., friction, weight, magnetic).</p>
+</div>
+        `,
+        canonical_keywords:["scalar","vector","contact","non-contact","force","weight","friction","magnetic"],
+        practice_items:[
+          { id:"p1", prompt_template:"Classify the following as scalar or vector: speed, velocity, force, mass.", marks:3, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["speed scalar","velocity vector","force vector","mass scalar"]}
+        ]
+      },
+      {
+        id: "4-5-2-newtons-laws",
+        title: "4.5.2 Newton’s Laws and Acceleration",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Equations</h3>
+  <ul>
+    <li>Resultant force: F = m a</li>
+    <li>Weight: W = m g</li>
+  </ul>
+</div>
+        `,
+        canonical_keywords:["Newton's laws","F=ma","acceleration","resultant force","weight","W=mg"],
+        practice_items:[
+          { id:"p2", prompt_template:"A resultant force of 12 N acts on a 3 kg trolley. Calculate the acceleration.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["F=ma","4 m/s^2"]}
+        ]
+      }
+    ]
   },
   {
     id: "waves",
@@ -477,13 +668,79 @@ export const physicsData: TopicSection[] = [
   {
     id: "magnetism",
     title: "Magnetism and Electromagnetism",
-    status: "coming_soon",
-    subsections: []
+    status: "ready",
+    subsections: [
+      {
+        id: "4-7-1-magnetism-fields",
+        title: "4.7.1 Magnetism and Magnetic Fields",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Basics</h3>
+  <p>Permanent and induced magnetism; field lines from North to South; strongest at poles.</p>
+</div>
+        `,
+        canonical_keywords:["magnet","magnetic field","permanent","induced","field lines","poles"],
+        practice_items:[
+          { id:"p1", prompt_template:"Describe how to show the pattern of a magnetic field around a bar magnet.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["iron filings","compass","field lines"]}
+        ]
+      },
+      {
+        id: "4-7-2-electromagnetism-motor-effect",
+        title: "4.7.2 Electromagnetism and the Motor Effect",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Ideas</h3>
+  <p>Current in a wire produces a magnetic field. In a magnetic field, a current-carrying conductor experiences a force (motor effect). Fleming’s left-hand rule predicts force direction.</p>
+</div>
+        `,
+        canonical_keywords:["electromagnetism","motor effect","Fleming","left-hand rule","current","magnetic field","force"],
+        practice_items:[
+          { id:"p2", prompt_template:"State two ways to increase the force on a current-carrying conductor in a magnetic field.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["increase current","stronger field","length of conductor","angle"]}
+        ]
+      }
+    ]
   },
   {
     id: "space-physics",
     title: "Space Physics",
-    status: "coming_soon",
-    subsections: []
-  }
+    status: "ready",
+    subsections: [
+      {
+        id: "4-8-1-solar-system-orbits",
+        title: "4.8.1 The Solar System and Orbits",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Orbits</h3>
+  <p>Planets orbit the Sun in near-circular orbits due to gravity. For a stable orbit, higher orbital speed is needed for smaller orbital radius.</p>
+</div>
+        `,
+        canonical_keywords:["orbit","gravity","orbital speed","radius","planets","Sun"],
+        practice_items:[
+          { id:"p1", prompt_template:"Explain how orbital speed changes with orbital radius for a stable orbit.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["smaller radius","higher speed","gravity","centripetal"]}
+        ]
+      },
+      {
+        id: "4-8-2-stars-and-universe",
+        title: "4.8.2 Life Cycle of Stars and the Universe",
+        type: "content",
+        study_group: 1,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Key Ideas</h3>
+  <p>Life cycle: nebula → protostar → main sequence → red giant/supergiant → white dwarf/ neutron star/ black hole. Red-shift of distant galaxies suggests the Universe is expanding (Big Bang model).</p>
+</div>
+        `,
+        canonical_keywords:["star","life cycle","red-shift","Big Bang","expanding universe","galaxies"],
+        practice_items:[
+          { id:"p2", prompt_template:"Describe what red-shift tells us about distant galaxies.", marks:2, type:"short-answer", difficulty:"easy", randomise:true, expected_keywords:["moving away","wavelength increases","expanding universe"]}
+        ]
+      }
+    ]
+  },
 ];
