@@ -73,34 +73,47 @@ serve(async (req) => {
     const kws = extractKeywords(studyContent, 24);
     // Shuffle keywords to vary focus each time
     const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
-    const system = `You are an expert GCSE chemistry examiner creating challenging exam questions. STRICT RULES:
+    const system = `You are an expert GCSE chemistry examiner creating APPLICATION-BASED exam questions. STRICT RULES:
 1. Stay fully within the provided study content - no invented experiments or data
 2. Include at least TWO of these keywords: ${shuffledKws.join(", ")}
-3. For CALCULATION questions (moles, mass, concentration, limiting reactants):
-   - Use realistic numerical data with decimals (e.g., 2.0g, 12.0g, not just whole numbers)
-   - Create multi-step calculations requiring mole ratios, limiting reactant identification, and excess calculations
-   - Provide relative atomic masses when needed
-   - Make students show ALL working: moles calculation, ratio comparison, final answer
-   - Example style: "If 2.0g of hydrogen reacts with 12.0g of nitrogen (Ar: H=1, N=14), which is the limiting reactant and how much excess remains?"
-4. For EXPERIMENTAL questions:
-   - Include method steps, apparatus, and ask for improvements/additions
-   - Require students to justify answers
-5. Output ONLY valid JSON format`;
+3. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
+4. For CALCULATION questions (moles, mass, concentration, limiting reactants):
+   - ALWAYS provide the balanced chemical equation first
+   - Use realistic numerical data with decimals (e.g., 4.05g, 7.10g)
+   - Part (a): Calculate limiting reactant with specific masses (4 marks)
+   - Part (b): Calculate mass of product formed (2 marks)  
+   - Part (c): Add a practical/experimental consideration (2 marks)
+   - Provide relative atomic masses when needed (e.g., Ar: Al=27, Cl=35.5)
+   - Example: "Aluminium reacts with chlorine to form aluminium chloride. 2Al + 3Cl₂ → 2AlCl₃ (a) Calculate the limiting reactant if 4.05 g of Al reacts with 7.10 g of Cl₂. (4 marks) (b) Calculate the mass of aluminium chloride formed. (2 marks) (c) Explain one way to ensure the reaction has gone to completion. (2 marks)"
+5. For NON-CALCULATION questions:
+   - Still use multi-part format (a), (b), (c)
+   - Focus on application, evaluation, and justification
+   - Connect theory to practical scenarios
+6. Output ONLY valid JSON format`;
 
-    const user = `Study Content:\n\n${studyContent}\n\nCreate ${numQuestions} challenging GCSE EXAM question(s) about ONLY the content above.
+    const user = `Study Content:\n\n${studyContent}\n\nCreate ${numQuestions} APPLICATION-BASED GCSE EXAM question(s) about ONLY the content above.
 
-REQUIREMENTS:
-- VARY each question: different aspects/concepts each time
-- Use appropriate marks (1-6 based on complexity)
-- For calculations: Make them HARDER with multi-step reasoning, limiting reactants, mole calculations with specific masses
-- For experiments: Ask for method improvements, justifications, or additions
-- Question styles: explain, calculate (with specific numbers), describe method, compare, evaluate
+CRITICAL REQUIREMENTS:
+- Create MULTI-PART questions with (a), (b), (c) sub-questions
+- For CALCULATION questions:
+  * Start with a balanced chemical equation
+  * Provide specific masses with decimals (e.g., 4.05g, 7.10g)
+  * Part (a): Limiting reactant calculation (4 marks)
+  * Part (b): Mass of product calculation (2 marks)
+  * Part (c): Practical consideration or explanation (2 marks)
+  * Include relevant atomic masses (e.g., Ar: Al=27, Cl=35.5)
+- For NON-CALCULATION questions:
+  * Use multi-part structure with increasing complexity
+  * Focus on application, not just recall
+  * Include practical scenarios and justifications
+- VARY each question: different concepts/reactions each time
+- Total marks per question: 6-8 marks
 
 AVOID repeating these previous questions:
 ${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
 
 Return ONLY this JSON structure:
-{ "questions": [ { "question": string, "marks": number (1-6), "expectedKeyPoints": string[] } ] }`;
+{ "questions": [ { "question": string, "marks": number (6-8), "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
