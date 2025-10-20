@@ -17,18 +17,45 @@ const STOPWORDS = new Set([
   "will","shall","could","using","used","uses","make","made","makes","give","given","gives",
 ]);
 
+// Check if a word is a chemical formula or notation
+function isChemicalFormula(word: string): boolean {
+  // Common patterns: h2o, naoh, h2so4, co2, etc.
+  if (/\d/.test(word)) return true; // Contains numbers
+  if (word.length <= 5 && /^[a-z]{1,2}\d*[a-z]*\d*$/.test(word)) return true; // Short chemical pattern
+  // Common formulas to exclude
+  const chemicalPatterns = ['naoh', 'hcl', 'h2o', 'co2', 'h2so4', 'nacl', 'caco3', 'mgso4', 'kcl', 'koh', 'nh3', 'ch4', 'c6h12o6'];
+  return chemicalPatterns.includes(word.toLowerCase());
+}
+
+// Check if a keyword makes sense in a sentence
+function isValidKeyword(word: string): boolean {
+  if (word.length < 4) return false;
+  if (STOPWORDS.has(word)) return false;
+  if (isChemicalFormula(word)) return false;
+  if (/^\d+$/.test(word)) return false; // Pure numbers
+  // Ensure it has at least one vowel (most meaningful words do)
+  if (!/[aeiou]/.test(word)) return false;
+  return true;
+}
+
 function extractKeywords(text: string, max = 24): string[] {
   const freq = new Map<string, number>();
   for (const raw of text.toLowerCase().split(/[^a-z0-9-]+/g)) {
     const w = raw.trim();
-    // Increase minimum length to 4 to avoid short/meaningless words
-    if (w.length < 4) continue;
-    if (STOPWORDS.has(w)) continue;
-    // Skip pure numbers
-    if (/^\d+$/.test(w)) continue;
+    if (!isValidKeyword(w)) continue;
     freq.set(w, (freq.get(w) ?? 0) + 1);
   }
-  return Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, max).map(([w]) => w);
+  
+  // Prioritize conceptual keywords (longer, more frequent)
+  return Array.from(freq.entries())
+    .sort((a, b) => {
+      // Prioritize longer words (more conceptual)
+      if (b[0].length !== a[0].length) return b[0].length - a[0].length;
+      // Then by frequency
+      return b[1] - a[1];
+    })
+    .slice(0, max)
+    .map(([w]) => w);
 }
 
 function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { studyContent: string; numQuestions: number; previousQuestions: string[] }) {
@@ -38,30 +65,45 @@ function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { s
   const prevSet = new Set((previousQuestions || []).map(String));
   const questions: any[] = [];
   
-  // Better fallback templates that are more robust
+  // Chemistry-specific fallback templates
   const templates = [
-    (kw: string) => `Define ${kw} and explain its significance in chemistry. (6 marks)`,
-    (kw: string) => `Describe the key properties of ${kw} based on the notes. (7 marks)`,
-    (kw: string) => `Explain the concept of ${kw} using examples from the notes. (8 marks)`,
+    (kw: string) => `Describe the process of ${kw} and explain how it is used in chemistry. (6 marks)`,
+    (kw: string) => `Explain the importance of ${kw} in chemical calculations and reactions. (7 marks)`,
+    (kw: string) => `Discuss how ${kw} relates to quantitative chemistry, providing examples. (8 marks)`,
+    (kw: string) => `Compare and contrast different aspects of ${kw} in chemical reactions. (6 marks)`,
+    (kw: string) => `Evaluate the role of ${kw} in determining chemical quantities. (7 marks)`,
   ];
   
   for (const kw of kws) {
-    // Validate keyword before using it
-    if (!kw || kw.length < 4 || STOPWORDS.has(kw)) continue;
+    // Enhanced validation
+    if (!isValidKeyword(kw)) continue;
+    if (isChemicalFormula(kw)) continue;
+    
+    // Additional check: keyword should be a noun or concept
+    // Skip if it looks like it could be part of a formula
+    if (kw.length === 2 && kw === kw.toLowerCase()) continue; // Skip 2-letter lowercase (likely element symbols)
     
     const template = templates[Math.floor(Math.random() * templates.length)];
-    const q = template(kw);
+    const questionText = template(kw);
     
-    if (!prevSet.has(q)) {
+    // Final safety check: does this question make grammatical sense?
+    const testPhrase = `the process of ${kw}`;
+    if (testPhrase.includes('naoh') || testPhrase.includes('hcl') || /\d/.test(kw)) {
+      console.log(`[generate-varied-questions] Skipping chemical formula keyword: ${kw}`);
+      continue;
+    }
+    
+    if (!prevSet.has(questionText)) {
       const marks = 6 + Math.floor(Math.random() * 3);
-      questions.push({ question: q, marks, expectedKeyPoints: [kw] });
+      questions.push({ question: questionText, marks, expectedKeyPoints: [kw] });
     }
     if (questions.length >= numQuestions) break;
   }
   
+  // If still no questions, use generic but safe fallback
   if (!questions.length) {
     questions.push({ 
-      question: "State and explain one key concept from these notes. (6 marks)", 
+      question: "Describe one key method or calculation from these notes and explain its applications in chemistry. (6 marks)", 
       marks: 6, 
       expectedKeyPoints: [] 
     });
