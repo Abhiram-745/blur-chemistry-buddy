@@ -41,7 +41,7 @@ function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { s
   return { questions };
 }
 
-async function callLovableAIWithTimeout(payload: any, timeoutMs = 20000) {
+async function callLovableAIWithTimeout(payload: any, timeoutMs = 25000) {
   const key = Deno.env.get("LOVABLE_API_KEY");
   if (!key) throw new Error("LOVABLE_API_KEY is not configured");
   const controller = new AbortController();
@@ -57,6 +57,51 @@ async function callLovableAIWithTimeout(payload: any, timeoutMs = 20000) {
     if (!resp.ok) throw new Error(`Lovable AI error ${resp.status}: ${text}`);
     return JSON.parse(text);
   } finally { clearTimeout(id); }
+}
+
+function validateQuestionFormat(questionText: string): { valid: boolean; error?: string } {
+  // Check for incomplete sentences (text ending abruptly before a part label)
+  const partLabelPattern = /\s+\([a-d]\)\s+/gi;
+  const parts = questionText.split(partLabelPattern);
+  
+  // Check if any part ends without proper punctuation or appears incomplete
+  for (let i = 0; i < parts.length - 1; i++) {
+    const part = parts[i].trim();
+    if (!part) continue;
+    
+    // Check if the part ends abruptly (no punctuation and seems incomplete)
+    const lastChar = part[part.length - 1];
+    const endsWithPunctuation = ['.', '?', '!', ')', ']', '"', "'"].includes(lastChar);
+    const endsWithNumber = /\d$/.test(part);
+    
+    // Allow if it ends with marks notation or proper punctuation
+    const hasMarks = /\(\d+\s*marks?\)$/.test(part);
+    
+    if (!endsWithPunctuation && !endsWithNumber && !hasMarks) {
+      return { valid: false, error: `Part ${i} appears incomplete: "${part.slice(-30)}"` };
+    }
+  }
+  
+  // Check for malformed part labels like "a) ," or "b) ,"
+  if (/[a-d]\)\s*,/.test(questionText)) {
+    return { valid: false, error: "Found malformed part label with comma" };
+  }
+  
+  // Check if parts appear out of order
+  const labels = questionText.match(/\([a-d]\)/g);
+  if (labels && labels.length > 1) {
+    const order = ['(a)', '(b)', '(c)', '(d)'];
+    let lastIndex = -1;
+    for (const label of labels) {
+      const currentIndex = order.indexOf(label);
+      if (currentIndex <= lastIndex) {
+        return { valid: false, error: `Parts out of order: found ${label} after ${order[lastIndex]}` };
+      }
+      lastIndex = currentIndex;
+    }
+  }
+  
+  return { valid: true };
 }
 
 serve(async (req) => {
@@ -75,12 +120,25 @@ serve(async (req) => {
     const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
     const system = `You are an expert GCSE chemistry examiner creating Grade 8–9 level APPLICATION-BASED exam questions.
 
-CRITICAL FORMATTING RULES:
-1. Write chemical equations on ONE line, properly formatted (e.g., "2Al + 3Cl₂ → 2AlCl₃" or "2Mg + O₂ → 2MgO")
-2. NEVER break chemical equations across multiple lines or separate state symbols
-3. Keep the entire question text together - do NOT split multi-part questions incorrectly
-4. Format multi-part questions as: "(a) First question (X marks)" NOT "a) , First question"
-5. ALWAYS maintain proper spacing and punctuation between parts
+🔴 ABSOLUTE FORMATTING REQUIREMENTS - FOLLOW EXACTLY:
+
+1. THE ENTIRE QUESTION MUST BE ONE CONTINUOUS STRING - NEVER break text mid-sentence
+2. Chemical equations MUST be on ONE line: "2Al + 3Cl₂ → 2AlCl₃" or "2Mg + O₂ → 2MgO"
+3. Multi-part questions format: "(a) Complete question text (X marks) (b) Complete question text (Y marks)"
+4. NEVER use format like "a) , Question" or break between part label and text
+5. Each part must have: part label + full question + mark allocation in ONE continuous flow
+
+✅ CORRECT FORMAT EXAMPLE:
+"Aluminium reacts with chlorine to form aluminium chloride. 2Al + 3Cl₂ → 2AlCl₃ (a) Calculate the limiting reactant if 4.05 g of Al reacts with 7.10 g of Cl₂. (4 marks) (b) Calculate the mass of aluminium chloride formed. (2 marks) (c) Explain one way to ensure the reaction has gone to completion. (2 marks)"
+
+❌ WRONG FORMAT (DO NOT DO THIS):
+"Aluminium reacts with chlorine to form aluminium chloride.
+2Al + 3Cl₂ → 2AlCl₃
+a) Calculate the limiting reactant
+if 4.05 g of Al reacts"
+
+✅ ANOTHER CORRECT EXAMPLE:
+"A student heats 4.80 g of magnesium in excess oxygen until it reacts completely. 2Mg + O₂ → 2MgO (a) Calculate the number of moles of magnesium used in the reaction. (Relative atomic mass: Mg = 24) (2 marks) (b) Using the balanced equation, determine the number of moles of magnesium oxide that can form. (1 mark) (c) Calculate the mass of magnesium oxide produced. (Relative formula mass, MgO = 40) (2 marks) (d) A second student repeats the experiment using 3.00 g of oxygen gas instead of excess oxygen. Determine which reactant is limiting and justify your answer with calculations. (Relative atomic mass: O = 16) (3 marks)"
 
 CONTENT REQUIREMENTS:
 1. Generate questions ONLY about the concepts in the provided study content
@@ -96,25 +154,26 @@ QUESTION STRUCTURE:
 3. Require multi-step reasoning (students must link n=m/Mr, V=n×24, concentration calculations, Avogadro's constant)
 4. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
 5. Total marks per question: 6-8 marks
+6. THE ENTIRE QUESTION MUST BE ONE STRING WITH EMBEDDED PART LABELS
 
 FOR MOLES/MASS/Mr QUESTIONS (when study content covers this):
-- Start with a properly formatted balanced chemical equation on ONE line
+- Start with context, then balanced chemical equation on ONE line
 - Provide specific numerical data with appropriate precision (e.g., 4.80 g, 3.00 g, 2.40 g)
 - Part (a): Calculate moles from mass using n=m/Mr (2-3 marks)
 - Part (b): Use balanced equation to find product moles (1-2 marks)
 - Part (c): Calculate mass of product using m=n×Mr (2-3 marks)
 - Part (d): Limiting reactant calculation or practical consideration (2-3 marks)
-- Include relevant data (Ar values, Mr values)
-- Example: "A student heats 4.80 g of magnesium in excess oxygen. 2Mg + O₂ → 2MgO (a) Calculate the number of moles of magnesium used. (Ar: Mg=24) (2 marks) (b) Using the balanced equation, determine the number of moles of magnesium oxide that can form. (1 mark) (c) Calculate the mass of magnesium oxide produced. (Mr: MgO=40) (2 marks) (d) A second student uses 3.00 g of oxygen instead of excess. Determine which reactant is limiting. (Ar: O=16) (3 marks)"
+- Include relevant data (Ar values, Mr values) within the question text
+- REMEMBER: All parts in ONE continuous string with format "(a) text (X marks) (b) text (Y marks)"
 
 FOR AVOGADRO'S CONSTANT QUESTIONS (when study content covers this):
 - Include calculations involving 6.022 × 10²³ particles
 - Ask students to convert between moles and number of particles
 - Include mass, moles, and particles in multi-step calculations
-- Example: "Calculate the mass and number of particles in a gold sample"
+- Multi-part format in ONE string
 
 FOR METHOD/PRACTICAL QUESTIONS:
-- Use multi-part format (a), (b), (c)
+- Use multi-part format (a), (b), (c) in ONE continuous string
 - Ask how to improve accuracy, identify experimental errors, or ensure reactions are complete
 - Connect theory to real experimental scenarios
 - Require logical reasoning and evaluation skills
@@ -124,6 +183,8 @@ DIFFICULTY LEVEL (Grade 8–9):
 - Require combining multiple concepts/equations
 - Include challenging unit conversions or rearrangements
 - Test deep understanding, not just memorization
+
+🔴 CRITICAL: The "question" field in your JSON response must contain the COMPLETE question as ONE single continuous string with all parts embedded. Do NOT break it into multiple fields or arrays.
 
 Output ONLY valid JSON format`;
 
@@ -151,6 +212,7 @@ Return ONLY this JSON structure:
       data = await callLovableAIWithTimeout({
         model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
+        max_tokens: 2000,
       });
     } catch (e) {
       console.warn("[generate-varied-questions] Lovable AI call failed, using fallback:", e);
@@ -158,6 +220,8 @@ Return ONLY this JSON structure:
     }
 
     const content = data?.choices?.[0]?.message?.content;
+    console.log("[generate-varied-questions] AI Response:", content?.substring(0, 500));
+    
     let parsed: any = null;
     try { parsed = typeof content === "string" ? JSON.parse(content) : content; }
     catch { const m = typeof content === "string" ? content.match(/\{[\s\S]*\}/) : null; if (m) parsed = JSON.parse(m[0]); }
@@ -165,13 +229,23 @@ Return ONLY this JSON structure:
     const out: any[] = [];
     const prev = new Set((previousQuestions || []).map(String));
     const arr: any[] = parsed?.questions ?? [];
+    
     for (const q of arr) {
       const text = String(q?.question ?? "");
       if (!text || prev.has(text)) continue;
+      
+      // Validate formatting
+      const validation = validateQuestionFormat(text);
+      if (!validation.valid) {
+        console.warn(`[generate-varied-questions] Skipping malformed question: ${validation.error}`);
+        console.warn(`Question text: ${text.substring(0, 200)}`);
+        continue;
+      }
+      
       const lower = text.toLowerCase();
       let overlap = 0; for (const k of kws) { if (lower.includes(k)) overlap++; }
       if (overlap < 2) continue;
-      const marks = Math.min(6, Math.max(1, Number(q?.marks ?? 3)));
+      const marks = Math.min(8, Math.max(6, Number(q?.marks ?? 6)));
       out.push({ question: text, marks, expectedKeyPoints: Array.isArray(q?.expectedKeyPoints) ? q.expectedKeyPoints : [] });
       if (out.length >= numQuestions) break;
     }
