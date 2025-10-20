@@ -37,8 +37,8 @@ const SubjectSelection = () => {
       name: "Physics",
       icon: Zap,
       color: "from-purple-500 to-pink-500",
-      available: false,
-      route: null
+      available: true,
+      route: "/physics/dashboard"
     },
     {
       name: "Biology",

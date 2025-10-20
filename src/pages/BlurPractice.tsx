@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Timer, Send, BookOpen, CheckCircle, ChevronDown, Camera } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { sectionsData, PracticeItem } from "@/data/sectionsData";
+import { physicsData } from "@/data/physicsData";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import SectionContent from "@/components/SectionContent";
@@ -143,7 +144,11 @@ const BlurPractice = () => {
   }, [currentPairIndex, topicId, subsectionId, internalSubsections.length, currentPairSubsections.length]);
 
   useEffect(() => {
-    const topic = sectionsData.find((t) => t.id === topicId);
+    // Determine which dataset to use based on the URL path
+    const isPhysics = location.pathname.includes('/physics/');
+    const dataSource = isPhysics ? physicsData : sectionsData;
+    
+    const topic = dataSource.find((t) => t.id === topicId);
     if (!topic) return;
 
     const targetSubsection = topic.subsections.find((s) => s.id === subsectionId);
@@ -851,7 +856,9 @@ const BlurPractice = () => {
   };
 
   const handleFinish = () => {
-    navigate(`/topic/${topicId}`);
+    const isPhysics = location.pathname.includes('/physics/');
+    const topicPath = isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`;
+    navigate(topicPath);
   };
 
   if (internalSubsections.length === 0) {
@@ -873,12 +880,16 @@ const BlurPractice = () => {
   const progress = questionResults.length > 0 ? (questionResults.length / (questionResults.length + 1)) * 100 : 0;
   const totalPairs = Math.ceil(internalSubsections.length / 2);
 
+  // Determine navigation path based on subject
+  const isPhysics = location.pathname.includes('/physics/');
+  const topicPath = isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`;
+
   // Time to Practice & Memorization Timer intro screen
   if (showTimerSection) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Button variant="ghost" onClick={() => navigate(`/topic/${topicId}`)} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate(topicPath)} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Topic
           </Button>
@@ -942,7 +953,7 @@ const BlurPractice = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="container mx-auto px-4 py-8 max-w-4xl">
-          <Button variant="ghost" onClick={() => navigate(`/topic/${topicId}`)} className="mb-4">
+          <Button variant="ghost" onClick={() => navigate(topicPath)} className="mb-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Topic
           </Button>
@@ -1157,7 +1168,7 @@ const BlurPractice = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Button variant="ghost" onClick={() => navigate(`/topic/${topicId}`)} className="mb-4">
+        <Button variant="ghost" onClick={() => navigate(topicPath)} className="mb-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Topic
         </Button>

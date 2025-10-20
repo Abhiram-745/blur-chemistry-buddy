@@ -9,6 +9,9 @@ import SubjectSelection from "./pages/SubjectSelection";
 import Dashboard from "./pages/Dashboard";
 import Sections from "./pages/Sections";
 import TopicView from "./pages/TopicView";
+import PhysicsDashboard from "./pages/PhysicsDashboard";
+import PhysicsSections from "./pages/PhysicsSections";
+import PhysicsTopicView from "./pages/PhysicsTopicView";
 import BlurPractice from "./pages/BlurPractice";
 import SectionReader from "./pages/SectionReader";
 import BlurExercise from "./pages/BlurExercise";
@@ -40,6 +43,9 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/sections" element={<Sections />} />
           <Route path="/topic/:id" element={<TopicView />} />
+          <Route path="/physics/dashboard" element={<PhysicsDashboard />} />
+          <Route path="/physics/sections" element={<PhysicsSections />} />
+          <Route path="/physics/topic/:id" element={<PhysicsTopicView />} />
           <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/section/:id" element={<SectionReader />} />
           <Route path="/blur/:id" element={<BlurExercise />} />
