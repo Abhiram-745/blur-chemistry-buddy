@@ -218,6 +218,14 @@ const TopicView = () => {
               return doc.body.textContent || '';
             }).join('\n\n')}
             sectionTitle={topic.title}
+            subsections={topic.subsections.map(sub => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(sub.content_html, 'text/html');
+              return {
+                title: sub.title,
+                content: doc.body.textContent || ''
+              };
+            })}
           />
         </div>
       </div>

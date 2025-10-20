@@ -1001,6 +1001,14 @@ const BlurPractice = () => {
               return doc.body.textContent || '';
             }).join('\n\n')}
             sectionTitle={subsectionTitle}
+            subsections={currentPairSubsections.map(sub => {
+              const parser = new DOMParser();
+              const doc = parser.parseFromString(sub.html, 'text/html');
+              return {
+                title: sub.title,
+                content: doc.body.textContent || ''
+              };
+            })}
           />
 
           {showMemorizationTimer && (

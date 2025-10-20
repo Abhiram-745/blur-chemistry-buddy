@@ -12,6 +12,7 @@ import ReactMarkdown from "react-markdown";
 interface PracticeExamQuestionsProps {
   sectionContent: string;
   sectionTitle: string;
+  subsections?: Array<{ title: string; content: string }>;
 }
 
 interface GeneratedQuestion {
@@ -28,7 +29,7 @@ interface AnswerFeedback {
   feedbackText: string;
 }
 
-const PracticeExamQuestions = ({ sectionContent, sectionTitle }: PracticeExamQuestionsProps) => {
+const PracticeExamQuestions = ({ sectionContent, sectionTitle, subsections }: PracticeExamQuestionsProps) => {
   const { toast } = useToast();
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -38,26 +39,10 @@ const PracticeExamQuestions = ({ sectionContent, sectionTitle }: PracticeExamQue
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousQuestions, setPreviousQuestions] = useState<string[]>([]);
 
-  // Extract topics from content (simple heuristic: look for headings)
-  const extractTopics = (content: string): string[] => {
-    const topics: string[] = [];
-    const lines = content.split('\n');
-    
-    for (const line of lines) {
-      // Look for markdown headings (##, ###) or bold text that might be topics
-      if (line.match(/^#+\s+(.+)/) || line.match(/^\*\*(.+)\*\*$/)) {
-        const topic = line.replace(/^#+\s+/, '').replace(/^\*\*(.+)\*\*$/, '$1').trim();
-        if (topic && topic.length > 3 && topic.length < 100) {
-          topics.push(topic);
-        }
-      }
-    }
-    
-    // If no topics found, use the section title as the only topic
-    return topics.length > 0 ? topics : [sectionTitle];
-  };
-
-  const topics = extractTopics(sectionContent);
+  // Use subsections if provided, otherwise fall back to section title
+  const topics = subsections && subsections.length > 0 
+    ? subsections.map(sub => sub.title)
+    : [sectionTitle];
 
   const toggleTopic = (topic: string) => {
     setSelectedTopics(prev => 
@@ -83,7 +68,15 @@ const PracticeExamQuestions = ({ sectionContent, sectionTitle }: PracticeExamQue
 
     try {
       // Build focused study content based on selected topics
-      const focusedContent = `${sectionTitle}\n\nFocus on these topics: ${selectedTopics.join(", ")}\n\n${sectionContent}`;
+      let focusedContent: string;
+      
+      if (subsections && subsections.length > 0) {
+        // Filter to only include content from selected subsections
+        const selectedSubsections = subsections.filter(sub => selectedTopics.includes(sub.title));
+        focusedContent = `${sectionTitle}\n\nFocus on these topics: ${selectedTopics.join(", ")}\n\n${selectedSubsections.map(sub => `## ${sub.title}\n\n${sub.content}`).join('\n\n')}`;
+      } else {
+        focusedContent = `${sectionTitle}\n\nFocus on these topics: ${selectedTopics.join(", ")}\n\n${sectionContent}`;
+      }
 
       const { data, error } = await supabase.functions.invoke('generate-varied-questions', {
         body: {
