@@ -35,20 +35,56 @@ function isValidKeyword(word: string): boolean {
   if (/^\d+$/.test(word)) return false; // Pure numbers
   // Ensure it has at least one vowel (most meaningful words do)
   if (!/[aeiou]/.test(word)) return false;
+  
+  // Filter out adverbs (ending in -ly)
+  if (word.endsWith('ly')) return false;
+  
+  // Filter out common adjective endings that don't work well as nouns
+  if (word.endsWith('ive') || word.endsWith('ous') || word.endsWith('ful')) return false;
+  
   return true;
 }
 
 function extractKeywords(text: string, max = 24): string[] {
   const freq = new Map<string, number>();
+  
+  // First pass: identify compound concepts (multi-word phrases)
+  const compounds = new Set<string>();
+  const compoundPatterns = [
+    /limiting\s+reactant/gi,
+    /relative\s+atomic\s+mass/gi,
+    /relative\s+formula\s+mass/gi,
+    /mole\s+calculations?/gi,
+    /percentage\s+yield/gi,
+    /concentration\s+calculations?/gi,
+  ];
+  
+  for (const pattern of compoundPatterns) {
+    const matches = text.matchAll(pattern);
+    for (const match of matches) {
+      compounds.add(match[0].toLowerCase().replace(/\s+/g, '-'));
+    }
+  }
+  
+  // Second pass: individual words
   for (const raw of text.toLowerCase().split(/[^a-z0-9-]+/g)) {
     const w = raw.trim();
     if (!isValidKeyword(w)) continue;
     freq.set(w, (freq.get(w) ?? 0) + 1);
   }
   
-  // Prioritize conceptual keywords (longer, more frequent)
-  return Array.from(freq.entries())
+  // Combine compounds and individual words
+  const allKeywords = [
+    ...Array.from(compounds).map(c => [c, 5] as [string, number]), // Boost compound concepts
+    ...Array.from(freq.entries())
+  ];
+  
+  // Prioritize: compound concepts > longer words > more frequent words
+  return allKeywords
     .sort((a, b) => {
+      const aIsCompound = a[0].includes('-');
+      const bIsCompound = b[0].includes('-');
+      if (aIsCompound !== bIsCompound) return aIsCompound ? -1 : 1;
       // Prioritize longer words (more conceptual)
       if (b[0].length !== a[0].length) return b[0].length - a[0].length;
       // Then by frequency
@@ -65,33 +101,43 @@ function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { s
   const prevSet = new Set((previousQuestions || []).map(String));
   const questions: any[] = [];
   
-  // Chemistry-specific fallback templates
+  // Chemistry-specific fallback templates - work with nouns and concepts
   const templates = [
-    (kw: string) => `Describe the process of ${kw} and explain how it is used in chemistry. (6 marks)`,
-    (kw: string) => `Explain the importance of ${kw} in chemical calculations and reactions. (7 marks)`,
-    (kw: string) => `Discuss how ${kw} relates to quantitative chemistry, providing examples. (8 marks)`,
-    (kw: string) => `Compare and contrast different aspects of ${kw} in chemical reactions. (6 marks)`,
-    (kw: string) => `Evaluate the role of ${kw} in determining chemical quantities. (7 marks)`,
+    (kw: string) => `Explain the concept of ${kw} and how it is applied in quantitative chemistry. Provide specific examples from chemical calculations. (6 marks)`,
+    (kw: string) => `A student is working with ${kw} in a laboratory experiment. (a) Describe the key principles involved with ${kw}. (3 marks) (b) Explain how understanding ${kw} helps in determining chemical quantities accurately. (3 marks)`,
+    (kw: string) => `Discuss the importance of ${kw} in chemistry. Include examples of how ${kw} is used in calculations and why it is essential for accurate results. (7 marks)`,
+    (kw: string) => `In quantitative chemistry, ${kw} plays a crucial role. (a) Explain what ${kw} means in this context. (3 marks) (b) Describe one practical application where ${kw} is used in chemical analysis. (4 marks)`,
+    (kw: string) => `Compare different methods or approaches related to ${kw} in chemistry, explaining the advantages and limitations of each. (8 marks)`,
   ];
   
   for (const kw of kws) {
     // Enhanced validation
-    if (!isValidKeyword(kw)) continue;
-    if (isChemicalFormula(kw)) continue;
+    if (!isValidKeyword(kw)) {
+      console.log(`[generate-varied-questions] Rejected keyword (invalid): ${kw}`);
+      continue;
+    }
+    if (isChemicalFormula(kw)) {
+      console.log(`[generate-varied-questions] Rejected keyword (chemical formula): ${kw}`);
+      continue;
+    }
     
     // Additional check: keyword should be a noun or concept
     // Skip if it looks like it could be part of a formula
-    if (kw.length === 2 && kw === kw.toLowerCase()) continue; // Skip 2-letter lowercase (likely element symbols)
+    if (kw.length === 2 && kw === kw.toLowerCase()) {
+      console.log(`[generate-varied-questions] Rejected keyword (likely element symbol): ${kw}`);
+      continue;
+    }
+    
+    // Grammar check: ensure keyword works in context
+    if (/ly$|ive$|ous$/.test(kw)) {
+      console.log(`[generate-varied-questions] Rejected keyword (adverb/adjective): ${kw}`);
+      continue;
+    }
     
     const template = templates[Math.floor(Math.random() * templates.length)];
     const questionText = template(kw);
     
-    // Final safety check: does this question make grammatical sense?
-    const testPhrase = `the process of ${kw}`;
-    if (testPhrase.includes('naoh') || testPhrase.includes('hcl') || /\d/.test(kw)) {
-      console.log(`[generate-varied-questions] Skipping chemical formula keyword: ${kw}`);
-      continue;
-    }
+    console.log(`[generate-varied-questions] ✓ Using keyword for fallback: ${kw}`);
     
     if (!prevSet.has(questionText)) {
       const marks = 6 + Math.floor(Math.random() * 3);
@@ -190,13 +236,17 @@ function validateQuestionFormat(questionText: string): { valid: boolean; error?:
     }
   }
 
-  // Check parts are in order (a, b, c, d)
+  // Check parts are generally in order (more lenient - allow skipping but not going backwards)
   const expectedOrder = ['a', 'b', 'c', 'd'];
   const foundParts = partMatches.map(m => m[1].toLowerCase());
   
-  for (let i = 0; i < foundParts.length; i++) {
-    if (foundParts[i] !== expectedOrder[i]) {
-      return { valid: false, error: `Parts out of order: expected ${expectedOrder[i]}, found ${foundParts[i]}` };
+  // Verify each part comes after the previous one (allow skipping like a,c or a,b,d)
+  for (let i = 1; i < foundParts.length; i++) {
+    const currentIdx = expectedOrder.indexOf(foundParts[i]);
+    const prevIdx = expectedOrder.indexOf(foundParts[i - 1]);
+    
+    if (currentIdx <= prevIdx) {
+      return { valid: false, error: `Parts out of sequence: ${foundParts[i]} should come after ${foundParts[i-1]}` };
     }
   }
 
@@ -311,7 +361,7 @@ Return ONLY this JSON structure:
       data = await callLovableAIWithTimeout({
         model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        max_tokens: 3000,  // Increased to prevent cut-off questions
+        max_tokens: 4000,  // Increased to prevent cut-off questions
       });
     } catch (e) {
       console.warn("[generate-varied-questions] Lovable AI call failed, using fallback:", e);
