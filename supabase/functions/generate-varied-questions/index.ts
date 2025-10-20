@@ -76,34 +76,48 @@ serve(async (req) => {
     const system = `You are an expert GCSE chemistry examiner creating Grade 8–9 level APPLICATION-BASED exam questions.
 
 CRITICAL FORMATTING RULES:
-1. Write chemical equations on ONE line, properly formatted (e.g., "2Al + 3Cl₂ → 2AlCl₃")
+1. Write chemical equations on ONE line, properly formatted (e.g., "2Al + 3Cl₂ → 2AlCl₃" or "2Mg + O₂ → 2MgO")
 2. NEVER break chemical equations across multiple lines or separate state symbols
-3. Keep the entire equation together in the question text
+3. Keep the entire question text together - do NOT split multi-part questions incorrectly
+4. Format multi-part questions as: "(a) First question (X marks)" NOT "a) , First question"
+5. ALWAYS maintain proper spacing and punctuation between parts
 
-QUESTION REQUIREMENTS:
-1. Stay fully within the provided study content - no invented experiments or data
-2. Include at least TWO of these keywords: ${shuffledKws.join(", ")}
-3. Write application-based questions, NOT simple recall or plug-in problems
-4. Use data-based scenarios with realistic numerical values (masses, volumes, concentrations)
-5. Require multi-step reasoning (students must link n=m/Mr, V=n×24, concentration calculations)
-6. Include unfamiliar contexts and tricky unit conversions for Grade 8–9 difficulty
-7. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
+CONTENT REQUIREMENTS:
+1. Generate questions ONLY about the concepts in the provided study content
+2. If the study content is about moles, mass, and Mr calculations - create questions testing those calculations
+3. If the study content is about Avogadro's constant - create questions about particle numbers
+4. If the study content is about balancing equations - create questions about equation balancing
+5. DO NOT introduce topics not covered in the study content
+6. Include at least TWO of these keywords: ${shuffledKws.join(", ")}
 
-FOR CALCULATION QUESTIONS (moles, mass, volume, concentration, limiting reactants):
+QUESTION STRUCTURE:
+1. Write application-based questions, NOT simple recall or plug-in problems
+2. Use data-based scenarios with realistic numerical values (masses, volumes, concentrations)
+3. Require multi-step reasoning (students must link n=m/Mr, V=n×24, concentration calculations, Avogadro's constant)
+4. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
+5. Total marks per question: 6-8 marks
+
+FOR MOLES/MASS/Mr QUESTIONS (when study content covers this):
 - Start with a properly formatted balanced chemical equation on ONE line
-- Provide specific numerical data with appropriate precision (e.g., 4.05 g, 7.10 g, 2.45 g)
-- Part (a): Complex calculation requiring multiple steps (4 marks)
-- Part (b): Related calculation building on part (a) (2-3 marks)
-- Part (c): Practical/experimental question or method improvement (2 marks)
-- Include relevant data (Ar values, room temp/pressure volumes)
-- Example: "Aluminium reacts with chlorine to form aluminium chloride. 2Al + 3Cl₂ → 2AlCl₃ (a) Calculate the limiting reactant if 4.05 g of Al reacts with 7.10 g of Cl₂. (Ar: Al=27, Cl=35.5) (4 marks) (b) Calculate the mass of aluminium chloride formed. (2 marks) (c) Explain one way to ensure the reaction has gone to completion. (2 marks)"
+- Provide specific numerical data with appropriate precision (e.g., 4.80 g, 3.00 g, 2.40 g)
+- Part (a): Calculate moles from mass using n=m/Mr (2-3 marks)
+- Part (b): Use balanced equation to find product moles (1-2 marks)
+- Part (c): Calculate mass of product using m=n×Mr (2-3 marks)
+- Part (d): Limiting reactant calculation or practical consideration (2-3 marks)
+- Include relevant data (Ar values, Mr values)
+- Example: "A student heats 4.80 g of magnesium in excess oxygen. 2Mg + O₂ → 2MgO (a) Calculate the number of moles of magnesium used. (Ar: Mg=24) (2 marks) (b) Using the balanced equation, determine the number of moles of magnesium oxide that can form. (1 mark) (c) Calculate the mass of magnesium oxide produced. (Mr: MgO=40) (2 marks) (d) A second student uses 3.00 g of oxygen instead of excess. Determine which reactant is limiting. (Ar: O=16) (3 marks)"
+
+FOR AVOGADRO'S CONSTANT QUESTIONS (when study content covers this):
+- Include calculations involving 6.022 × 10²³ particles
+- Ask students to convert between moles and number of particles
+- Include mass, moles, and particles in multi-step calculations
+- Example: "Calculate the mass and number of particles in a gold sample"
 
 FOR METHOD/PRACTICAL QUESTIONS:
 - Use multi-part format (a), (b), (c)
 - Ask how to improve accuracy, identify experimental errors, or ensure reactions are complete
 - Connect theory to real experimental scenarios
 - Require logical reasoning and evaluation skills
-- Example: "(a) Explain why the measured mass decreased less than expected during heating. (b) Describe how this experiment could be carried out in a closed system to demonstrate conservation of mass. (c) Calculate the mass of oxygen that combined..."
 
 DIFFICULTY LEVEL (Grade 8–9):
 - Use unfamiliar contexts not directly taught
