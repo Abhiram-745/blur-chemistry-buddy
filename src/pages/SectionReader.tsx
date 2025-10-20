@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Brain } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from "react-markdown";
+import PracticeExamQuestions from "@/components/PracticeExamQuestions";
 
 interface Section {
   id: string;
@@ -103,7 +104,12 @@ const SectionReader = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20 animate-fade-in">
+        <PracticeExamQuestions 
+          sectionContent={section.content}
+          sectionTitle={section.title}
+        />
+
+        <Card className="mt-6 bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/20 animate-fade-in">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brain className="h-6 w-6 text-primary" />
