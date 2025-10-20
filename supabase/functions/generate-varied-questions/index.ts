@@ -73,41 +73,57 @@ serve(async (req) => {
     const kws = extractKeywords(studyContent, 24);
     // Shuffle keywords to vary focus each time
     const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
-    const system = `You are an expert GCSE chemistry examiner creating APPLICATION-BASED exam questions. STRICT RULES:
+    const system = `You are an expert GCSE chemistry examiner creating Grade 8–9 level APPLICATION-BASED exam questions.
+
+CRITICAL FORMATTING RULES:
+1. Write chemical equations on ONE line, properly formatted (e.g., "2Al + 3Cl₂ → 2AlCl₃")
+2. NEVER break chemical equations across multiple lines or separate state symbols
+3. Keep the entire equation together in the question text
+
+QUESTION REQUIREMENTS:
 1. Stay fully within the provided study content - no invented experiments or data
 2. Include at least TWO of these keywords: ${shuffledKws.join(", ")}
-3. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
-4. For CALCULATION questions (moles, mass, concentration, limiting reactants):
-   - ALWAYS provide the balanced chemical equation first
-   - Use realistic numerical data with decimals (e.g., 4.05g, 7.10g)
-   - Part (a): Calculate limiting reactant with specific masses (4 marks)
-   - Part (b): Calculate mass of product formed (2 marks)  
-   - Part (c): Add a practical/experimental consideration (2 marks)
-   - Provide relative atomic masses when needed (e.g., Ar: Al=27, Cl=35.5)
-   - Example: "Aluminium reacts with chlorine to form aluminium chloride. 2Al + 3Cl₂ → 2AlCl₃ (a) Calculate the limiting reactant if 4.05 g of Al reacts with 7.10 g of Cl₂. (4 marks) (b) Calculate the mass of aluminium chloride formed. (2 marks) (c) Explain one way to ensure the reaction has gone to completion. (2 marks)"
-5. For NON-CALCULATION questions:
-   - Still use multi-part format (a), (b), (c)
-   - Focus on application, evaluation, and justification
-   - Connect theory to practical scenarios
-6. Output ONLY valid JSON format`;
+3. Write application-based questions, NOT simple recall or plug-in problems
+4. Use data-based scenarios with realistic numerical values (masses, volumes, concentrations)
+5. Require multi-step reasoning (students must link n=m/Mr, V=n×24, concentration calculations)
+6. Include unfamiliar contexts and tricky unit conversions for Grade 8–9 difficulty
+7. Create MULTI-PART questions with sub-questions (a), (b), (c) that build on each other
 
-    const user = `Study Content:\n\n${studyContent}\n\nCreate ${numQuestions} APPLICATION-BASED GCSE EXAM question(s) about ONLY the content above.
+FOR CALCULATION QUESTIONS (moles, mass, volume, concentration, limiting reactants):
+- Start with a properly formatted balanced chemical equation on ONE line
+- Provide specific numerical data with appropriate precision (e.g., 4.05 g, 7.10 g, 2.45 g)
+- Part (a): Complex calculation requiring multiple steps (4 marks)
+- Part (b): Related calculation building on part (a) (2-3 marks)
+- Part (c): Practical/experimental question or method improvement (2 marks)
+- Include relevant data (Ar values, room temp/pressure volumes)
+- Example: "Aluminium reacts with chlorine to form aluminium chloride. 2Al + 3Cl₂ → 2AlCl₃ (a) Calculate the limiting reactant if 4.05 g of Al reacts with 7.10 g of Cl₂. (Ar: Al=27, Cl=35.5) (4 marks) (b) Calculate the mass of aluminium chloride formed. (2 marks) (c) Explain one way to ensure the reaction has gone to completion. (2 marks)"
+
+FOR METHOD/PRACTICAL QUESTIONS:
+- Use multi-part format (a), (b), (c)
+- Ask how to improve accuracy, identify experimental errors, or ensure reactions are complete
+- Connect theory to real experimental scenarios
+- Require logical reasoning and evaluation skills
+- Example: "(a) Explain why the measured mass decreased less than expected during heating. (b) Describe how this experiment could be carried out in a closed system to demonstrate conservation of mass. (c) Calculate the mass of oxygen that combined..."
+
+DIFFICULTY LEVEL (Grade 8–9):
+- Use unfamiliar contexts not directly taught
+- Require combining multiple concepts/equations
+- Include challenging unit conversions or rearrangements
+- Test deep understanding, not just memorization
+
+Output ONLY valid JSON format`;
+
+    const user = `Study Content:\n\n${studyContent}\n\nCreate ${numQuestions} Grade 8–9 level APPLICATION-BASED GCSE exam question(s) about ONLY the content above.
 
 CRITICAL REQUIREMENTS:
-- Create MULTI-PART questions with (a), (b), (c) sub-questions
-- For CALCULATION questions:
-  * Start with a balanced chemical equation
-  * Provide specific masses with decimals (e.g., 4.05g, 7.10g)
-  * Part (a): Limiting reactant calculation (4 marks)
-  * Part (b): Mass of product calculation (2 marks)
-  * Part (c): Practical consideration or explanation (2 marks)
-  * Include relevant atomic masses (e.g., Ar: Al=27, Cl=35.5)
-- For NON-CALCULATION questions:
-  * Use multi-part structure with increasing complexity
-  * Focus on application, not just recall
-  * Include practical scenarios and justifications
-- VARY each question: different concepts/reactions each time
-- Total marks per question: 6-8 marks
+✓ Format chemical equations properly on ONE line (e.g., "2Mg + O₂ → 2MgO")
+✓ Create MULTI-PART questions with (a), (b), (c) sub-questions
+✓ Use realistic numerical data with appropriate precision
+✓ Require multi-step reasoning linking different equations
+✓ Include both quantitative calculations AND method/explanation parts
+✓ Set difficulty at Grade 8–9: unfamiliar contexts, tricky conversions, logical reasoning
+✓ Add practical-based questions about accuracy, errors, or ensuring completion
+✓ Total marks per question: 6-8 marks
 
 AVOID repeating these previous questions:
 ${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
