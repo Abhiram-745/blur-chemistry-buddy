@@ -6,19 +6,26 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Enhanced stopwords including pronouns, question words, and common verbs
 const STOPWORDS = new Set([
   "the","a","an","and","or","but","if","then","than","that","this","these","those",
   "is","are","was","were","be","been","being","to","of","in","on","for","as","at",
   "by","with","from","it","its","their","there","which","who","whom","into","out",
   "about","over","under","between","within","also","can","may","might","should","would",
+  // Add pronouns and question words that shouldn't be keywords
+  "your","my","our","his","her","how","what","when","where","why","who","have","has","had",
+  "will","shall","could","using","used","uses","make","made","makes","give","given","gives",
 ]);
 
 function extractKeywords(text: string, max = 24): string[] {
   const freq = new Map<string, number>();
   for (const raw of text.toLowerCase().split(/[^a-z0-9-]+/g)) {
     const w = raw.trim();
-    if (w.length < 3) continue;
+    // Increase minimum length to 4 to avoid short/meaningless words
+    if (w.length < 4) continue;
     if (STOPWORDS.has(w)) continue;
+    // Skip pure numbers
+    if (/^\d+$/.test(w)) continue;
     freq.set(w, (freq.get(w) ?? 0) + 1);
   }
   return Array.from(freq.entries()).sort((a,b) => b[1]-a[1]).slice(0, max).map(([w]) => w);
@@ -26,18 +33,41 @@ function extractKeywords(text: string, max = 24): string[] {
 
 function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { studyContent: string; numQuestions: number; previousQuestions: string[] }) {
   const kws = extractKeywords(studyContent, 30);
-  const prev = new Set((previousQuestions || []).map(String));
+  console.log("[generate-varied-questions] Fallback keywords extracted:", kws.slice(0, 10));
+  
+  const prevSet = new Set((previousQuestions || []).map(String));
   const questions: any[] = [];
-  for (const kw of kws.slice(0, 10)) {
-    const q = `Explain how ${kw} is described in these notes.`;
-    if (!prev.has(q)) {
-      questions.push({ question: q, marks: 3, expectedKeyPoints: [kw] });
+  
+  // Better fallback templates that are more robust
+  const templates = [
+    (kw: string) => `Define ${kw} and explain its significance in chemistry. (6 marks)`,
+    (kw: string) => `Describe the key properties of ${kw} based on the notes. (7 marks)`,
+    (kw: string) => `Explain the concept of ${kw} using examples from the notes. (8 marks)`,
+  ];
+  
+  for (const kw of kws) {
+    // Validate keyword before using it
+    if (!kw || kw.length < 4 || STOPWORDS.has(kw)) continue;
+    
+    const template = templates[Math.floor(Math.random() * templates.length)];
+    const q = template(kw);
+    
+    if (!prevSet.has(q)) {
+      const marks = 6 + Math.floor(Math.random() * 3);
+      questions.push({ question: q, marks, expectedKeyPoints: [kw] });
     }
     if (questions.length >= numQuestions) break;
   }
+  
   if (!questions.length) {
-    questions.push({ question: "Explain one idea from these notes.", marks: 2, expectedKeyPoints: [] });
+    questions.push({ 
+      question: "State and explain one key concept from these notes. (6 marks)", 
+      marks: 6, 
+      expectedKeyPoints: [] 
+    });
   }
+  
+  console.log("[generate-varied-questions] Fallback questions generated:", questions.length);
   return { questions };
 }
 
@@ -60,47 +90,74 @@ async function callLovableAIWithTimeout(payload: any, timeoutMs = 25000) {
 }
 
 function validateQuestionFormat(questionText: string): { valid: boolean; error?: string } {
-  // Check for incomplete sentences (text ending abruptly before a part label)
-  const partLabelPattern = /\s+\([a-d]\)\s+/gi;
-  const parts = questionText.split(partLabelPattern);
+  // Check for incomplete sentences (ends mid-word or without punctuation)
+  if (!questionText.trim().match(/[.!?)\]"]$/)) {
+    return { valid: false, error: "Question doesn't end with proper punctuation" };
+  }
   
-  // Check if any part ends without proper punctuation or appears incomplete
-  for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i].trim();
-    if (!part) continue;
-    
-    // Check if the part ends abruptly (no punctuation and seems incomplete)
-    const lastChar = part[part.length - 1];
-    const endsWithPunctuation = ['.', '?', '!', ')', ']', '"', "'"].includes(lastChar);
-    const endsWithNumber = /\d$/.test(part);
-    
-    // Allow if it ends with marks notation or proper punctuation
-    const hasMarks = /\(\d+\s*marks?\)$/.test(part);
-    
-    if (!endsWithPunctuation && !endsWithNumber && !hasMarks) {
-      return { valid: false, error: `Part ${i} appears incomplete: "${part.slice(-30)}"` };
+  // Check for cut-off words (incomplete words at the end)
+  const words = questionText.trim().split(/\s+/);
+  const lastWord = words[words.length - 1];
+  if (lastWord && !lastWord.match(/[.!?)\]"]$/) && lastWord.length > 0) {
+    // If last word doesn't end with punctuation, check if it's likely incomplete
+    if (questionText.includes("...") || questionText.endsWith(" ")) {
+      return { valid: false, error: "Question appears to be cut off mid-sentence" };
     }
   }
   
-  // Check for malformed part labels like "a) ," or "b) ,"
-  if (/[a-d]\)\s*,/.test(questionText)) {
-    return { valid: false, error: "Found malformed part label with comma" };
-  }
+  // Check for obviously incomplete phrases
+  const incompletePatterns = [
+    /\b(using|from|with|in|on|at|to|for)\s*$/i,  // Ends with preposition
+    /\b(the|a|an)\s*$/i,  // Ends with article
+    /\b(your|his|her|their)\s*$/i,  // Ends with possessive
+    /\(\w+\)?\s*$/,  // Ends with incomplete part label like "(a)" or "(b"
+  ];
   
-  // Check if parts appear out of order
-  const labels = questionText.match(/\([a-d]\)/g);
-  if (labels && labels.length > 1) {
-    const order = ['(a)', '(b)', '(c)', '(d)'];
-    let lastIndex = -1;
-    for (const label of labels) {
-      const currentIndex = order.indexOf(label);
-      if (currentIndex <= lastIndex) {
-        return { valid: false, error: `Parts out of order: found ${label} after ${order[lastIndex]}` };
-      }
-      lastIndex = currentIndex;
+  for (const pattern of incompletePatterns) {
+    if (pattern.test(questionText)) {
+      return { valid: false, error: "Question ends with incomplete phrase" };
     }
   }
+
+  // Extract all parts like (a), (b), (c), (d) and their marks
+  const partMatches = Array.from(questionText.matchAll(/\(([a-d])\)\s*([^(]+?)(?:\((\d+)\s*marks?\))/gi));
   
+  if (partMatches.length === 0) {
+    // No parts found - this is OK, single question
+    return { valid: true };
+  }
+
+  // Check each part has reasonable content
+  for (const match of partMatches) {
+    const partLabel = match[1].toLowerCase();
+    const partContent = match[2].trim();
+    
+    // Check part content is not too short or malformed
+    if (partContent.length < 10) {
+      return { valid: false, error: `Part ${partLabel} content too short: "${partContent}"` };
+    }
+    
+    // Check for malformed part labels like "a) ," or "b) ."
+    if (partContent.match(/^[,.\s]+$/)) {
+      return { valid: false, error: `Part ${partLabel} has no actual content` };
+    }
+    
+    // Check that part content forms a complete sentence/question
+    if (!partContent.includes(" ") || partContent.split(" ").length < 3) {
+      return { valid: false, error: `Part ${partLabel} appears incomplete: "${partContent}"` };
+    }
+  }
+
+  // Check parts are in order (a, b, c, d)
+  const expectedOrder = ['a', 'b', 'c', 'd'];
+  const foundParts = partMatches.map(m => m[1].toLowerCase());
+  
+  for (let i = 0; i < foundParts.length; i++) {
+    if (foundParts[i] !== expectedOrder[i]) {
+      return { valid: false, error: `Parts out of order: expected ${expectedOrder[i]}, found ${foundParts[i]}` };
+    }
+  }
+
   return { valid: true };
 }
 
@@ -212,7 +269,7 @@ Return ONLY this JSON structure:
       data = await callLovableAIWithTimeout({
         model: "google/gemini-2.5-flash",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        max_tokens: 2000,
+        max_tokens: 3000,  // Increased to prevent cut-off questions
       });
     } catch (e) {
       console.warn("[generate-varied-questions] Lovable AI call failed, using fallback:", e);
@@ -220,35 +277,58 @@ Return ONLY this JSON structure:
     }
 
     const content = data?.choices?.[0]?.message?.content;
-    console.log("[generate-varied-questions] AI Response:", content?.substring(0, 500));
+    console.log("[generate-varied-questions] AI raw response length:", content?.length);
+    console.log("[generate-varied-questions] AI raw response (first 800 chars):", content?.substring(0, 800));
     
     let parsed: any = null;
     try { parsed = typeof content === "string" ? JSON.parse(content) : content; }
     catch { const m = typeof content === "string" ? content.match(/\{[\s\S]*\}/) : null; if (m) parsed = JSON.parse(m[0]); }
 
     const out: any[] = [];
-    const prev = new Set((previousQuestions || []).map(String));
+    const prevSet = new Set((previousQuestions || []).map(String));
     const arr: any[] = parsed?.questions ?? [];
+    
+    console.log(`[generate-varied-questions] Validating ${arr.length} AI-generated questions`);
     
     for (const q of arr) {
       const text = String(q?.question ?? "");
-      if (!text || prev.has(text)) continue;
-      
-      // Validate formatting
-      const validation = validateQuestionFormat(text);
-      if (!validation.valid) {
-        console.warn(`[generate-varied-questions] Skipping malformed question: ${validation.error}`);
-        console.warn(`Question text: ${text.substring(0, 200)}`);
+      if (!text) {
+        console.log("[generate-varied-questions] Skipping empty question");
         continue;
       }
+      
+      if (prevSet.has(text)) {
+        console.log("[generate-varied-questions] Skipping duplicate question");
+        continue;
+      }
+      
+      // Validate format and completeness
+      const validation = validateQuestionFormat(text);
+      if (!validation.valid) {
+        console.log(`[generate-varied-questions] ❌ REJECTED: ${validation.error}`);
+        console.log(`[generate-varied-questions] Question text: "${text.substring(0, 150)}..."`);
+        continue;
+      }
+      
+      // Additional check: ensure question doesn't end mid-sentence
+      if (text.includes("...") || !text.trim().match(/[.!?)"]$/)) {
+        console.log("[generate-varied-questions] ❌ REJECTED: Question appears incomplete or truncated");
+        console.log(`[generate-varied-questions] Question text: "${text}"`);
+        continue;
+      }
+      
+      console.log(`[generate-varied-questions] ✓ ACCEPTED: "${text.substring(0, 80)}..."`);
       
       const lower = text.toLowerCase();
       let overlap = 0; for (const k of kws) { if (lower.includes(k)) overlap++; }
       if (overlap < 2) continue;
+      
       const marks = Math.min(8, Math.max(6, Number(q?.marks ?? 6)));
       out.push({ question: text, marks, expectedKeyPoints: Array.isArray(q?.expectedKeyPoints) ? q.expectedKeyPoints : [] });
       if (out.length >= numQuestions) break;
     }
+    
+    console.log(`[generate-varied-questions] Final result: ${out.length}/${numQuestions} valid questions`);
 
     if (!out.length) {
       return new Response(JSON.stringify(fallback), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
