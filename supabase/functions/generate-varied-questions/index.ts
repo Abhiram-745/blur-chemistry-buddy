@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -40,20 +41,20 @@ function makeExamFallback({ studyContent, numQuestions, previousQuestions }: { s
   return { questions };
 }
 
-async function callAIWithTimeout(payload: any, timeoutMs = 9000) {
-  const key = Deno.env.get("LOVABLE_API_KEY");
-  if (!key) throw new Error("LOVABLE_API_KEY is not configured");
+async function callOpenAIWithTimeout(payload: any, timeoutMs = 15000) {
+  const key = Deno.env.get("OPENAI_API_KEY");
+  if (!key) throw new Error("OPENAI_API_KEY is not configured");
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const resp = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify(payload),
       signal: controller.signal,
     });
     const text = await resp.text();
-    if (!resp.ok) throw new Error(`AI error ${resp.status}: ${text}`);
+    if (!resp.ok) throw new Error(`OpenAI error ${resp.status}: ${text}`);
     return JSON.parse(text);
   } finally { clearTimeout(id); }
 }
@@ -72,27 +73,46 @@ serve(async (req) => {
     const kws = extractKeywords(studyContent, 24);
     // Shuffle keywords to vary focus each time
     const shuffledKws = [...kws].sort(() => Math.random() - 0.5);
-    const system = `GCSE chemistry examiner. STRICT TOPIC LOCK. Stay fully within the provided notes. Include at least TWO of these keywords in each question: ${shuffledKws.join(", ")}. No invented experiments. Output JSON.`;
-    const user = `Study Content (verbatim):\n\n${studyContent}\n\nCreate ${numQuestions} EXAM question(s) about ONLY the content above. VARY each question:
-- Focus on DIFFERENT aspects/concepts each time
-- Use different marks (vary between 1-6 marks based on complexity)
-- Try different question styles (explain, compare, describe, calculate if numbers present)
+    const system = `You are an expert GCSE chemistry examiner creating challenging exam questions. STRICT RULES:
+1. Stay fully within the provided study content - no invented experiments or data
+2. Include at least TWO of these keywords: ${shuffledKws.join(", ")}
+3. For CALCULATION questions (moles, mass, concentration, limiting reactants):
+   - Use realistic numerical data with decimals (e.g., 2.0g, 12.0g, not just whole numbers)
+   - Create multi-step calculations requiring mole ratios, limiting reactant identification, and excess calculations
+   - Provide relative atomic masses when needed
+   - Make students show ALL working: moles calculation, ratio comparison, final answer
+   - Example style: "If 2.0g of hydrogen reacts with 12.0g of nitrogen (Ar: H=1, N=14), which is the limiting reactant and how much excess remains?"
+4. For EXPERIMENTAL questions:
+   - Include method steps, apparatus, and ask for improvements/additions
+   - Require students to justify answers
+5. Output ONLY valid JSON format`;
 
-Do NOT repeat previous questions: 
+    const user = `Study Content:\n\n${studyContent}\n\nCreate ${numQuestions} challenging GCSE EXAM question(s) about ONLY the content above.
+
+REQUIREMENTS:
+- VARY each question: different aspects/concepts each time
+- Use appropriate marks (1-6 based on complexity)
+- For calculations: Make them HARDER with multi-step reasoning, limiting reactants, mole calculations with specific masses
+- For experiments: Ask for method improvements, justifications, or additions
+- Question styles: explain, calculate (with specific numbers), describe method, compare, evaluate
+
+AVOID repeating these previous questions:
 ${previousQuestions.map((q: string, i: number) => `${i + 1}. ${q}`).join("\n")}
 
-Return: { "questions": [ { "question": string, "marks": number (1-6), "expectedKeyPoints": string[] } ] }`;
+Return ONLY this JSON structure:
+{ "questions": [ { "question": string, "marks": number (1-6), "expectedKeyPoints": string[] } ] }`;
 
     let data: any | null = null;
     try {
-      data = await callAIWithTimeout({
-        model: "google/gemini-2.5-flash",
+      console.log("[generate-varied-questions] Calling OpenAI GPT-5...");
+      data = await callOpenAIWithTimeout({
+        model: "gpt-5-2025-08-07",
         messages: [ { role: "system", content: system }, { role: "user", content: user } ],
-        temperature: 0.7,
+        max_completion_tokens: 2000,
         response_format: { type: "json_object" },
       });
     } catch (e) {
-      console.warn("[generate-varied-questions] AI call failed, using fallback:", e);
+      console.warn("[generate-varied-questions] OpenAI call failed, using fallback:", e);
       return new Response(JSON.stringify(fallback), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
