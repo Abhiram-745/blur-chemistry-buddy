@@ -18,28 +18,50 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert chemistry examiner marking GCSE exam answers. Your task is to:
-1. Compare the student's answer against the expected content
-2. Award marks based on accuracy, completeness, and understanding
-3. Provide constructive feedback on what was covered well and what was missed
-4. Be fair - award marks for correct concepts even if worded differently
-5. Return a JSON response with: score (0-${marks}), keyIdeasCovered (array of strings), keyIdeasMissed (array of strings), and feedback (string)`;
+    const systemPrompt = `You are an expert chemistry examiner marking GCSE exam answers with LENIENT marking criteria.
+
+CRITICAL MARKING RULES:
+1. For calculation questions: Award FULL marks if the numerical answer is correct, even if working/units are slightly different
+2. For multi-part questions: Mark each part separately and award partial credit generously
+3. Accept equivalent expressions (e.g., "0.01 mol" = "1 × 10⁻² mol" = "ten millimoles")
+4. Accept correct chemical formulae with minor notation differences (e.g., "H2O" = "H₂O")
+5. Award marks for correct reasoning even if final answer has minor errors
+6. Be GENEROUS with marks - if the student shows understanding, give them credit
+7. For balanced equations: Accept any correctly balanced form (coefficients may vary but ratios must be correct)
+
+MARKING PROCESS:
+- Read the full answer carefully before judging
+- Look for correct numerical values, chemical formulae, and key concepts
+- Award marks for partially correct answers
+- Only deduct marks for fundamental errors or completely missing key points
+- If the student demonstrates understanding of the concept, be lenient with presentation
+
+Return JSON with: score (0-${marks}), keyIdeasCovered (array of strings showing what they got right), keyIdeasMissed (array of strings showing what they missed), and feedback (constructive string)`;
 
     const userPrompt = `Question (${marks} marks): ${question}
 
-Expected Content/Notes:
+Expected Content/Key Concepts:
 ${expectedContent}
 
 Student's Answer:
 ${studentAnswer}
 
-Please mark this answer and provide detailed feedback. Return your response as JSON with this exact structure:
+MARKING INSTRUCTIONS:
+- For calculation questions: Check if numerical answers are correct (allow for rounding)
+- For explanation questions: Look for key concepts and understanding
+- For multi-part questions: Award marks for each correct part
+- Be LENIENT - if the answer demonstrates understanding, award marks
+- Award partial credit wherever possible
+
+Return your response as JSON with this exact structure:
 {
   "score": <number between 0 and ${marks}>,
-  "keyIdeasCovered": ["idea1", "idea2", ...],
-  "keyIdeasMissed": ["missed1", "missed2", ...],
-  "feedback": "Detailed feedback explaining the marking"
-}`;
+  "keyIdeasCovered": ["list specific correct points from the answer"],
+  "keyIdeasMissed": ["list specific missing or incorrect points"],
+  "feedback": "Clear feedback explaining: (1) what they got right, (2) what they missed, (3) how to improve"
+}
+
+IMPORTANT: Be generous with marks. Students should get high scores for correct answers.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -80,6 +102,8 @@ Please mark this answer and provide detailed feedback. Return your response as J
     const data = await response.json();
     const aiResponse = data.choices[0].message.content;
     
+    console.log("[mark-answer] AI Response:", aiResponse.substring(0, 300));
+    
     // Parse the JSON response from AI
     const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
@@ -88,6 +112,13 @@ Please mark this answer and provide detailed feedback. Return your response as J
     }
     
     const result = JSON.parse(jsonMatch[0]);
+    
+    console.log("[mark-answer] Parsed result:", {
+      score: result.score,
+      maxMarks: marks,
+      keyIdeasCoveredCount: result.keyIdeasCovered?.length,
+      keyIdeasMissedCount: result.keyIdeasMissed?.length
+    });
     
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
