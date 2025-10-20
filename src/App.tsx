@@ -46,6 +46,7 @@ const App = () => (
           <Route path="/physics/dashboard" element={<PhysicsDashboard />} />
           <Route path="/physics/sections" element={<PhysicsSections />} />
           <Route path="/physics/topic/:id" element={<PhysicsTopicView />} />
+          <Route path="/physics/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/section/:id" element={<SectionReader />} />
           <Route path="/blur/:id" element={<BlurExercise />} />

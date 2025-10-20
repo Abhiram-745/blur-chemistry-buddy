@@ -38,7 +38,7 @@ const PhysicsTopicView = () => {
   };
 
   const startSubsectionPractice = (subsectionId: string) => {
-    navigate(`/blur-practice/${id}/${subsectionId}`);
+    navigate(`/physics/blur-practice/${id}/${subsectionId}`);
   };
 
   if (!topic) {
