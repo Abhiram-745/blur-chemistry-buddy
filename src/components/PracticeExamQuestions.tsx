@@ -238,7 +238,39 @@ const PracticeExamQuestions = ({ sectionContent, sectionTitle, subsections }: Pr
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="prose prose-sm max-w-none dark:prose-invert">
-                <ReactMarkdown>{currentQuestion.question}</ReactMarkdown>
+                {/* Format question with parts (a), (b), (c) on separate lines */}
+                {(() => {
+                  const questionText = currentQuestion.question;
+                  
+                  // Check if question has parts like (a), (b), (c)
+                  const hasMultipleParts = /\([a-d]\)/i.test(questionText);
+                  
+                  if (hasMultipleParts) {
+                    // Split by parts but keep the part labels
+                    const parts = questionText.split(/(?=\([a-d]\))/i);
+                    
+                    return (
+                      <div className="space-y-3">
+                        {parts.map((part, idx) => {
+                          const trimmedPart = part.trim();
+                          if (!trimmedPart) return null;
+                          
+                          // Check if this part starts with a part label
+                          const startsWithLabel = /^\([a-d]\)/i.test(trimmedPart);
+                          
+                          return (
+                            <div key={idx} className={startsWithLabel ? "ml-4" : ""}>
+                              <ReactMarkdown>{trimmedPart}</ReactMarkdown>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  }
+                  
+                  // Single part question - render normally
+                  return <ReactMarkdown>{questionText}</ReactMarkdown>;
+                })()}
               </div>
 
               {/* Answer Input */}
