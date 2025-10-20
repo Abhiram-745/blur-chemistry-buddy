@@ -7568,6 +7568,286 @@ H—N—H</pre>
           "moles", "mass", "volume", "dm³", "cm³", "conversion", "calculation"
         ],
         practice_items: []
+      },
+      {
+        id: "3-4-titrations",
+        title: "3.4 USING CONCENTRATIONS OF SOLUTIONS IN mol/dm³ (TITRATIONS)",
+        type: "content",
+        study_group: 9,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – What Is a Titration?</h3>
+  
+  <div class="definition-block">
+    <h4>🔵 Definition</h4>
+    <p>A titration is an accurate chemical technique used to determine the concentration of an unknown acid or alkali by reacting it with a solution of known concentration.</p>
+    <p>In AQA Chemistry, titrations are used to find the exact volume of one solution needed to react completely with another.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – Equipment Needed</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Equipment</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Equipment</th>
+          <th>Function</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Burette</td>
+          <td>Measures variable volumes of acid or alkali added (most precise).</td>
+        </tr>
+        <tr>
+          <td>Pipette (25 cm³)</td>
+          <td>Accurately measures a fixed volume of solution (e.g. alkali).</td>
+        </tr>
+        <tr>
+          <td>Pipette filler</td>
+          <td>Safely draws solution into the pipette.</td>
+        </tr>
+        <tr>
+          <td>Conical flask</td>
+          <td>Holds solution being titrated (where the reaction occurs).</td>
+        </tr>
+        <tr>
+          <td>Clamp stand</td>
+          <td>Holds the burette vertically.</td>
+        </tr>
+        <tr>
+          <td>Indicator</td>
+          <td>Shows the endpoint (when neutralisation is complete).</td>
+        </tr>
+        <tr>
+          <td>White tile</td>
+          <td>Makes colour change easier to see.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Step-by-Step Method</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Titration Method – step-by-step, AQA practical exam format 👇</h4>
+    
+    <h5>1. Rinse the apparatus</h5>
+    <p>Wash burette, pipette, and conical flask with the correct solutions (burette with acid, pipette with alkali).</p>
+    <p>Ensures no contamination or dilution.</p>
+    
+    <h5>2. Fill the burette</h5>
+    <p>Use a funnel to fill the burette with acid (known concentration).</p>
+    <p>Make sure the bottom of the meniscus is at 0.00 cm³ (eye level).</p>
+    <p>Remove the funnel after filling (to avoid extra drops changing volume).</p>
+    
+    <h5>3. Use the pipette</h5>
+    <p>Use a pipette filler to draw up 25.0 cm³ of the alkali (unknown concentration).</p>
+    <p>Transfer it into the conical flask.</p>
+    
+    <h5>4. Add indicator</h5>
+    <p>Add a few drops of a suitable indicator (e.g. phenolphthalein or methyl orange).</p>
+    <p>Place the flask on a white tile to see the colour change clearly.</p>
+    
+    <h5>5. Titrate</h5>
+    <p>Slowly open the burette tap to add acid drop by drop.</p>
+    <p>Swirl the conical flask constantly.</p>
+    <p>Near the endpoint, add the acid one drop at a time until the indicator changes colour.</p>
+    
+    <h5>6. Record the reading</h5>
+    <p>Note the burette reading (to the nearest 0.05 cm³) when the colour just changes.</p>
+    <p>This is your final reading.</p>
+    
+    <h5>7. Repeat</h5>
+    <p>Repeat until you get two concordant results (within 0.10 cm³).</p>
+    <p>Calculate the mean titre (average) from these values.</p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">🎨 Subsection 4 – Common Indicators and Their Colours</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Indicator Colours</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Indicator</th>
+          <th>Acid Colour</th>
+          <th>Alkali Colour</th>
+          <th>Endpoint</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Phenolphthalein</td>
+          <td>Colourless</td>
+          <td>Pink</td>
+          <td>Colourless</td>
+        </tr>
+        <tr>
+          <td>Methyl orange</td>
+          <td>Red</td>
+          <td>Yellow</td>
+          <td>Orange</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p><strong>🧠 Choose the indicator based on the reaction type:</strong></p>
+    <ul>
+      <li>Strong acid + strong base → phenolphthalein or methyl orange (both suitable).</li>
+      <li>Strong acid + weak base → methyl orange.</li>
+      <li>Weak acid + strong base → phenolphthalein.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Safety Precautions</h3>
+  
+  <div class="warning-block">
+    <h4>⚡ Safety</h4>
+    <ul>
+      <li>Wear goggles and a lab coat – acids and alkalis are corrosive.</li>
+      <li>Avoid spilling — rinse immediately with water if contact occurs.</li>
+      <li>Use a pipette filler — never mouth-pipette.</li>
+      <li>Read the burette at eye level to avoid parallax errors.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – Calculations in Titrations</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Key Concept</h4>
+    <p>Once the titration is complete, you use the moles equation to find the unknown concentration.</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🔢 Step-by-Step Calculation Method</h4>
+    <ol>
+      <li>Write the balanced equation for the neutralisation.</li>
+      <li>Calculate moles of the known solution using:
+        <p class="formula">n = c × V</p>
+        <p>(Remember: convert cm³ → dm³ by dividing by 1000.)</p>
+      </li>
+      <li>Use the mole ratio from the equation to find moles of the unknown solution.</li>
+      <li>Use c = n/V to find the unknown concentration.</li>
+    </ol>
+  </div>
+
+  <div class="example-block">
+    <h4>🟢 Example Calculation</h4>
+    <p><strong>Titration Reaction:</strong></p>
+    <p class="equation">HCl + NaOH → NaCl + H₂O</p>
+    
+    <p><strong>Data:</strong></p>
+    <ul>
+      <li>25.0 cm³ NaOH (unknown concentration).</li>
+      <li>0.100 mol/dm³ HCl in burette.</li>
+      <li>Mean titre = 23.50 cm³ acid used.</li>
+    </ul>
+    
+    <p><strong>Step 1: Convert to dm³</strong></p>
+    <p>V acid = 23.50 ÷ 1000 = 0.0235 dm³</p>
+    
+    <p><strong>Step 2: Moles of acid</strong></p>
+    <p>n(HCl) = c × V = 0.100 × 0.0235 = 0.00235 mol</p>
+    
+    <p><strong>Step 3: Ratio HCl : NaOH = 1 : 1</strong></p>
+    <p>→ Moles of NaOH = 0.00235 mol.</p>
+    
+    <p><strong>Step 4: Concentration of NaOH</strong></p>
+    <p>c = n / V = 0.00235 / 0.0250 = 0.094 mol/dm³</p>
+    
+    <p><strong>✅ Answer: [NaOH] = 0.094 mol/dm³</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">⚡ Subsection 7 – Common Sources of Error</h3>
+  
+  <div class="key-facts-block">
+    <h4>🧠 Error Analysis</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Error</th>
+          <th>Cause</th>
+          <th>Solution</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Parallax error</td>
+          <td>Reading burette above/below meniscus</td>
+          <td>Read at eye level</td>
+        </tr>
+        <tr>
+          <td>Overshooting endpoint</td>
+          <td>Adding too much acid</td>
+          <td>Add acid dropwise near endpoint</td>
+        </tr>
+        <tr>
+          <td>Inconsistent swirling</td>
+          <td>Uneven mixing</td>
+          <td>Swirl constantly</td>
+        </tr>
+        <tr>
+          <td>Impure glassware</td>
+          <td>Residues altering concentration</td>
+          <td>Rinse apparatus with correct solutions</td>
+        </tr>
+        <tr>
+          <td>Using anomalous readings</td>
+          <td>Poor accuracy</td>
+          <td>Repeat until two concordant titres</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">💎 Subsection 8 – Results Table (How to Present Data)</h3>
+  
+  <div class="example-block">
+    <h4>🟢 Example Results Table</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Rough Titre (cm³)</th>
+          <th>Accurate 1</th>
+          <th>Accurate 2</th>
+          <th>Accurate 3</th>
+          <th>Mean (cm³)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>23.7</td>
+          <td>23.5</td>
+          <td>23.4</td>
+          <td>23.5</td>
+          <td>23.47</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "titration", "burette", "pipette", "indicator", "endpoint", "neutralisation",
+          "concentration", "unknown", "accurate", "concordant", "mean titre", "calculation"
+        ],
+        practice_items: []
       }
     ]
   },
