@@ -458,18 +458,33 @@ const BlurPractice = () => {
     return contentText;
   };
 
+  // Build study content ONLY from the current pair (not cumulative)
+  const buildPairContent = (): string => {
+    const contentText = currentPairSubsections.map(sub => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(sub.html, 'text/html');
+      return doc.body.textContent || '';
+    }).join('\n\n').trim();
+
+    console.log("buildPairContent - pair-only", {
+      currentPairIndex,
+      pairTitles: currentPairSubsections.map(s => s.title),
+      studyChars: contentText.length
+    });
+
+    return contentText;
+  };
+
   const generateNewQuestion = async (typeOverride?: "blurt" | "exam") => {
     setIsGeneratingQuestion(true);
     const qType = typeOverride ?? questionType;
-    const studyContent = buildStudyContent();
+    const studyContent = buildPairContent();
     
-    const cumulative = getCumulativeSubsections();
     console.log("generateNewQuestion CALLED", {
       qType,
       endpoint: qType === "exam" ? "generate-varied-questions" : "generate-questions",
       currentPairIndex,
-      cumulativeCount: cumulative.length,
-      cumulativeTitles: cumulative.map(s => s.title),
+      pairTitles: currentPairSubsections.map(s => s.title),
       studyChars: studyContent.length,
       previousQuestionsCount: generatedQuestions.length
     });
@@ -601,11 +616,12 @@ const BlurPractice = () => {
     });
 
     try {
-      // Build expected content from cumulative pairs (same as question generation)
-      const expectedContent = buildStudyContent();
+      // Build expected content from current pair only (same as question generation)
+      const expectedContent = buildPairContent();
       
-      console.log("handleSubmit - marking against cumulative content", {
+      console.log("handleSubmit - marking against pair content", {
         currentPairIndex,
+        pairTitles: currentPairSubsections.map(s => s.title),
         expectedChars: expectedContent.length,
         marks: currentGeneratedQuestion.marks
       });
@@ -1220,12 +1236,12 @@ const BlurPractice = () => {
 
                   {showPhotoUpload && currentGeneratedQuestion && (
                     <PhotoUpload
-                      studyContent={buildStudyContent()}
+                      studyContent={buildPairContent()}
                       questions={generatedQuestions.map(q => q.question)}
                       currentQuestion={currentGeneratedQuestion.question}
                       topicId={topicId || ''}
                       subsectionId={subsectionId || ''}
-                      subsectionTitle={getCumulativeSubsections().map(s => s.title).join(', ')}
+                      subsectionTitle={currentPairSubsections.map(s => s.title).join(', ')}
                       questionType={questionType}
                       marks={currentGeneratedQuestion.marks}
                     />
