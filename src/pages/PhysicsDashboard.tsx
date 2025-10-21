@@ -175,7 +175,7 @@ const PhysicsDashboard = () => {
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate("/progress")}>
+          <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate("/physics/progress")}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-accent" />
