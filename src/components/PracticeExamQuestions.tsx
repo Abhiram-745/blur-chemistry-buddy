@@ -39,6 +39,18 @@ const PracticeExamQuestions = ({ sectionContent, sectionTitle, subsections }: Pr
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousQuestions, setPreviousQuestions] = useState<string[]>([]);
 
+  // Sanitize poorly formatted AI output (e.g., line breaks before state symbols like (g))
+  const sanitizeQuestionText = (text: string) => {
+    let t = text.replace(/\r\n/g, "\n");
+    // Join accidental newlines before state symbols (aq), (g), (s), (l)
+    t = t.replace(/\n\((aq|g|s|l)\)/gi, " ($1)");
+    // Join broken lines around arrows
+    t = t.replace(/([A-Za-z0-9])\s*\n\s*→/g, "$1 →");
+    // Collapse excessive blank lines
+    t = t.replace(/\n{2,}/g, "\n\n");
+    return t;
+  };
+
   // Use subsections if provided, otherwise fall back to section title
   const topics = subsections && subsections.length > 0 
     ? subsections.map(sub => sub.title)
@@ -240,7 +252,7 @@ const PracticeExamQuestions = ({ sectionContent, sectionTitle, subsections }: Pr
               <div className="prose prose-sm max-w-none dark:prose-invert">
                 {/* Format question with parts (a), (b), (c) on separate lines */}
                 {(() => {
-                  const questionText = currentQuestion.question;
+                  const questionText = sanitizeQuestionText(currentQuestion.question);
                   
                   // Check if question has parts like (a), (b), (c)
                   const hasMultipleParts = /\([a-d]\)/i.test(questionText);
