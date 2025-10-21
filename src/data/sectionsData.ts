@@ -7848,6 +7848,247 @@ H—N—H</pre>
           "concentration", "unknown", "accurate", "concordant", "mean titre", "calculation"
         ],
         practice_items: []
+      },
+      {
+        id: "3-5-gas-volumes",
+        title: "3.5 USING THE AMOUNT OF SUBSTANCE IN RELATION TO VOLUMES OF GASES",
+        type: "content",
+        study_group: 5,
+        content_html: `
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 1 – The Mole and Gas Volumes</h3>
+  
+  <div class="definition-block">
+    <h4>⚛️ Definition</h4>
+    <p>At room temperature and pressure (RTP) — approximately 20°C and 1 atmosphere — 1 mole of any gas occupies a volume of 24 dm³.</p>
+    <p class="formula">1 mol of gas = 24 dm³ at RTP</p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Idea</h4>
+    <ul>
+      <li>Different gases have different masses, but equal volumes contain the same number of molecules (Avogadro's law).</li>
+      <li>This allows gas quantities to be compared using volume instead of mass.</li>
+    </ul>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Gas</th>
+          <th>1 mol mass (M<sub>r</sub>)</th>
+          <th>Volume (at RTP)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>H₂</td>
+          <td>2 g</td>
+          <td>24 dm³</td>
+        </tr>
+        <tr>
+          <td>O₂</td>
+          <td>32 g</td>
+          <td>24 dm³</td>
+        </tr>
+        <tr>
+          <td>CO₂</td>
+          <td>44 g</td>
+          <td>24 dm³</td>
+        </tr>
+        <tr>
+          <td>N₂</td>
+          <td>28 g</td>
+          <td>24 dm³</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 One mole of any gas — regardless of its type — always takes up 24 dm³ at RTP.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 2 – The Gas Volume Equation</h3>
+  
+  <div class="key-facts-block">
+    <h4>🔢 Formulae</h4>
+    <p>You can link moles, volume, and molar volume using:</p>
+    <p class="formula">Volume (dm³) = Moles × 24</p>
+    <p class="formula">Moles = Volume (dm³) / 24</p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 1 – Finding Volume</h4>
+    <p><strong>What volume will 0.25 mol of hydrogen gas occupy at RTP?</strong></p>
+    <p>V = n × 24 = 0.25 × 24 = 6.0 dm³</p>
+    <p><strong>✅ Answer: 6.0 dm³ of H₂</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 2 – Finding Moles</h4>
+    <p><strong>A sample of oxygen gas occupies 36 dm³ at RTP. How many moles is this?</strong></p>
+    <p>n = V / 24 = 36 / 24 = 1.5 mol</p>
+    <p><strong>✅ Answer: 1.5 mol of O₂</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example 3 – Finding Mass from Volume</h4>
+    <p><strong>A student collects 48 dm³ of CO₂ at RTP. Find its mass.</strong></p>
+    <p>(M<sub>r</sub> of CO₂ = 44)</p>
+    <p>n = 48 / 24 = 2.0 mol</p>
+    <p>m = n × M<sub>r</sub> = 2 × 44 = 88 g</p>
+    <p><strong>✅ Answer: 88 g of CO₂</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 3 – Using Balanced Equations with Gas Volumes</h3>
+  
+  <div class="key-facts-block">
+    <h4>💎 Key Concept</h4>
+    <p>Gas volumes in equations work just like mole ratios — the numbers in front of gases show their volume ratios at RTP.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example</h4>
+    <p class="equation">N₂ + 3H₂ → 2NH₃</p>
+    
+    <p><strong>Ratio of moles = 1 : 3 : 2</strong></p>
+    <p>👉 Ratio of volumes = 1 : 3 : 2</p>
+    
+    <p><strong>If 30 dm³ of H₂ reacts completely:</strong></p>
+    <ul>
+      <li>N₂ required = 1/3 × 30 = 10 dm³</li>
+      <li>NH₃ produced = 2/3 × 30 = 20 dm³</li>
+    </ul>
+    
+    <p><strong>✅ Answer: 10 dm³ of nitrogen used, 20 dm³ of ammonia formed.</strong></p>
+  </div>
+
+  <div class="key-facts-block">
+    <h4>🧠 Key Rule</h4>
+    <p><strong>Volume ratios of gases = mole ratios of gases.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 4 – Working with cm³ and dm³</h3>
+  
+  <div class="key-facts-block">
+    <h4>⚙️ Unit Conversions</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Conversion</th>
+          <th>Equation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1 dm³</td>
+          <td>1000 cm³</td>
+        </tr>
+        <tr>
+          <td>1 cm³</td>
+          <td>0.001 dm³</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 Always convert to dm³ before using gas equations.</strong></p>
+  </div>
+
+  <div class="example-block">
+    <h4>💡 Example</h4>
+    <p><strong>A student collects 600 cm³ of hydrogen gas at RTP. Find the number of moles.</strong></p>
+    <p>600 cm³ = 600 ÷ 1000 = 0.600 dm³</p>
+    <p>n = V / 24 = 0.600 / 24 = 0.025 mol</p>
+    <p><strong>✅ Answer: 0.025 mol H₂</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 5 – Combined Example (Multi-Step Exam Style)</h3>
+  
+  <div class="example-block">
+    <h4>⚡ Reaction</h4>
+    <p class="equation">CaCO₃ → CaO + CO₂</p>
+    
+    <p><strong>Question:</strong></p>
+    <p>Calculate the volume of CO₂ (in dm³) formed when 10 g of calcium carbonate (CaCO₃, M<sub>r</sub> = 100) is decomposed at RTP.</p>
+    
+    <p><strong>Step 1: Find moles of CaCO₃</strong></p>
+    <p>n = 10 / 100 = 0.10 mol</p>
+    
+    <p><strong>Step 2: Ratio CaCO₃ : CO₂ = 1 : 1</strong></p>
+    <p>→ Moles of CO₂ = 0.10 mol</p>
+    
+    <p><strong>Step 3: Find volume</strong></p>
+    <p>V = n × 24 = 0.10 × 24 = 2.4 dm³</p>
+    
+    <p><strong>✅ Answer: 2.4 dm³ of CO₂ gas produced.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 6 – When to Use 24 dm³</h3>
+  
+  <div class="key-facts-block">
+    <h4>💎 Important Note</h4>
+    <p>The 24 dm³ molar volume applies only at room temperature and pressure (RTP).</p>
+    <p>If conditions change (e.g. higher pressure or lower temperature), the volume changes too.</p>
+  </div>
+
+  <div class="example-block">
+    <h4>🧠 Effect of Conditions</h4>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Condition</th>
+          <th>Volume per mol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Room Temp (20°C, 1 atm)</td>
+          <td>24 dm³</td>
+        </tr>
+        <tr>
+          <td>High pressure</td>
+          <td>Decreases</td>
+        </tr>
+        <tr>
+          <td>Low temperature</td>
+          <td>Decreases</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><strong>🧠 At high pressure or low temperature, gas particles are closer together → smaller volume.</strong></p>
+  </div>
+</div>
+
+<div class="subsection">
+  <h3 class="subsection-heading">Subsection 7 – Common Exam Errors</h3>
+  
+  <div class="warning-block">
+    <h4>💡 Common Mistakes</h4>
+    <ul>
+      <li>❌ Forgetting to convert cm³ → dm³.</li>
+      <li>❌ Using 24 when the question says "standard temperature and pressure" (use 22.4 dm³).</li>
+      <li>❌ Mixing up moles and mass in calculations.</li>
+      <li>❌ Forgetting gas only relationships work for gaseous substances.</li>
+    </ul>
+    <p><strong>✅ Always check which reactants/products are gases before using volume ratios.</strong></p>
+  </div>
+</div>
+        `,
+        canonical_keywords: [
+          "mole", "gas volume", "24 dm³", "RTP", "room temperature and pressure",
+          "Avogadro", "volume ratio", "molar volume", "dm³", "cm³", "conversion",
+          "gas equation", "balanced equation", "volume calculation"
+        ],
+        practice_items: []
       }
     ]
   },
