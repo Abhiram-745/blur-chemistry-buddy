@@ -72,9 +72,9 @@ const ExamPractice = () => {
       
       const { data, error } = await supabase.functions.invoke('generate-varied-questions', {
         body: {
-          content: content,
-          questionType: 'exam',
-          count: 5
+          studyContent: content,
+          numQuestions: 5,
+          previousQuestions: []
         }
       });
       
