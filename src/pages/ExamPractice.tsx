@@ -202,10 +202,24 @@ const ExamPractice = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-lg">{questions[currentQuestionIndex].question}</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  [{questions[currentQuestionIndex].marks} marks]
+              <div className="p-6 bg-muted rounded-lg space-y-4">
+                {questions[currentQuestionIndex].question.split(/(?=\([a-z]\))/g).map((part, idx) => {
+                  const trimmedPart = part.trim();
+                  if (!trimmedPart) return null;
+                  
+                  const partMatch = trimmedPart.match(/^\(([a-z])\)\s*(.*)/s);
+                  if (partMatch) {
+                    return (
+                      <div key={idx} className="pl-4 border-l-2 border-primary/30">
+                        <span className="font-semibold text-primary">({partMatch[1]})</span>
+                        <span className="ml-2">{partMatch[2]}</span>
+                      </div>
+                    );
+                  }
+                  return <p key={idx} className="text-lg font-medium">{trimmedPart}</p>;
+                })}
+                <p className="text-sm font-semibold text-primary mt-4">
+                  Total: {questions[currentQuestionIndex].marks} marks
                 </p>
               </div>
 
