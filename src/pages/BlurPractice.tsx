@@ -146,14 +146,17 @@ const BlurPractice = () => {
   }, [currentPairIndex, topicId, subsectionId, internalSubsections.length, currentPairSubsections.length]);
 
   useEffect(() => {
-    // Determine which dataset to use based on the URL path
-    const isPhysics = location.pathname.includes('/physics/');
+    // Determine dataset: prefer URL flag, otherwise infer from topic id presence in physics data
+    const urlSaysPhysics = location.pathname.includes('/physics/');
+    const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+    const isPhysics = urlSaysPhysics || topicLooksPhysics;
     const dataSource = isPhysics ? physicsData : sectionsData;
     
     console.log('BlurPractice - Looking for:', { 
       topicId, 
       subsectionId, 
-      isPhysics, 
+      isPhysics,
+      reason: { urlSaysPhysics, topicLooksPhysics }, 
       pathname: location.pathname,
       availableTopics: dataSource.map(t => t.id)
     });
@@ -884,13 +887,17 @@ const BlurPractice = () => {
   };
 
   const handleFinish = () => {
-    const isPhysics = location.pathname.includes('/physics/');
+    const urlSaysPhysics = location.pathname.includes('/physics/');
+    const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+    const isPhysics = urlSaysPhysics || topicLooksPhysics;
     const topicPath = isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`;
     navigate(topicPath);
   };
 
   if (internalSubsections.length === 0) {
-    const isPhysics = location.pathname.includes('/physics/');
+    const urlSaysPhysics = location.pathname.includes('/physics/');
+    const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+    const isPhysics = urlSaysPhysics || topicLooksPhysics;
     const backPath = isPhysics ? "/physics/sections" : "/sections";
     
     return (
