@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PlayCircle } from "lucide-react";
+import { ArrowLeft, PlayCircle, BookOpen } from "lucide-react";
 import { physicsData, TopicSection } from "@/data/physicsData";
 import {
   Collapsible,
@@ -108,30 +108,35 @@ const PhysicsTopicView = () => {
 
         <ColorLegend />
 
-        {/* Practice Subsections Grid */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Practice Subsections</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {topic.subsections.map((subsection) => (
-              <Card key={subsection.id} className="hover:shadow-lg transition-all">
-                <CardHeader>
-                  <CardTitle className="text-lg">{subsection.title}</CardTitle>
-                  <CardDescription>
-                    {subsection.practice_items.length} practice question{subsection.practice_items.length !== 1 ? 's' : ''}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button
-                    className="w-full"
-                    onClick={() => startSubsectionPractice(subsection.id)}
-                  >
-                    <PlayCircle className="h-4 w-4 mr-2" />
-                    Start Practice
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+        {/* Action Buttons */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate(`/physics/blur-exercise/${id}/${topic.subsections[0].id}`)}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <PlayCircle className="h-5 w-5" />
+                Blurting Practice
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Study notes in pairs, then answer AI-generated questions
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate(`/physics/exam-practice/${id}/${topic.subsections[0].id}`)}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-5 w-5" />
+                Exam Practice
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Practice with exam-style questions and get detailed feedback
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Full Study Notes */}
