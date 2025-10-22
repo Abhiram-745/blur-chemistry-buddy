@@ -16,7 +16,6 @@ import PhysicsProgress from "./pages/PhysicsProgress";
 import BlurPractice from "./pages/BlurPractice";
 import SectionReader from "./pages/SectionReader";
 import BlurExercise from "./pages/BlurExercise";
-import ExamPractice from "./pages/ExamPractice";
 import Results from "./pages/Results";
 import History from "./pages/History";
 import AdminSections from "./pages/AdminSections";
@@ -49,12 +48,8 @@ const App = () => (
           <Route path="/physics/sections" element={<PhysicsSections />} />
           <Route path="/physics/topic/:id" element={<PhysicsTopicView />} />
           <Route path="/physics/progress" element={<PhysicsProgress />} />
-          <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/physics/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
-          <Route path="/blur-exercise/:topicId/:subsectionId" element={<BlurExercise />} />
-          <Route path="/physics/blur-exercise/:topicId/:subsectionId" element={<BlurExercise />} />
-          <Route path="/exam-practice/:topicId/:subsectionId" element={<ExamPractice />} />
-          <Route path="/physics/exam-practice/:topicId/:subsectionId" element={<ExamPractice />} />
+          <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/section/:id" element={<SectionReader />} />
           <Route path="/blur/:id" element={<BlurExercise />} />
           <Route path="/results/:id" element={<Results />} />

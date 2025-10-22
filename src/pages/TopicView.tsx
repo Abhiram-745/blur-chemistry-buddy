@@ -122,35 +122,38 @@ const TopicView = () => {
 
         <ColorLegend />
 
-        {/* Action Buttons */}
-        <div className="grid md:grid-cols-2 gap-4 mb-8">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate(`/blur-exercise/${id}/${topic.subsections[0].id}`)}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PlayCircle className="h-5 w-5" />
-                Blurting Practice
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Study notes in pairs, then answer AI-generated questions
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate(`/exam-practice/${id}/${topic.subsections[0].id}`)}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Exam Practice
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Practice with exam-style questions and get detailed feedback
-              </p>
-            </CardContent>
-          </Card>
+        {/* Practice Subsections Grid */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">📝 Choose a Subsection to Practice</h2>
+          <p className="text-muted-foreground mb-6">
+            Each subsection includes brief notes and multiple blurting questions. Complete all questions to get your overall score!
+          </p>
+          <div className="grid md:grid-cols-2 gap-4">
+            {topic.subsections.map((subsection: Subsection, index) => (
+              <Card key={subsection.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge variant="secondary" className="text-lg px-3 py-1">
+                      {index + 1}
+                    </Badge>
+                    <CardTitle className="text-lg">{subsection.title}</CardTitle>
+                  </div>
+                  <Badge variant="outline" className="w-fit">
+                    {subsection.practice_items.length} questions
+                  </Badge>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    onClick={() => startSubsectionPractice(subsection.id)} 
+                    className="w-full"
+                  >
+                    <PlayCircle className="mr-2 h-4 w-4" />
+                    Start Practice
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
         {/* Full Notes Section - Collapsible Reference */}

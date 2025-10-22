@@ -31,7 +31,7 @@ const SubjectSelection = () => {
       icon: Beaker,
       color: "from-blue-500 to-cyan-500",
       available: true,
-      route: "/chemistry/dashboard"
+      route: "/dashboard"
     },
     {
       name: "Physics",

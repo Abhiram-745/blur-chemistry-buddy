@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Clock, TrendingUp, LogOut, Settings as SettingsIcon, HelpCircle, Target, ArrowRight, CheckCircle, FileText } from "lucide-react";
+import { BookOpen, Clock, TrendingUp, LogOut, Settings as SettingsIcon, HelpCircle, Target, ArrowRight, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
@@ -144,52 +144,6 @@ const PhysicsDashboard = () => {
             <LogOut className="mr-2 h-4 w-4" />
             Sign Out
           </Button>
-        </div>
-
-        {/* Quick Action Buttons */}
-        <div className="grid gap-4 md:grid-cols-3 mb-8">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate("/physics/sections")}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5" />
-                Practice
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Browse topics and start practicing</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate("/physics/sections")}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Exam Questions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Practice exam-style questions</p>
-            </CardContent>
-          </Card>
-          
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => {
-            const weakTopics = topicPerformance.filter(t => !t.isStrength);
-            if (weakTopics.length > 0) {
-              navigate(`/physics/topic/${weakTopics[0].sectionId}`);
-            } else {
-              navigate("/physics/sections");
-            }
-          }}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-5 w-5" />
-                Weak Topics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Focus on areas that need improvement</p>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8 animate-slide-up">

@@ -14,45 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      blurt_sessions: {
-        Row: {
-          created_at: string
-          id: string
-          keywords_added: string[]
-          keywords_missed: string[]
-          max_score: number
-          pair_number: number
-          score: number
-          subsection_slug: string
-          topic_slug: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          keywords_added?: string[]
-          keywords_missed?: string[]
-          max_score: number
-          pair_number: number
-          score: number
-          subsection_slug: string
-          topic_slug: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          keywords_added?: string[]
-          keywords_missed?: string[]
-          max_score?: number
-          pair_number?: number
-          score?: number
-          subsection_slug?: string
-          topic_slug?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       practice_sessions: {
         Row: {
           created_at: string
@@ -197,45 +158,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      subtopic_progress: {
-        Row: {
-          blurt_score_avg: number | null
-          created_at: string
-          exam_score_avg: number | null
-          id: string
-          last_practiced_at: string | null
-          subsection_slug: string
-          topic_slug: string
-          total_blurt_attempts: number | null
-          total_exam_attempts: number | null
-          user_id: string
-        }
-        Insert: {
-          blurt_score_avg?: number | null
-          created_at?: string
-          exam_score_avg?: number | null
-          id?: string
-          last_practiced_at?: string | null
-          subsection_slug: string
-          topic_slug: string
-          total_blurt_attempts?: number | null
-          total_exam_attempts?: number | null
-          user_id: string
-        }
-        Update: {
-          blurt_score_avg?: number | null
-          created_at?: string
-          exam_score_avg?: number | null
-          id?: string
-          last_practiced_at?: string | null
-          subsection_slug?: string
-          topic_slug?: string
-          total_blurt_attempts?: number | null
-          total_exam_attempts?: number | null
-          user_id?: string
-        }
-        Relationships: []
       }
       user_roles: {
         Row: {
