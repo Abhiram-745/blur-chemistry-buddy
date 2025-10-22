@@ -21,6 +21,13 @@ interface BlurtQuestion {
   marks: number;
 }
 
+interface QuestionFeedback {
+  questionNumber: number;
+  feedback: string;
+  coveredKeywords: string[];
+  missedKeywords: string[];
+}
+
 const BlurExercise = () => {
   const { topicId, subsectionId } = useParams();
   const navigate = useNavigate();
@@ -34,18 +41,12 @@ const BlurExercise = () => {
   const [showTimer, setShowTimer] = useState(true);
   const [timerCompleted, setTimerCompleted] = useState(false);
   const [questions, setQuestions] = useState<BlurtQuestion[]>([]);
-  const [userAnswer, setUserAnswer] = useState("");
+  const [userAnswers, setUserAnswers] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [missedKeywords, setMissedKeywords] = useState<string[]>([]);
-  const [coveredKeywords, setCoveredKeywords] = useState<string[]>([]);
-  const [showMissedKeywords, setShowMissedKeywords] = useState(false);
-  const [sessionResults, setSessionResults] = useState<{
-    score: number;
-    maxScore: number;
-    keywordsAdded: string[];
-    keywordsMissed: string[];
-  } | null>(null);
+  const [feedbackHistory, setFeedbackHistory] = useState<QuestionFeedback[]>([]);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [shouldRetryQuestions, setShouldRetryQuestions] = useState(false);
 
   useEffect(() => {
     const dataSource = isPhysics ? physicsData : sectionsData;
@@ -91,9 +92,7 @@ const BlurExercise = () => {
     setPairs(parsedPairs);
   }, [topicId, subsectionId, isPhysics]);
 
-  const handleTimerComplete = async () => {
-    setTimerCompleted(true);
-    setShowTimer(false);
+  const generateQuestions = async () => {
     setIsGenerating(true);
     
     try {
@@ -105,13 +104,14 @@ const BlurExercise = () => {
         body: {
           content: currentPair.content,
           pairContent: pairContent,
-          previousKeywords: questions.flatMap(q => q.keyKeywords)
+          previousKeywords: feedbackHistory.flatMap(f => [...f.coveredKeywords, ...f.missedKeywords])
         }
       });
       
       if (error) throw error;
       
       setQuestions(data.questions || []);
+      setUserAnswers(new Array(data.questions?.length || 0).fill(""));
     } catch (error) {
       console.error('Error generating questions:', error);
       toast({
@@ -124,80 +124,106 @@ const BlurExercise = () => {
     }
   };
 
-  const handleSubmitAnswer = () => {
-    if (!userAnswer.trim()) {
-      toast({ title: "Please write an answer", variant: "destructive" });
+  const handleTimerComplete = async () => {
+    setTimerCompleted(true);
+    setShowTimer(false);
+    await generateQuestions();
+  };
+
+  const handleSubmitAnswers = async () => {
+    if (userAnswers.some(a => !a.trim())) {
+      toast({ title: "Please answer all questions", variant: "destructive" });
       return;
     }
     
-    const currentQuestion = questions[0];
-    const userAnswerLower = userAnswer.toLowerCase();
-    const missed = currentQuestion.keyKeywords.filter(
-      keyword => !userAnswerLower.includes(keyword.toLowerCase())
-    );
-    const covered = currentQuestion.keyKeywords.filter(
-      keyword => userAnswerLower.includes(keyword.toLowerCase())
-    );
+    setIsSubmitting(true);
     
-    if (missed.length > 0) {
-      setMissedKeywords(missed);
-      setCoveredKeywords(covered);
-      setShowMissedKeywords(true);
-    } else {
-      handleNextQuestion();
+    try {
+      const { data, error } = await supabase.functions.invoke('mark-answer', {
+        body: {
+          questions: questions.map((q, idx) => ({
+            question: q.question,
+            keyKeywords: q.keyKeywords,
+            userAnswer: userAnswers[idx]
+          }))
+        }
+      });
+      
+      if (error) throw error;
+      
+      const newFeedback: QuestionFeedback[] = data.feedback.map((f: any, idx: number) => ({
+        questionNumber: feedbackHistory.length + idx + 1,
+        feedback: f.feedback,
+        coveredKeywords: f.coveredKeywords,
+        missedKeywords: f.missedKeywords
+      }));
+      
+      setFeedbackHistory([...feedbackHistory, ...newFeedback]);
+      setShowFeedback(true);
+      
+      // Check if any question has missed keywords
+      const hasMissedKeywords = newFeedback.some(f => f.missedKeywords.length > 0);
+      setShouldRetryQuestions(hasMissedKeywords);
+      
+    } catch (error) {
+      console.error('Error getting feedback:', error);
+      toast({
+        title: "Error",
+        description: "Failed to get feedback. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleAddMissedKeywords = () => {
-    const newAnswer = userAnswer + '\n\n' + missedKeywords.join(', ');
-    setUserAnswer(newAnswer);
-    setShowMissedKeywords(false);
-    setMissedKeywords([]);
-    setCoveredKeywords([]);
-    handleNextQuestion();
+  const handleContinuePractice = async () => {
+    setShowFeedback(false);
+    
+    if (shouldRetryQuestions) {
+      // Retry same questions
+      setUserAnswers(new Array(questions.length).fill(""));
+    } else {
+      // Generate new questions
+      await generateQuestions();
+    }
   };
 
-  const handleNextQuestion = () => {
-    if (questions.length > 1) {
-      setQuestions(questions.slice(1));
-      setUserAnswer("");
+  const handleMoveToNextPair = () => {
+    if (currentPairIndex < pairs.length - 1) {
+      setCurrentPairIndex(currentPairIndex + 1);
+      setShowTimer(true);
+      setTimerCompleted(false);
+      setQuestions([]);
+      setUserAnswers([]);
+      setFeedbackHistory([]);
+      setShowFeedback(false);
+      setShouldRetryQuestions(false);
     } else {
-      // All questions answered for this pair
-      if (currentPairIndex < pairs.length - 1) {
-        setCurrentPairIndex(currentPairIndex + 1);
-        setShowTimer(true);
-        setTimerCompleted(false);
-        setQuestions([]);
-        setUserAnswer("");
-      } else {
-        // All pairs completed
-        saveSession();
-      }
+      saveSession();
     }
   };
 
   const saveSession = async () => {
-    setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
       
-      // Calculate final score
-      const totalKeywords = questions.reduce((sum, q) => sum + q.keyKeywords.length, 0);
-      const coveredKeywords = questions.flatMap(q => q.keyKeywords);
+      const allCovered = feedbackHistory.flatMap(f => f.coveredKeywords);
+      const allMissed = feedbackHistory.flatMap(f => f.missedKeywords);
       
       await supabase.from('blurt_sessions').insert({
         user_id: user.id,
         topic_slug: topicId,
         subsection_slug: subsectionId,
         pair_number: currentPairIndex + 1,
-        score: coveredKeywords.length,
-        max_score: totalKeywords,
-        keywords_added: coveredKeywords,
-        keywords_missed: missedKeywords
+        score: allCovered.length,
+        max_score: allCovered.length + allMissed.length,
+        keywords_added: allCovered,
+        keywords_missed: allMissed
       });
       
-      toast({ title: "Session saved!" });
+      toast({ title: "Session completed!" });
       navigate(isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`);
     } catch (error) {
       console.error('Error saving session:', error);
@@ -206,8 +232,6 @@ const BlurExercise = () => {
         description: "Failed to save session.",
         variant: "destructive"
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -266,81 +290,109 @@ const BlurExercise = () => {
           </Card>
         )}
 
-        {timerCompleted && !isGenerating && questions.length > 0 && !showMissedKeywords && (
+        {timerCompleted && !isGenerating && questions.length > 0 && !showFeedback && (
           <Card>
             <CardHeader>
-              <CardTitle>Question {questions.length}</CardTitle>
+              <CardTitle>Answer the Questions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="p-4 bg-muted rounded-lg">
-                <p className="text-lg">{questions[0].question}</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  [{questions[0].marks} marks]
-                </p>
-              </div>
+            <CardContent className="space-y-6">
+              {questions.map((q, idx) => (
+                <div key={idx} className="space-y-3">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <p className="font-semibold">Question {idx + 1}</p>
+                    <p className="text-lg mt-2">{q.question}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      [{q.marks} marks]
+                    </p>
+                  </div>
 
-              <Textarea
-                value={userAnswer}
-                onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Write your answer here..."
-                className="min-h-[200px]"
-              />
+                  <Textarea
+                    value={userAnswers[idx] || ""}
+                    onChange={(e) => {
+                      const newAnswers = [...userAnswers];
+                      newAnswers[idx] = e.target.value;
+                      setUserAnswers(newAnswers);
+                    }}
+                    placeholder="Write your answer here..."
+                    className="min-h-[150px]"
+                  />
+                </div>
+              ))}
 
               <Button 
-                onClick={handleSubmitAnswer} 
+                onClick={handleSubmitAnswers} 
                 className="w-full"
-                disabled={!userAnswer.trim()}
+                disabled={isSubmitting || userAnswers.some(a => !a?.trim())}
               >
                 <Send className="mr-2 h-4 w-4" />
-                Submit Answer
+                Submit All Answers
               </Button>
             </CardContent>
           </Card>
         )}
 
-        {showMissedKeywords && (
+        {showFeedback && (
           <Card>
             <CardHeader>
-              <CardTitle>Answer Feedback</CardTitle>
+              <CardTitle>Feedback</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {coveredKeywords.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg flex items-center gap-2">
-                    <span className="text-green-600">✓</span> Points you did well
-                  </h3>
-                  <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-900">
-                    <ul className="list-disc list-inside space-y-1">
-                      {coveredKeywords.map((keyword, idx) => (
-                        <li key={idx} className="text-green-700 dark:text-green-400 font-medium">{keyword}</li>
-                      ))}
-                    </ul>
+              {feedbackHistory.slice(-questions.length).map((feedback, idx) => (
+                <div key={idx} className="space-y-3 pb-6 border-b last:border-b-0">
+                  <h3 className="font-bold text-lg">Question {idx + 1} Feedback:</h3>
+                  
+                  <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-900">
+                    <p className="text-blue-900 dark:text-blue-100 whitespace-pre-wrap">{feedback.feedback}</p>
                   </div>
+
+                  {feedback.coveredKeywords.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        <span className="text-green-600">✓</span> Points you did well
+                      </h4>
+                      <div className="p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-900">
+                        <ul className="list-disc list-inside space-y-1">
+                          {feedback.coveredKeywords.map((keyword, kidx) => (
+                            <li key={kidx} className="text-green-700 dark:text-green-400 font-medium">{keyword}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+
+                  {feedback.missedKeywords.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="font-semibold flex items-center gap-2">
+                        <span className="text-destructive">✗</span> Ideas you missed
+                      </h4>
+                      <div className="p-3 bg-destructive/10 rounded-lg border border-destructive/20">
+                        <ul className="list-disc list-inside space-y-1">
+                          {feedback.missedKeywords.map((keyword, kidx) => (
+                            <li key={kidx} className="text-destructive font-medium">{keyword}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-              
-              <div className="space-y-2">
-                <h3 className="font-semibold text-lg flex items-center gap-2">
-                  <span className="text-destructive">✗</span> Ideas you missed
-                </h3>
-                <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
-                  <ul className="list-disc list-inside space-y-1">
-                    {missedKeywords.map((keyword, idx) => (
-                      <li key={idx} className="text-destructive font-medium">{keyword}</li>
-                    ))}
-                  </ul>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  Please add these ideas to your answer before continuing.
-                </p>
+              ))}
+
+              <div className="space-y-3 pt-4">
+                <Button 
+                  onClick={handleContinuePractice} 
+                  className="w-full"
+                >
+                  {shouldRetryQuestions ? "Try Same Questions Again" : "Generate New Questions"}
+                </Button>
+                
+                <Button 
+                  onClick={handleMoveToNextPair}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Move to Next Pair
+                </Button>
               </div>
-              
-              <Button 
-                onClick={handleAddMissedKeywords} 
-                className="w-full"
-              >
-                Add Missing Ideas & Continue
-              </Button>
             </CardContent>
           </Card>
         )}
