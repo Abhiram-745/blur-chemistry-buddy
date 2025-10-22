@@ -38,6 +38,7 @@ const BlurExercise = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [missedKeywords, setMissedKeywords] = useState<string[]>([]);
+  const [coveredKeywords, setCoveredKeywords] = useState<string[]>([]);
   const [showMissedKeywords, setShowMissedKeywords] = useState(false);
   const [sessionResults, setSessionResults] = useState<{
     score: number;
@@ -134,9 +135,13 @@ const BlurExercise = () => {
     const missed = currentQuestion.keyKeywords.filter(
       keyword => !userAnswerLower.includes(keyword.toLowerCase())
     );
+    const covered = currentQuestion.keyKeywords.filter(
+      keyword => userAnswerLower.includes(keyword.toLowerCase())
+    );
     
     if (missed.length > 0) {
       setMissedKeywords(missed);
+      setCoveredKeywords(covered);
       setShowMissedKeywords(true);
     } else {
       handleNextQuestion();
@@ -148,6 +153,7 @@ const BlurExercise = () => {
     setUserAnswer(newAnswer);
     setShowMissedKeywords(false);
     setMissedKeywords([]);
+    setCoveredKeywords([]);
     handleNextQuestion();
   };
 
@@ -295,25 +301,45 @@ const BlurExercise = () => {
         {showMissedKeywords && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-destructive">Missing Keywords</CardTitle>
+              <CardTitle>Answer Feedback</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <p>You missed these important keywords:</p>
-              <div className="p-4 bg-destructive/10 rounded-lg">
-                <ul className="list-disc list-inside space-y-1">
-                  {missedKeywords.map((keyword, idx) => (
-                    <li key={idx} className="text-destructive font-medium">{keyword}</li>
-                  ))}
-                </ul>
+            <CardContent className="space-y-6">
+              {coveredKeywords.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-lg flex items-center gap-2">
+                    <span className="text-green-600">✓</span> Points you did well
+                  </h3>
+                  <div className="p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-900">
+                    <ul className="list-disc list-inside space-y-1">
+                      {coveredKeywords.map((keyword, idx) => (
+                        <li key={idx} className="text-green-700 dark:text-green-400 font-medium">{keyword}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <span className="text-destructive">✗</span> Ideas you missed
+                </h3>
+                <div className="p-4 bg-destructive/10 rounded-lg border border-destructive/20">
+                  <ul className="list-disc list-inside space-y-1">
+                    {missedKeywords.map((keyword, idx) => (
+                      <li key={idx} className="text-destructive font-medium">{keyword}</li>
+                    ))}
+                  </ul>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Please add these ideas to your answer before continuing.
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Please add these keywords to your answer before continuing.
-              </p>
+              
               <Button 
                 onClick={handleAddMissedKeywords} 
                 className="w-full"
               >
-                Add Keywords & Continue
+                Add Missing Ideas & Continue
               </Button>
             </CardContent>
           </Card>
