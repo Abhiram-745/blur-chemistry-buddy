@@ -148,11 +148,37 @@ const BlurPractice = () => {
     const isPhysics = location.pathname.includes('/physics/');
     const dataSource = isPhysics ? physicsData : sectionsData;
     
+    console.log('BlurPractice - Looking for:', { 
+      topicId, 
+      subsectionId, 
+      isPhysics, 
+      pathname: location.pathname,
+      availableTopics: dataSource.map(t => t.id)
+    });
+    
     const topic = dataSource.find((t) => t.id === topicId);
-    if (!topic) return;
+    if (!topic) {
+      console.error('Topic not found:', topicId);
+      toast({
+        title: "Topic Not Found",
+        description: `Could not find topic: ${topicId}`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    console.log('Found topic:', topic.title, 'Available subsections:', topic.subsections.map(s => s.id));
 
     const targetSubsection = topic.subsections.find((s) => s.id === subsectionId);
-    if (!targetSubsection) return;
+    if (!targetSubsection) {
+      console.error('Subsection not found:', subsectionId);
+      toast({
+        title: "Subsection Not Found",
+        description: `Could not find subsection: ${subsectionId}`,
+        variant: "destructive"
+      });
+      return;
+    }
 
     setSubsectionTitle(targetSubsection.title);
     setCanonicalKeywords(targetSubsection.canonical_keywords);
@@ -862,15 +888,25 @@ const BlurPractice = () => {
   };
 
   if (internalSubsections.length === 0) {
+    const isPhysics = location.pathname.includes('/physics/');
+    const backPath = isPhysics ? "/physics/sections" : "/sections";
+    
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8">
-          <CardContent>
-            <p className="text-muted-foreground">Practice not found</p>
-            <Button onClick={() => navigate("/sections")} className="mt-4">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Topics
-            </Button>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
+        <Card className="max-w-md w-full mx-4">
+          <CardHeader>
+            <CardTitle className="text-center">Practice Not Found</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground text-center">
+              Could not load practice content for this subsection. Please check the console for details or try another topic.
+            </p>
+            <div className="flex flex-col gap-2">
+              <Button onClick={() => navigate(backPath)} className="w-full">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Topics
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
