@@ -1,141 +1,216 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Send, Clock } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { ArrowLeft, Send } from "lucide-react";
+import { sectionsData, TopicSection, Subsection } from "@/data/sectionsData";
+import { physicsData } from "@/data/physicsData";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { MemorizationTimer } from "@/components/MemorizationTimer";
 
-interface Section {
-  id: string;
+interface InternalSection {
   title: string;
-  spec_tag: string;
-  keywords: string[];
+  content: string;
+}
+
+interface BlurtQuestion {
+  question: string;
+  keyKeywords: string[];
+  marks: number;
 }
 
 const BlurExercise = () => {
-  const { id } = useParams();
+  const { topicId, subsectionId } = useParams();
   const navigate = useNavigate();
-  const [section, setSection] = useState<Section | null>(null);
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [startTime] = useState(Date.now());
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const { toast } = useToast();
+  const isPhysics = window.location.pathname.includes('/physics/');
+  
+  const [topic, setTopic] = useState<TopicSection | null>(null);
+  const [subsection, setSubsection] = useState<Subsection | null>(null);
+  const [pairs, setPairs] = useState<InternalSection[]>([]);
+  const [currentPairIndex, setCurrentPairIndex] = useState(0);
+  const [showTimer, setShowTimer] = useState(true);
+  const [timerCompleted, setTimerCompleted] = useState(false);
+  const [questions, setQuestions] = useState<BlurtQuestion[]>([]);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [missedKeywords, setMissedKeywords] = useState<string[]>([]);
+  const [showMissedKeywords, setShowMissedKeywords] = useState(false);
+  const [sessionResults, setSessionResults] = useState<{
+    score: number;
+    maxScore: number;
+    keywordsAdded: string[];
+    keywordsMissed: string[];
+  } | null>(null);
 
   useEffect(() => {
-    const fetchSection = async () => {
+    const dataSource = isPhysics ? physicsData : sectionsData;
+    const foundTopic = dataSource.find((t) => t.id === topicId);
+    
+    if (!foundTopic) {
+      toast({ title: "Topic not found", variant: "destructive" });
+      navigate(isPhysics ? "/physics/sections" : "/sections");
+      return;
+    }
+    
+    const foundSubsection = foundTopic.subsections.find((s) => s.id === subsectionId);
+    if (!foundSubsection) {
+      toast({ title: "Subsection not found", variant: "destructive" });
+      navigate(isPhysics ? "/physics/sections" : "/sections");
+      return;
+    }
+    
+    setTopic(foundTopic);
+    setSubsection(foundSubsection);
+    
+    // Parse internal sections from content_html
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(foundSubsection.content_html, 'text/html');
+    const h3Elements = doc.querySelectorAll('h3');
+    
+    const parsedPairs: InternalSection[] = [];
+    h3Elements.forEach((h3, index) => {
+      const title = h3.textContent || `Section ${index + 1}`;
+      let content = '';
+      let nextSibling = h3.nextElementSibling;
+      
+      while (nextSibling && nextSibling.tagName !== 'H3') {
+        content += nextSibling.textContent + '\n';
+        nextSibling = nextSibling.nextElementSibling;
+      }
+      
+      if (content.trim()) {
+        parsedPairs.push({ title, content: content.trim() });
+      }
+    });
+    
+    setPairs(parsedPairs);
+  }, [topicId, subsectionId, isPhysics]);
+
+  const handleTimerComplete = async () => {
+    setTimerCompleted(true);
+    setShowTimer(false);
+    setIsGenerating(true);
+    
+    try {
+      const currentPair = pairs[currentPairIndex];
+      const nextPair = pairs[currentPairIndex + 1];
+      const pairContent = nextPair ? `${currentPair.content}\n\n${nextPair.content}` : currentPair.content;
+      
+      const { data, error } = await supabase.functions.invoke('generate-blurt-questions', {
+        body: {
+          content: currentPair.content,
+          pairContent: pairContent,
+          previousKeywords: questions.flatMap(q => q.keyKeywords)
+        }
+      });
+      
+      if (error) throw error;
+      
+      setQuestions(data.questions || []);
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate questions. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleSubmitAnswer = () => {
+    if (!userAnswer.trim()) {
+      toast({ title: "Please write an answer", variant: "destructive" });
+      return;
+    }
+    
+    const currentQuestion = questions[0];
+    const userAnswerLower = userAnswer.toLowerCase();
+    const missed = currentQuestion.keyKeywords.filter(
+      keyword => !userAnswerLower.includes(keyword.toLowerCase())
+    );
+    
+    if (missed.length > 0) {
+      setMissedKeywords(missed);
+      setShowMissedKeywords(true);
+    } else {
+      handleNextQuestion();
+    }
+  };
+
+  const handleAddMissedKeywords = () => {
+    const newAnswer = userAnswer + '\n\n' + missedKeywords.join(', ');
+    setUserAnswer(newAnswer);
+    setShowMissedKeywords(false);
+    setMissedKeywords([]);
+    handleNextQuestion();
+  };
+
+  const handleNextQuestion = () => {
+    if (questions.length > 1) {
+      setQuestions(questions.slice(1));
+      setUserAnswer("");
+    } else {
+      // All questions answered for this pair
+      if (currentPairIndex < pairs.length - 1) {
+        setCurrentPairIndex(currentPairIndex + 1);
+        setShowTimer(true);
+        setTimerCompleted(false);
+        setQuestions([]);
+        setUserAnswer("");
+      } else {
+        // All pairs completed
+        saveSession();
+      }
+    }
+  };
+
+  const saveSession = async () => {
+    setIsSubmitting(true);
+    try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
-
-      const { data } = await supabase
-        .from("sections")
-        .select("id, title, spec_tag, keywords")
-        .eq("id", id)
-        .single();
-
-      if (data) {
-        setSection(data);
-      }
-      setLoading(false);
-    };
-
-    fetchSection();
-  }, [id, navigate]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [startTime]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const calculateScore = (userContent: string, keywords: string[]) => {
-    const lowerContent = userContent.toLowerCase();
-    const foundKeywords = keywords.filter((keyword) =>
-      lowerContent.includes(keyword.toLowerCase())
-    );
-    const missedKeywords = keywords.filter(
-      (keyword) => !lowerContent.includes(keyword.toLowerCase())
-    );
-
-    const score = Math.round((foundKeywords.length / keywords.length) * 100);
-
-    return {
-      score,
-      foundKeywords,
-      missedKeywords,
-    };
-  };
-
-  const handleSubmit = async () => {
-    if (!content.trim()) {
-      toast.error("Please write something before submitting!");
-      return;
-    }
-
-    if (!section) return;
-
-    setSubmitting(true);
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
-
-    const { score, foundKeywords, missedKeywords } = calculateScore(content, section.keywords);
-
-    const { data, error } = await supabase
-      .from("submissions")
-      .insert({
+      if (!user) return;
+      
+      // Calculate final score
+      const totalKeywords = questions.reduce((sum, q) => sum + q.keyKeywords.length, 0);
+      const coveredKeywords = questions.flatMap(q => q.keyKeywords);
+      
+      await supabase.from('blurt_sessions').insert({
         user_id: user.id,
-        section_id: section.id,
-        content,
-        score,
-        keywords_found: foundKeywords,
-        keywords_missed: missedKeywords,
-      })
-      .select()
-      .single();
-
-    setSubmitting(false);
-
-    if (error) {
-      toast.error("Failed to submit. Please try again.");
-    } else if (data) {
-      toast.success("Submission saved!");
-      navigate(`/results/${data.id}`);
+        topic_slug: topicId,
+        subsection_slug: subsectionId,
+        pair_number: currentPairIndex + 1,
+        score: coveredKeywords.length,
+        max_score: totalKeywords,
+        keywords_added: coveredKeywords,
+        keywords_missed: missedKeywords
+      });
+      
+      toast({ title: "Session saved!" });
+      navigate(isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`);
+    } catch (error) {
+      console.error('Error saving session:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save session.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading exercise...</div>
-      </div>
-    );
-  }
-
-  if (!section) {
+  if (!topic || !subsection || pairs.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Card>
           <CardContent className="p-12">
-            <p className="text-muted-foreground mb-4">Section not found.</p>
-            <Button onClick={() => navigate("/sections")}>Back to Sections</Button>
+            <p className="text-muted-foreground mb-4">Loading...</p>
           </CardContent>
         </Card>
       </div>
@@ -145,56 +220,104 @@ const BlurExercise = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Button variant="ghost" onClick={() => navigate(`/section/${id}`)} className="mb-4">
+        <Button
+          variant="ghost"
+          onClick={() => navigate(isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`)}
+          className="mb-4"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Section
+          Back to Topic
         </Button>
 
-        <Card className="mb-6 animate-fade-in">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline">{section.spec_tag}</Badge>
-                </div>
-                <CardTitle className="text-2xl">Blur Exercise: {section.title}</CardTitle>
-                <CardDescription className="mt-2">
-                  Write everything you remember without looking at the content!
-                </CardDescription>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Clock className="h-5 w-5" />
-                <span className="text-2xl font-mono">{formatTime(elapsedTime)}</span>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold mb-2">Blurting Practice</h1>
+          <p className="text-muted-foreground">{subsection.title}</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Pair {currentPairIndex + 1} of {pairs.length}: {pairs[currentPairIndex].title}
+          </p>
+        </div>
 
-        <Card className="animate-slide-up">
-          <CardContent className="p-6">
-            <Textarea
-              placeholder="Start writing everything you remember about this topic... Don't worry about perfect formatting, just get your thoughts down!"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className="min-h-[400px] text-base resize-none"
-              autoFocus
-            />
-            <div className="flex items-center justify-between mt-4">
-              <p className="text-sm text-muted-foreground">
-                {content.split(/\s+/).filter((word) => word.length > 0).length} words
-              </p>
-              <Button
-                size="lg"
-                onClick={handleSubmit}
-                disabled={submitting || !content.trim()}
-                className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 transition-opacity"
+        {showTimer && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Memorize this content</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg max-h-[400px] overflow-y-auto">
+                <h3 className="font-semibold mb-2">{pairs[currentPairIndex].title}</h3>
+                <p className="whitespace-pre-wrap">{pairs[currentPairIndex].content}</p>
+              </div>
+              <MemorizationTimer onComplete={handleTimerComplete} duration={120} />
+            </CardContent>
+          </Card>
+        )}
+
+        {isGenerating && (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <p className="text-lg">Generating questions...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {timerCompleted && !isGenerating && questions.length > 0 && !showMissedKeywords && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Question {questions.length}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="text-lg">{questions[0].question}</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  [{questions[0].marks} marks]
+                </p>
+              </div>
+
+              <Textarea
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder="Write your answer here..."
+                className="min-h-[200px]"
+              />
+
+              <Button 
+                onClick={handleSubmitAnswer} 
+                className="w-full"
+                disabled={!userAnswer.trim()}
               >
-                {submitting ? "Submitting..." : "Submit Answer"}
-                <Send className="ml-2 h-4 w-4" />
+                <Send className="mr-2 h-4 w-4" />
+                Submit Answer
               </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {showMissedKeywords && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-destructive">Missing Keywords</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p>You missed these important keywords:</p>
+              <div className="p-4 bg-destructive/10 rounded-lg">
+                <ul className="list-disc list-inside space-y-1">
+                  {missedKeywords.map((keyword, idx) => (
+                    <li key={idx} className="text-destructive font-medium">{keyword}</li>
+                  ))}
+                </ul>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Please add these keywords to your answer before continuing.
+              </p>
+              <Button 
+                onClick={handleAddMissedKeywords} 
+                className="w-full"
+              >
+                Add Keywords & Continue
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
