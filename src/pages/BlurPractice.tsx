@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Timer, Send, BookOpen, CheckCircle, ChevronDown, Camera } from "lucide-react";
+import { ArrowLeft, Timer, Send, BookOpen, CheckCircle, ChevronDown, Camera, Pen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { sectionsData, PracticeItem } from "@/data/sectionsData";
 import { physicsData } from "@/data/physicsData";
@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import SectionContent from "@/components/SectionContent";
 import { AIChatbot } from "@/components/AIChatbot";
 import { PhotoUpload } from "@/components/PhotoUpload";
+import { DrawingCanvas } from "@/components/DrawingCanvas";
 import { MemorizationTimer } from "@/components/MemorizationTimer";
 
 import {
@@ -122,6 +123,7 @@ const BlurPractice = () => {
   const [questionType, setQuestionType] = useState<"blurt" | "exam">("blurt");
   const [showQuestionTypeSelector, setShowQuestionTypeSelector] = useState(true);
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  const [showDrawingCanvas, setShowDrawingCanvas] = useState(false);
   const [photoFeedback, setPhotoFeedback] = useState<PhotoFeedbackData | null>(null);
   const [highlightedText, setHighlightedText] = useState<string>("");
   const [showMemorizationTimer, setShowMemorizationTimer] = useState(false);
@@ -1285,10 +1287,31 @@ const BlurPractice = () => {
                       <Camera className="mr-2 h-4 w-4" />
                       Upload Photo
                     </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setShowDrawingCanvas(!showDrawingCanvas)}
+                      size="lg"
+                    >
+                      <Pen className="mr-2 h-4 w-4" />
+                      Draw
+                    </Button>
                   </div>
 
                   {showPhotoUpload && currentGeneratedQuestion && (
                     <PhotoUpload
+                      studyContent={buildPairContent()}
+                      questions={generatedQuestions.map(q => q.question)}
+                      currentQuestion={currentGeneratedQuestion.question}
+                      topicId={topicId || ''}
+                      subsectionId={subsectionId || ''}
+                      subsectionTitle={currentPairSubsections.map(s => s.title).join(', ')}
+                      questionType={questionType}
+                      marks={currentGeneratedQuestion.marks}
+                    />
+                  )}
+
+                  {showDrawingCanvas && currentGeneratedQuestion && (
+                    <DrawingCanvas
                       studyContent={buildPairContent()}
                       questions={generatedQuestions.map(q => q.question)}
                       currentQuestion={currentGeneratedQuestion.question}
