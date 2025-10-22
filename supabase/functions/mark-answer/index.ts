@@ -35,7 +35,7 @@ serve(async (req) => {
         }
       });
 
-      // Get AI feedback
+      // Get AI feedback using Lovable AI
       const prompt = `You are a helpful tutor providing constructive feedback on a blurting practice answer.
 
 Question: ${q.question}
