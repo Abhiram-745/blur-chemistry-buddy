@@ -30,17 +30,19 @@ serve(async (req) => {
 
 CRITICAL INSTRUCTIONS:
 1. Generate ${numQuestions} questions based on the study content provided
-2. For each question, provide SHORT helper notes (2-3 sentences) that give hints without revealing the full answer
+2. For each question, provide:
+   - REVISION NOTES: A brief summary (2-3 sentences) of the key concepts from the study content that relate to this question. These should help students recall what they learned.
+   - HELPER NOTES: Short hints (2-3 sentences) that guide thinking without revealing the full answer
 3. Questions should test understanding and recall of key concepts
-4. Helper notes should guide thinking, not provide complete answers
-5. Each question should be worth 4-6 marks
+4. Each question should be worth 4-6 marks
 
 Return ONLY valid JSON with this exact structure:
 {
   "questions": [
     {
       "question": "The actual question text",
-      "helperNotes": "Brief helper notes (2-3 sentences maximum)",
+      "revisionNotes": "Brief revision notes summarizing key concepts (2-3 sentences maximum)",
+      "helperNotes": "Brief helper notes with hints (2-3 sentences maximum)",
       "marks": 4-6
     }
   ]

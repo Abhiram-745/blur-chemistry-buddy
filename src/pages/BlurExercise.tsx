@@ -19,6 +19,7 @@ interface Section {
 
 interface GeneratedQuestion {
   question: string;
+  revisionNotes: string;
   helperNotes: string;
   marks: number;
 }
@@ -46,6 +47,7 @@ const BlurExercise = () => {
   const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hiddenNotes, setHiddenNotes] = useState<Set<number>>(new Set());
+  const [hiddenRevisionNotes, setHiddenRevisionNotes] = useState<Set<number>>(new Set());
   const [memorizationDuration, setMemorizationDuration] = useState(180);
 
   useEffect(() => {
@@ -108,6 +110,18 @@ const BlurExercise = () => {
 
   const toggleNoteVisibility = (index: number) => {
     setHiddenNotes((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
+  };
+
+  const toggleRevisionNoteVisibility = (index: number) => {
+    setHiddenRevisionNotes((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(index)) {
         newSet.delete(index);
@@ -196,6 +210,7 @@ const BlurExercise = () => {
         setQuestions(generatedQuestions);
         setUserAnswers(new Array(generatedQuestions.length).fill(""));
         setHiddenNotes(new Set());
+        setHiddenRevisionNotes(new Set());
         toast.success("New questions generated!");
       } catch (error) {
         console.error("Error generating questions:", error);
@@ -301,9 +316,34 @@ const BlurExercise = () => {
               <Card key={index} className="animate-fade-in">
                 <CardHeader>
                   <CardTitle className="text-lg">Question {index + 1} ({q.marks} marks)</CardTitle>
-                  <p className="text-base mt-2">{q.question}</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="border rounded-lg p-4 bg-primary/5">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-sm font-medium">Revision Notes:</p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleRevisionNoteVisibility(index)}
+                      >
+                        {hiddenRevisionNotes.has(index) ? (
+                          <>
+                            <Eye className="h-4 w-4 mr-2" />
+                            Show Notes
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="h-4 w-4 mr-2" />
+                            Hide Notes
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                    {!hiddenRevisionNotes.has(index) && (
+                      <p className="text-sm text-muted-foreground">{q.revisionNotes}</p>
+                    )}
+                  </div>
+                  <p className="text-base font-medium">{q.question}</p>
                   <div className="border rounded-lg p-4 bg-muted/30">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-sm font-medium">Helper Notes:</p>
