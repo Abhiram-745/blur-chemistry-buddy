@@ -813,22 +813,29 @@ const BlurPractice = () => {
       });
     } else {
       // No more pairs in this subsection, move to next subsection in topic
-      const topic = sectionsData.find((t) => t.id === topicId);
+      const urlSaysPhysics = location.pathname.includes('/physics/');
+      const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+      const isPhysics = urlSaysPhysics || topicLooksPhysics;
+      const dataSource = isPhysics ? physicsData : sectionsData;
+      
+      const topic = dataSource.find((t) => t.id === topicId);
       if (!topic) return;
 
       const currentSubsectionIndex = topic.subsections.findIndex((s) => s.id === subsectionId);
       const nextSubsection = topic.subsections[currentSubsectionIndex + 1];
 
       if (nextSubsection) {
-        // Navigate to next subsection
-        navigate(`/blur-practice/${topicId}/${nextSubsection.id}`);
+        // Navigate to next subsection with correct path prefix
+        const pathPrefix = isPhysics ? '/physics/blur-practice' : '/blur-practice';
+        navigate(`${pathPrefix}/${topicId}/${nextSubsection.id}`);
       } else {
         // No more subsections in topic, show completion message
         toast({
           title: "Topic Complete!",
           description: "You've completed all subsections in this topic.",
         });
-        navigate("/sections");
+        const backPath = isPhysics ? "/physics/sections" : "/sections";
+        navigate(backPath);
       }
     }
   };
