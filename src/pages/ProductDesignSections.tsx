@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { productDesignData, TopicSection } from "@/data/productDesignData";
 
 const ProductDesignSections = () => {
   const navigate = useNavigate();
+  const { chapterId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredSections = productDesignData.filter((section: TopicSection) =>
@@ -18,14 +19,17 @@ const ProductDesignSections = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <Button variant="ghost" onClick={() => navigate("/product-design/dashboard")} className="mb-4">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
-          </Button>
-          <h1 className="text-4xl font-bold mb-2">GCSE AQA Product Design Topics</h1>
-          <p className="text-muted-foreground">Chapter 2: Specialist Technical Principles</p>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={() => navigate("/product-design/chapters")}
+          className="mb-6"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Chapters
+        </Button>
+
+        <h1 className="text-4xl font-bold mb-2">GCSE AQA Product Design Topics</h1>
+        <p className="text-muted-foreground mb-8">Chapter 2: Specialist Technical Principles</p>
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
@@ -80,9 +84,13 @@ const ProductDesignSections = () => {
                     </p>
                   )}
                 </div>
-                <Button className="w-full" variant={section.status === "ready" ? "default" : "outline"}>
-                  <BookOpen className="mr-2 h-4 w-4" />
-                  {section.status === "ready" ? "Explore Topic" : "Coming Soon"}
+                <Button
+                  className="w-full"
+                  size="lg"
+                  variant={section.status === "ready" ? "default" : "outline"}
+                >
+                  <BookOpen className="mr-2 h-5 w-5" />
+                  {section.status === "ready" ? "Start Practice" : "Coming Soon"}
                 </Button>
               </CardContent>
             </Card>

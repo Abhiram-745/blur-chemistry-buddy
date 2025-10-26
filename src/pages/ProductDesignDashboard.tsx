@@ -22,13 +22,13 @@ const ProductDesignDashboard = () => {
         <p className="text-muted-foreground mb-8">GCSE AQA Product Design - Chapter 2: Specialist Technical Principles</p>
 
         <div className="grid gap-6 md:grid-cols-3 mb-8">
-          <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => navigate("/product-design/sections")}>
+          <Card className="cursor-pointer hover:shadow-lg transition-all" onClick={() => navigate("/product-design/chapters")}>
             <CardHeader>
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mb-4">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
               <CardTitle>Browse Topics</CardTitle>
-              <CardDescription>Explore Chapter 2 content</CardDescription>
+              <CardDescription>Explore the content</CardDescription>
             </CardHeader>
             <CardContent>
               <Button className="w-full">View Topics</Button>

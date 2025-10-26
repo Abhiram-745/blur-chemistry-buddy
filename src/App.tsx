@@ -14,6 +14,7 @@ import PhysicsSections from "./pages/PhysicsSections";
 import PhysicsTopicView from "./pages/PhysicsTopicView";
 import PhysicsProgress from "./pages/PhysicsProgress";
 import ProductDesignDashboard from "./pages/ProductDesignDashboard";
+import ProductDesignChapters from "./pages/ProductDesignChapters";
 import ProductDesignSections from "./pages/ProductDesignSections";
 import ProductDesignTopicView from "./pages/ProductDesignTopicView";
 import BlurPractice from "./pages/BlurPractice";
@@ -53,7 +54,8 @@ const App = () => (
           <Route path="/physics/progress" element={<PhysicsProgress />} />
           <Route path="/physics/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/product-design/dashboard" element={<ProductDesignDashboard />} />
-          <Route path="/product-design/sections" element={<ProductDesignSections />} />
+          <Route path="/product-design/chapters" element={<ProductDesignChapters />} />
+          <Route path="/product-design/sections/:chapterId" element={<ProductDesignSections />} />
           <Route path="/product-design/topic/:id" element={<ProductDesignTopicView />} />
           <Route path="/product-design/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />

@@ -33,8 +33,7 @@ const ProductDesignTopicView = () => {
   };
 
   const startSubsectionPractice = (subsectionId: string) => {
-    const dataSource = "product-design";
-    navigate(`/${dataSource}/blur-practice/${id}/${subsectionId}`);
+    navigate(`/product-design/blur-practice/${id}/${subsectionId}`);
   };
 
   if (!topic) {
@@ -49,10 +48,10 @@ const ProductDesignTopicView = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
         <div className="container mx-auto px-4 py-8">
-          <Button variant="ghost" onClick={() => navigate("/product-design/sections")} className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Topics
-          </Button>
+        <Button variant="ghost" onClick={() => navigate("/product-design/sections/specialist-technical")} className="mb-6">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Topics
+        </Button>
           <h1 className="text-4xl font-bold mb-4">{topic.title}</h1>
           <p className="text-xl text-muted-foreground mb-8">This topic is coming soon!</p>
         </div>
@@ -71,7 +70,7 @@ const ProductDesignTopicView = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
       <div className="container mx-auto px-4 py-8">
-        <Button variant="ghost" onClick={() => navigate("/product-design/sections")} className="mb-6">
+        <Button variant="ghost" onClick={() => navigate("/product-design/sections/specialist-technical")} className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Topics
         </Button>

@@ -146,17 +146,26 @@ const BlurPractice = () => {
   }, [currentPairIndex, topicId, subsectionId, internalSubsections.length, currentPairSubsections.length]);
 
   useEffect(() => {
-    // Determine dataset: prefer URL flag, otherwise infer from topic id presence in physics data
+    // Determine dataset: prefer URL flag for physics and product-design
     const urlSaysPhysics = location.pathname.includes('/physics/');
+    const urlSaysProductDesign = location.pathname.includes('/product-design/');
     const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
-    const isPhysics = urlSaysPhysics || topicLooksPhysics;
-    const dataSource = isPhysics ? physicsData : sectionsData;
+    
+    let dataSource = sectionsData;
+    if (urlSaysPhysics || topicLooksPhysics) {
+      dataSource = physicsData;
+    } else if (urlSaysProductDesign) {
+      // Import product design data
+      const { productDesignData } = require('@/data/productDesignData');
+      dataSource = productDesignData;
+    }
     
     console.log('BlurPractice - Looking for:', { 
       topicId, 
       subsectionId, 
-      isPhysics,
-      reason: { urlSaysPhysics, topicLooksPhysics }, 
+      urlSaysPhysics,
+      urlSaysProductDesign,
+      reason: { urlSaysPhysics, topicLooksPhysics, urlSaysProductDesign }, 
       pathname: location.pathname,
       availableTopics: dataSource.map(t => t.id)
     });
