@@ -62,7 +62,10 @@ const ProductDesignTopicView = () => {
   const allSubsectionContent = topic.subsections
     .map((sub) => sub.content_html)
     .join("\n\n");
-  const allSubsectionTitles = topic.subsections.map((sub) => sub.title);
+  const allSubsections = topic.subsections.map((sub) => ({
+    title: sub.title,
+    content: sub.content_html
+  }));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5">
@@ -127,7 +130,7 @@ const ProductDesignTopicView = () => {
         <PracticeExamQuestions
           sectionContent={allSubsectionContent}
           sectionTitle={topic.title}
-          subsections={allSubsectionTitles}
+          subsections={allSubsections}
         />
       </div>
     </div>
