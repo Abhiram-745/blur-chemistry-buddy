@@ -33,7 +33,8 @@ const ProductDesignTopicView = () => {
   };
 
   const startSubsectionPractice = (subsectionId: string) => {
-    navigate(`/product-design/blur-practice/${id}/${subsectionId}`);
+    const dataSource = "product-design";
+    navigate(`/${dataSource}/blur-practice/${id}/${subsectionId}`);
   };
 
   if (!topic) {
