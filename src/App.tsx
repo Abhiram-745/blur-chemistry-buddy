@@ -13,6 +13,9 @@ import PhysicsDashboard from "./pages/PhysicsDashboard";
 import PhysicsSections from "./pages/PhysicsSections";
 import PhysicsTopicView from "./pages/PhysicsTopicView";
 import PhysicsProgress from "./pages/PhysicsProgress";
+import ProductDesignDashboard from "./pages/ProductDesignDashboard";
+import ProductDesignSections from "./pages/ProductDesignSections";
+import ProductDesignTopicView from "./pages/ProductDesignTopicView";
 import BlurPractice from "./pages/BlurPractice";
 import SectionReader from "./pages/SectionReader";
 import BlurExercise from "./pages/BlurExercise";
@@ -49,6 +52,10 @@ const App = () => (
           <Route path="/physics/topic/:id" element={<PhysicsTopicView />} />
           <Route path="/physics/progress" element={<PhysicsProgress />} />
           <Route path="/physics/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
+          <Route path="/product-design/dashboard" element={<ProductDesignDashboard />} />
+          <Route path="/product-design/sections" element={<ProductDesignSections />} />
+          <Route path="/product-design/topic/:id" element={<ProductDesignTopicView />} />
+          <Route path="/product-design/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/blur-practice/:topicId/:subsectionId" element={<BlurPractice />} />
           <Route path="/section/:id" element={<SectionReader />} />
           <Route path="/blur/:id" element={<BlurExercise />} />

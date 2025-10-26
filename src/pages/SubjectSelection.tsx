@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Beaker, Calculator, Dna, Zap, ArrowLeft } from "lucide-react";
+import { Beaker, Calculator, Dna, Zap, Palette } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -41,6 +41,13 @@ const SubjectSelection = () => {
       route: "/physics/dashboard"
     },
     {
+      name: "Product Design",
+      icon: Palette,
+      color: "from-amber-500 to-orange-500",
+      available: true,
+      route: "/product-design/dashboard"
+    },
+    {
       name: "Biology",
       icon: Dna,
       color: "from-green-500 to-emerald-500",
@@ -77,7 +84,7 @@ const SubjectSelection = () => {
           </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 max-w-7xl mx-auto">
           {subjects.map((subject) => {
             const Icon = subject.icon;
             return (
