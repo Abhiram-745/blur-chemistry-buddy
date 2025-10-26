@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Play } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { productDesignData, type TopicSection } from "@/data/productDesignData";
@@ -81,17 +81,29 @@ const ProductDesignTopicView = () => {
 
         <ColorLegend />
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          {topic.subsections.map((subsection) => (
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          {topic.subsections.map((subsection, index) => (
             <Card key={subsection.id} className="hover:shadow-lg transition-all">
               <CardHeader>
-                <CardTitle className="text-lg">{subsection.title}</CardTitle>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
+                    {index + 1}
+                  </div>
+                  <div className="flex-1">
+                    <CardTitle className="text-xl mb-3">{subsection.title}</CardTitle>
+                    <div className="inline-block px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground mb-4">
+                      {subsection.practice_items?.length || 0} questions
+                    </div>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <Button
                   className="w-full"
+                  size="lg"
                   onClick={() => startSubsectionPractice(subsection.id)}
                 >
+                  <Play className="mr-2 h-5 w-5" />
                   Start Practice
                 </Button>
               </CardContent>
