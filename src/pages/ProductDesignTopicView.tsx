@@ -17,13 +17,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+type SubsectionPair = {
+  pairNumber: number;
+  subsections: typeof productDesignData[0]['subsections'];
+  totalQuestions: number;
+};
+
 const ProductDesignTopicView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [topic, setTopic] = useState<TopicSection | null>(null);
+  const [pairs, setPairs] = useState<SubsectionPair[]>([]);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
   const [showPracticeDialog, setShowPracticeDialog] = useState(false);
-  const [selectedSubsectionId, setSelectedSubsectionId] = useState<string | null>(null);
+  const [selectedPairNumber, setSelectedPairNumber] = useState<number | null>(null);
 
   useEffect(() => {
     const foundTopic = productDesignData.find((t) => t.id === id);
@@ -31,6 +38,25 @@ const ProductDesignTopicView = () => {
     
     if (foundTopic?.status === "ready" && foundTopic.subsections.length > 0) {
       setOpenSections({ [foundTopic.subsections[0].id]: true });
+      
+      // Group subsections by study_group to create pairs
+      const groupedPairs: Record<number, typeof foundTopic.subsections> = {};
+      foundTopic.subsections.forEach(sub => {
+        const group = sub.study_group || 0;
+        if (!groupedPairs[group]) {
+          groupedPairs[group] = [];
+        }
+        groupedPairs[group].push(sub);
+      });
+      
+      // Convert to array format
+      const pairsArray: SubsectionPair[] = Object.entries(groupedPairs).map(([groupNum, subs]) => ({
+        pairNumber: parseInt(groupNum),
+        subsections: subs,
+        totalQuestions: subs.reduce((sum, sub) => sum + (sub.practice_items?.length || 0), 0)
+      }));
+      
+      setPairs(pairsArray.sort((a, b) => a.pairNumber - b.pairNumber));
     }
   }, [id]);
 
@@ -41,21 +67,26 @@ const ProductDesignTopicView = () => {
     }));
   };
 
-  const openPracticeDialog = (subsectionId: string) => {
-    setSelectedSubsectionId(subsectionId);
+  const openPracticeDialog = (pairNumber: number) => {
+    setSelectedPairNumber(pairNumber);
     setShowPracticeDialog(true);
   };
 
   const startBlurtPractice = () => {
-    if (selectedSubsectionId) {
-      navigate(`/product-design/blur-practice/${id}/${selectedSubsectionId}`);
+    if (selectedPairNumber !== null) {
+      const pair = pairs.find(p => p.pairNumber === selectedPairNumber);
+      if (pair && pair.subsections.length > 0) {
+        navigate(`/product-design/blur-practice/${id}/${pair.subsections[0].id}?pair=${selectedPairNumber}`);
+      }
     }
   };
 
   const startExamPractice = () => {
-    if (selectedSubsectionId) {
-      // Navigate to exam practice - for now using same route, can be changed later
-      navigate(`/product-design/blur-practice/${id}/${selectedSubsectionId}?mode=exam`);
+    if (selectedPairNumber !== null) {
+      const pair = pairs.find(p => p.pairNumber === selectedPairNumber);
+      if (pair && pair.subsections.length > 0) {
+        navigate(`/product-design/blur-practice/${id}/${pair.subsections[0].id}?mode=exam&pair=${selectedPairNumber}`);
+      }
     }
   };
 
@@ -99,22 +130,24 @@ const ProductDesignTopicView = () => {
         </Button>
 
         <h1 className="text-4xl font-bold mb-2">{topic.title}</h1>
-        <p className="text-muted-foreground mb-8">{topic.subsections.length} subsections</p>
+        <p className="text-muted-foreground mb-8">{pairs.length} pair{pairs.length !== 1 ? 's' : ''}</p>
 
         <ColorLegend />
 
         <div className="grid gap-6 md:grid-cols-2 mb-8">
-          {topic.subsections.map((subsection, index) => (
-            <Card key={subsection.id} className="hover:shadow-lg transition-all">
+          {pairs.map((pair) => (
+            <Card key={pair.pairNumber} className="hover:shadow-lg transition-all">
               <CardHeader>
                 <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white text-xl font-bold">
-                    {index + 1}
+                    {pair.pairNumber}
                   </div>
                   <div className="flex-1">
-                    <CardTitle className="text-xl mb-3">{subsection.title}</CardTitle>
+                    <CardTitle className="text-xl mb-3">
+                      {pair.subsections.map(sub => sub.title).join(' + ')}
+                    </CardTitle>
                     <div className="inline-block px-3 py-1 bg-muted rounded-full text-sm text-muted-foreground mb-4">
-                      {subsection.practice_items?.length || 0} questions
+                      {pair.totalQuestions} questions
                     </div>
                   </div>
                 </div>
@@ -123,7 +156,7 @@ const ProductDesignTopicView = () => {
                 <Button
                   className="w-full"
                   size="lg"
-                  onClick={() => openPracticeDialog(subsection.id)}
+                  onClick={() => openPracticeDialog(pair.pairNumber)}
                 >
                   <Play className="mr-2 h-5 w-5" />
                   Start Practice
