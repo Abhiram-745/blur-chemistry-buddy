@@ -7,6 +7,7 @@ import { ArrowLeft, Timer, Send, BookOpen, CheckCircle, ChevronDown, Camera, Pen
 import { Badge } from "@/components/ui/badge";
 import { sectionsData, PracticeItem } from "@/data/sectionsData";
 import { physicsData } from "@/data/physicsData";
+import { productDesignData } from "@/data/productDesignData";
 import { useToast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import SectionContent from "@/components/SectionContent";
@@ -155,8 +156,6 @@ const BlurPractice = () => {
     if (urlSaysPhysics || topicLooksPhysics) {
       dataSource = physicsData;
     } else if (urlSaysProductDesign) {
-      // Import product design data
-      const { productDesignData } = require('@/data/productDesignData');
       dataSource = productDesignData;
     }
     
