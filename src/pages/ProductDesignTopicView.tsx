@@ -2,19 +2,28 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Play } from "lucide-react";
+import { ArrowLeft, Play, BookOpen, FileText } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
 import { productDesignData, type TopicSection } from "@/data/productDesignData";
 import SectionContent from "@/components/SectionContent";
 import ColorLegend from "@/components/ColorLegend";
 import PracticeExamQuestions from "@/components/PracticeExamQuestions";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const ProductDesignTopicView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [topic, setTopic] = useState<TopicSection | null>(null);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
+  const [showPracticeDialog, setShowPracticeDialog] = useState(false);
+  const [selectedSubsectionId, setSelectedSubsectionId] = useState<string | null>(null);
 
   useEffect(() => {
     const foundTopic = productDesignData.find((t) => t.id === id);
@@ -32,8 +41,22 @@ const ProductDesignTopicView = () => {
     }));
   };
 
-  const startSubsectionPractice = (subsectionId: string) => {
-    navigate(`/product-design/blur-practice/${id}/${subsectionId}`);
+  const openPracticeDialog = (subsectionId: string) => {
+    setSelectedSubsectionId(subsectionId);
+    setShowPracticeDialog(true);
+  };
+
+  const startBlurtPractice = () => {
+    if (selectedSubsectionId) {
+      navigate(`/product-design/blur-practice/${id}/${selectedSubsectionId}`);
+    }
+  };
+
+  const startExamPractice = () => {
+    if (selectedSubsectionId) {
+      // Navigate to exam practice - for now using same route, can be changed later
+      navigate(`/product-design/blur-practice/${id}/${selectedSubsectionId}?mode=exam`);
+    }
   };
 
   if (!topic) {
@@ -100,7 +123,7 @@ const ProductDesignTopicView = () => {
                 <Button
                   className="w-full"
                   size="lg"
-                  onClick={() => startSubsectionPractice(subsection.id)}
+                  onClick={() => openPracticeDialog(subsection.id)}
                 >
                   <Play className="mr-2 h-5 w-5" />
                   Start Practice
@@ -145,6 +168,42 @@ const ProductDesignTopicView = () => {
           subsections={allSubsections}
         />
       </div>
+
+      <Dialog open={showPracticeDialog} onOpenChange={setShowPracticeDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Choose Practice Mode</DialogTitle>
+            <DialogDescription>
+              Select how you'd like to practice this subsection
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Button
+              size="lg"
+              className="w-full h-auto py-6 flex-col gap-2"
+              onClick={startBlurtPractice}
+            >
+              <BookOpen className="h-6 w-6" />
+              <div>
+                <div className="font-semibold">Blurt Question</div>
+                <div className="text-xs font-normal opacity-80">Active recall practice</div>
+              </div>
+            </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="w-full h-auto py-6 flex-col gap-2"
+              onClick={startExamPractice}
+            >
+              <FileText className="h-6 w-6" />
+              <div>
+                <div className="font-semibold">Exam Question</div>
+                <div className="text-xs font-normal opacity-80">Exam-style practice</div>
+              </div>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
