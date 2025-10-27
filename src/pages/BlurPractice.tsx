@@ -842,7 +842,10 @@ const BlurPractice = () => {
           title: "Topic Complete!",
           description: "You've completed all subsections in this topic.",
         });
-        const backPath = isPhysics ? "/physics/sections" : "/sections";
+        const urlSaysProductDesign = location.pathname.includes('/product-design/');
+        const topicLooksProductDesign = productDesignData.some((t) => t.id === topicId);
+        const isProductDesign = urlSaysProductDesign || topicLooksProductDesign;
+        const backPath = isPhysics ? "/physics/sections" : isProductDesign ? "/product-design/sections/specialist-technical" : "/sections";
         navigate(backPath);
       }
     }
@@ -903,17 +906,23 @@ const BlurPractice = () => {
 
   const handleFinish = () => {
     const urlSaysPhysics = location.pathname.includes('/physics/');
+    const urlSaysProductDesign = location.pathname.includes('/product-design/');
     const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+    const topicLooksProductDesign = productDesignData.some((t) => t.id === topicId);
     const isPhysics = urlSaysPhysics || topicLooksPhysics;
-    const topicPath = isPhysics ? `/physics/topic/${topicId}` : `/topic/${topicId}`;
+    const isProductDesign = urlSaysProductDesign || topicLooksProductDesign;
+    const topicPath = isPhysics ? `/physics/topic/${topicId}` : isProductDesign ? `/product-design/topic/${topicId}` : `/topic/${topicId}`;
     navigate(topicPath);
   };
 
   if (internalSubsections.length === 0) {
     const urlSaysPhysics = location.pathname.includes('/physics/');
+    const urlSaysProductDesign = location.pathname.includes('/product-design/');
     const topicLooksPhysics = physicsData.some((t) => t.id === topicId);
+    const topicLooksProductDesign = productDesignData.some((t) => t.id === topicId);
     const isPhysics = urlSaysPhysics || topicLooksPhysics;
-    const backPath = isPhysics ? "/physics/sections" : "/sections";
+    const isProductDesign = urlSaysProductDesign || topicLooksProductDesign;
+    const backPath = isPhysics ? "/physics/sections" : isProductDesign ? "/product-design/sections/specialist-technical" : "/sections";
     
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-secondary/5">
